@@ -17,18 +17,18 @@ abstract final class _LandscapeV16Layout {
   static const Color photoBorderRed = Color(0xFFE53935);
 
   static const double headerTop = 0.035;
-  static const double headerLeft = 0.45;
-  static const double headerRight = 0.04;
+  static const double headerLeft = 0.48;
+  static const double headerRight = 0.03;
   static const double headerHeight = 0.22;
 
   static const double nameBannerTop = 0.300;
-  static const double nameBannerLeft = 0.35;
-  static const double nameBannerRight = 0.44;
+  static const double nameBannerLeft = 0.37;
+  static const double nameBannerRight = 0.41;
   static const double nameBannerHeight = 0.075;
 
   static const double detailsTop = 0.370;
-  static const double detailsLeft = 0.35;
-  static const double detailsRight = 0.44;
+  static const double detailsLeft = 0.37;
+  static const double detailsRight = 0.41;
   static const double detailsBottom = 0.05;
   static const double detailFontSize = 24;
   static const double detailMinFontSize = 13;
