@@ -14,7 +14,6 @@ import 'student_id_portrait_widgets.dart';
 abstract final class _LandscapeV15Layout {
   static const Color instituteRed = Color(0xFFC62828);
   static const Color nameRed = Color(0xFFB71C1C);
-  static const Color accentGreen = Color(0xFF2E7D32);
   static const Color textDark = Color(0xFF0F172A);
   static const Color sessionBadgeRed = Color(0xFFD32F2F);
 
@@ -120,7 +119,6 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
   Widget _buildFront() {
     final detailLines = _detailLines();
     final session = data.validityText.trim();
-    final classLine = _classLine();
 
     return Stack(
       fit: StackFit.expand,
@@ -136,33 +134,12 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
           height: _h * _LandscapeV15Layout.headerHeight,
           child: _LandscapeV15Header(
             instituteName: data.instituteName.trim(),
-            address: data.address.trim(),
-            classLine: classLine,
-            mobile: data.mobileNumber.trim(),
             instituteStyle: _ts(const TextStyle(
               color: _LandscapeV15Layout.instituteRed,
               fontSize: 36,
               fontWeight: FontWeight.w900,
               height: 1.02,
               letterSpacing: 0.3,
-            )),
-            bodyStyle: _ts(const TextStyle(
-              color: _LandscapeV15Layout.textDark,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              height: 1.2,
-            )),
-            greenStyle: _ts(const TextStyle(
-              color: _LandscapeV15Layout.accentGreen,
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-              height: 1.15,
-            )),
-            mobileStyle: _ts(const TextStyle(
-              color: _LandscapeV15Layout.textDark,
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-              height: 1.15,
             )),
             instituteMaxLines: _instituteMaxLines(data.instituteName),
             minFontSize: 12,
@@ -259,84 +236,28 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
 class _LandscapeV15Header extends StatelessWidget {
   const _LandscapeV15Header({
     required this.instituteName,
-    required this.address,
-    required this.classLine,
-    required this.mobile,
     required this.instituteStyle,
-    required this.bodyStyle,
-    required this.greenStyle,
-    required this.mobileStyle,
     required this.instituteMaxLines,
     required this.minFontSize,
   });
 
   final String instituteName;
-  final String address;
-  final String? classLine;
-  final String mobile;
   final TextStyle instituteStyle;
-  final TextStyle bodyStyle;
-  final TextStyle greenStyle;
-  final TextStyle mobileStyle;
   final int instituteMaxLines;
   final double minFontSize;
 
   @override
   Widget build(BuildContext context) {
-    final rows = <Widget>[];
+    if (instituteName.isEmpty) return const SizedBox.shrink();
 
-    if (instituteName.isNotEmpty) {
-      rows.add(
-        AutoSizeText(
-          instituteName.toUpperCase(),
-          maxLines: instituteMaxLines,
-          minFontSize: minFontSize + 2,
-          textAlign: TextAlign.center,
-          style: instituteStyle,
-        ),
-      );
-    }
-    if (address.isNotEmpty) {
-      if (rows.isNotEmpty) rows.add(const SizedBox(height: 2));
-      rows.add(
-        AutoSizeText(
-          address,
-          maxLines: 2,
-          minFontSize: minFontSize,
-          textAlign: TextAlign.center,
-          style: bodyStyle,
-        ),
-      );
-    }
-    if (classLine != null) {
-      if (rows.isNotEmpty) rows.add(const SizedBox(height: 2));
-      rows.add(
-        AutoSizeText(
-          classLine!,
-          maxLines: 1,
-          minFontSize: minFontSize,
-          textAlign: TextAlign.center,
-          style: greenStyle,
-        ),
-      );
-    }
-    if (mobile.isNotEmpty) {
-      if (rows.isNotEmpty) rows.add(const SizedBox(height: 2));
-      rows.add(
-        AutoSizeText(
-          mobile,
-          maxLines: 1,
-          minFontSize: minFontSize,
-          textAlign: TextAlign.center,
-          style: mobileStyle,
-        ),
-      );
-    }
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: rows,
+    return Center(
+      child: AutoSizeText(
+        instituteName.toUpperCase(),
+        maxLines: instituteMaxLines,
+        minFontSize: minFontSize + 2,
+        textAlign: TextAlign.center,
+        style: instituteStyle,
+      ),
     );
   }
 }
