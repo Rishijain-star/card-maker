@@ -24,7 +24,7 @@ class ApiClient {
     // --dart-define=APP_API_BASE_URL=http://<LAN_IP>:8000/api/v1/
     const configuredBase = String.fromEnvironment(
       'APP_API_BASE_URL',
-      defaultValue: 'http://127.0.0.1:8000/api/v1/',
+      defaultValue: 'https://idshaydi.in/backend/api/',
     );
     _dio = Dio(
       BaseOptions(
