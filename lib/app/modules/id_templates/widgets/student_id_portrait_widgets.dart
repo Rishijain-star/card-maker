@@ -124,7 +124,7 @@ class StudentPortraitEvenContent extends StatelessWidget {
         }
 
         final minGap = compactSpacing
-            ? 9.0
+            ? 6.0
             : relaxedSpacing
                 ? gapRelaxedMin
                 : gapMin;
@@ -157,10 +157,17 @@ class StudentPortraitEvenContent extends StatelessWidget {
           children.add(blocks[i]);
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: children,
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: constraints.maxWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: children,
+            ),
+          ),
         );
       },
     );

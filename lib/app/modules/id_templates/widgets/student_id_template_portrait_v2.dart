@@ -441,10 +441,17 @@ class _LabeledBodyList extends StatelessWidget {
         if (i > 0) children.add(SizedBox(height: gap));
         children.add(blocks[i]);
       }
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: children,
+      return FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          width: constraints.maxWidth,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: children,
+          ),
+        ),
       );
     });
   }
