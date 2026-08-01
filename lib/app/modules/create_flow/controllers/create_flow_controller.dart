@@ -85,6 +85,22 @@ class CreateFlowController extends GetxController {
   final RxString signaturePath = ''.obs;
   final Rx<Uint8List?> signatureImageBytes = Rx<Uint8List?>(null);
 
+  final RxBool signatureHasBorder = false.obs;
+  final RxInt signatureBorderColorIndex = 0.obs;
+  final RxDouble signatureBorderWidth = 1.0.obs;
+
+  static const List<Color> signatureBorderColors = [
+    Color(0xFF0F172A), // Black / Dark Slate
+    Color(0xFF1E3A8A), // Navy Blue
+    Color(0xFFB71C1C), // Crimson Red
+    Color(0xFF15803D), // Emerald Green
+    Color(0xFFD97706), // Gold / Amber
+    Color(0xFFFFFFFF), // Pure White
+  ];
+
+  Color get currentSignatureBorderColor =>
+      signatureBorderColors[signatureBorderColorIndex.value.clamp(0, signatureBorderColors.length - 1)];
+
   /// After "Save Card + Create New", Continue skips template picker.
   bool _quickCreateAnother = false;
 
@@ -796,8 +812,14 @@ class CreateFlowController extends GetxController {
     final picker = ImagePicker();
     final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
     if (file != null) {
+      final croppedPath = await Get.to<String>(
+        () => ProfileImageCropScreen(imagePath: file.path),
+      );
       signatureImageBytes.value = null;
-      signaturePath.value = file.path;
+      signaturePath.value = (croppedPath != null && croppedPath.isNotEmpty) ? croppedPath : file.path;
+      if (Get.isRegistered<TemplateController>()) {
+        Get.find<TemplateController>().refreshCardData();
+      }
     }
   }
 
@@ -814,8 +836,40 @@ class CreateFlowController extends GetxController {
       imageQuality: 90,
     );
     if (file != null) {
+      final croppedPath = await Get.to<String>(
+        () => ProfileImageCropScreen(imagePath: file.path),
+      );
       signatureImageBytes.value = null;
-      signaturePath.value = file.path;
+      signaturePath.value = (croppedPath != null && croppedPath.isNotEmpty) ? croppedPath : file.path;
+      if (Get.isRegistered<TemplateController>()) {
+        Get.find<TemplateController>().refreshCardData();
+      }
+    }
+  }
+
+  Future<void> cropExistingSignature() async {
+    final currentPath = signaturePath.value;
+    if (currentPath.isEmpty) {
+      Get.snackbar('Signature Notice', 'No image file to crop. Please pick a signature from Gallery or Camera.');
+      return;
+    }
+    final croppedPath = await Get.to<String>(
+      () => ProfileImageCropScreen(imagePath: currentPath),
+    );
+    if (croppedPath != null && croppedPath.isNotEmpty) {
+      signaturePath.value = croppedPath;
+      if (Get.isRegistered<TemplateController>()) {
+        Get.find<TemplateController>().refreshCardData();
+      }
+    }
+  }
+
+  void clearSignature() {
+    signaturePath.value = '';
+    signatureImageBytes.value = null;
+    signatureCtrl.clear();
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
     }
   }
 

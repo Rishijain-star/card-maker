@@ -696,77 +696,279 @@ class StudentSignaturePicker extends StatelessWidget {
   }
 }
 
-class StudentSignatureSection extends StatelessWidget {
-  const StudentSignatureSection({
-    super.key,
-    required this.hasSignature,
-    required this.onCapture,
-    this.onPickFromGallery,
-  });
-
-  final bool hasSignature;
-  final VoidCallback onCapture;
-  final VoidCallback? onPickFromGallery;
+class StudentSignatureSection extends GetView<CreateFlowController> {
+  const StudentSignatureSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return StudentFormCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      child: Obx(
+        () {
+          final hasSig = controller.signaturePath.value.isNotEmpty ||
+              (controller.signatureImageBytes.value?.isNotEmpty ?? false);
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Expanded(child: _RainbowLine()),
-              const SizedBox(width: 8),
-              const Icon(Icons.draw_rounded, color: _kFormBlue, size: 22),
-              const SizedBox(width: 6),
-              Text(
-                'Signature',
-                style: GoogleFonts.poppins(
-                  color: _kFormBlue,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Expanded(child: _RainbowLine()),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.draw_rounded, color: _kFormBlue, size: 22),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Signature Image & Outline',
+                    style: GoogleFonts.poppins(
+                      color: _kFormBlue,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Expanded(child: _RainbowLine()),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: Column(
+                  children: [
+                    Container(
+                      width: 170,
+                      height: 90,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.all(
+                          Radius.elliptical(85, 45),
+                        ),
+                        border: controller.signatureHasBorder.value
+                            ? Border.all(
+                                color: controller.currentSignatureBorderColor,
+                                width: controller.signatureBorderWidth.value,
+                              )
+                            : Border.all(color: const Color(0xFFCBD5E1), width: 1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(6),
+                      child: ClipOval(
+                        child: _buildSignaturePreview(),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: controller.pickSignatureFromCamera,
+                          icon: const Icon(Icons.camera_alt_outlined, size: 18),
+                          label: const Text('Camera'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: _kFormBlue,
+                            side: const BorderSide(color: _kFormBlue),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        OutlinedButton.icon(
+                          onPressed: controller.pickSignatureFromGallery,
+                          icon: const Icon(Icons.photo_library_outlined, size: 18),
+                          label: const Text('Gallery'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: _kFormBlue,
+                            side: const BorderSide(color: _kFormBlue),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (hasSig) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: controller.cropExistingSignature,
+                            icon: const Icon(Icons.crop, size: 18),
+                            label: const Text('Crop Signature'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF0F172A),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          TextButton.icon(
+                            onPressed: controller.clearSignature,
+                            icon: const Icon(Icons.delete_outline, color: Colors.red, size: 18),
+                            label: const Text('Clear', style: TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              const SizedBox(width: 8),
-              const Expanded(child: _RainbowLine()),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: StudentSignaturePicker(
-              hasSignature: hasSignature,
-              onAddSignature: onCapture,
-            ),
-          ),
-          if (onPickFromGallery != null) ...[
-            const SizedBox(height: 14),
-            SizedBox(
-              height: 44,
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: onPickFromGallery,
-                icon: const Icon(Icons.photo_library_outlined, size: 20),
-                label: Text(
-                  'Gallery',
+              const SizedBox(height: 18),
+              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              const SizedBox(height: 14),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.border_style_rounded, size: 20, color: Color(0xFF334155)),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Signature Outline (Border)',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF0F172A),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Switch.adaptive(
+                    value: controller.signatureHasBorder.value,
+                    activeColor: _kFormBlue,
+                    onChanged: (val) {
+                      controller.signatureHasBorder.value = val;
+                      if (Get.isRegistered<TemplateController>()) {
+                        Get.find<TemplateController>().refreshCardData();
+                      }
+                    },
+                  ),
+                ],
+              ),
+              if (controller.signatureHasBorder.value) ...[
+                const SizedBox(height: 12),
+                Text(
+                  'Select Border Color:',
                   style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    color: _kFormBlue,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF64748B),
                   ),
                 ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: _kFormBlue,
-                  side: const BorderSide(color: _kFormBlue),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: List.generate(
+                    CreateFlowController.signatureBorderColors.length,
+                    (index) {
+                      final c = CreateFlowController.signatureBorderColors[index];
+                      final isSelected = controller.signatureBorderColorIndex.value == index;
+                      return GestureDetector(
+                        onTap: () {
+                          controller.signatureBorderColorIndex.value = index;
+                          if (Get.isRegistered<TemplateController>()) {
+                            Get.find<TemplateController>().refreshCardData();
+                          }
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: c,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isSelected ? _kFormBlue : Colors.grey.shade300,
+                              width: isSelected ? 3 : 1,
+                            ),
+                          ),
+                          child: isSelected
+                              ? Icon(
+                                  Icons.check_rounded,
+                                  size: 18,
+                                  color: c == Colors.white ? Colors.black : Colors.white,
+                                )
+                              : null,
+                        ),
+                      );
+                    },
                   ),
                 ),
-              ),
-            ),
-          ],
-        ],
+                const SizedBox(height: 14),
+                Text(
+                  'Border Thickness (Pixels):',
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF64748B),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [1.0, 2.0, 3.0, 4.0].map((w) {
+                    final isSelected = controller.signatureBorderWidth.value == w;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: ChoiceChip(
+                        label: Text('${w.toInt()}px'),
+                        selected: isSelected,
+                        selectedColor: _kFormBlue,
+                        backgroundColor: Colors.white,
+                        labelStyle: TextStyle(
+                          color: isSelected ? Colors.white : const Color(0xFF334155),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                        onSelected: (_) {
+                          controller.signatureBorderWidth.value = w;
+                          if (Get.isRegistered<TemplateController>()) {
+                            Get.find<TemplateController>().refreshCardData();
+                          }
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ],
+          );
+        },
       ),
+    );
+  }
+
+  Widget _buildSignaturePreview() {
+    final bytes = controller.signatureImageBytes.value;
+    final path = controller.signaturePath.value;
+    if (bytes != null && bytes.isNotEmpty) {
+      return Image.memory(bytes, fit: BoxFit.contain);
+    }
+    if (path.trim().isNotEmpty) {
+      final file = File(path);
+      if (file.existsSync()) {
+        return Image.file(file, fit: BoxFit.contain);
+      }
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.draw_rounded, size: 28, color: Colors.grey.shade400),
+        const SizedBox(height: 4),
+        Text(
+          'No Signature',
+          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey.shade500),
+        ),
+      ],
     );
   }
 }

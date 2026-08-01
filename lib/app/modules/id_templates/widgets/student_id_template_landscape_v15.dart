@@ -191,13 +191,15 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
           ),
         if (data.hasSignature)
           Positioned(
-            left: _w * _LandscapeV15Layout.signatureLeft,
-            bottom: _h * _LandscapeV15Layout.signatureBottom,
-            width: _w * _LandscapeV15Layout.signatureWidth,
-            height: _h * _LandscapeV15Layout.signatureHeight,
-            child: _LandscapeV15Signature(
+            right: _w * 0.035,
+            bottom: _h * 0.035,
+            child: StudentPortraitSignatureCircle(
+              size: _h * 0.16,
               path: data.signaturePath,
               bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
             ),
           ),
       ],

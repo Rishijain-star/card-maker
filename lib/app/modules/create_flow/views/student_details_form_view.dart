@@ -137,12 +137,7 @@ class StudentDetailsFormView extends GetView<CreateFlowController> {
                 ),
               ),
               const SizedBox(height: 12),
-              StudentSignatureSection(
-                hasSignature: controller.signaturePath.value.isNotEmpty ||
-                    (controller.signatureImageBytes.value?.isNotEmpty ?? false),
-                onCapture: controller.pickSignatureFromCamera,
-                onPickFromGallery: controller.pickSignatureFromGallery,
-              ),
+              const StudentSignatureSection(),
               const SizedBox(height: 20),
               StudentSubmitButton(onPressed: _submit),
             ],

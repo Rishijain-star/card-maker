@@ -248,24 +248,40 @@ class StudentPortraitPhoto extends StatelessWidget {
 
 class StudentPortraitSignatureCircle extends StatelessWidget {
   const StudentPortraitSignatureCircle({
+    super.key,
     required this.size,
     required this.path,
     this.bytes,
+    this.hasBorder = false,
+    this.borderColor = const Color(0xFF0F172A),
+    this.borderWidth = 1.0,
+    this.aspectRatio = 1.9,
   });
 
   final double size;
   final String path;
   final Uint8List? bytes;
+  final bool hasBorder;
+  final Color borderColor;
+  final double borderWidth;
+  final double aspectRatio;
 
   @override
   Widget build(BuildContext context) {
+    final height = size;
+    final width = size * aspectRatio;
+
     return Container(
-      width: size,
-      height: size,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
         color: Colors.white,
-        border: Border.all(color: const Color(0xFFCBD5E1), width: 2),
+        borderRadius: BorderRadius.all(
+          Radius.elliptical(width / 2, height / 2),
+        ),
+        border: hasBorder
+            ? Border.all(color: borderColor, width: borderWidth)
+            : null,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -274,19 +290,19 @@ class StudentPortraitSignatureCircle extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(4),
-      child: ClipOval(child: _buildImage()),
+      padding: EdgeInsets.all(hasBorder ? borderWidth + 1 : 2),
+      child: ClipOval(child: _buildImage(width, height)),
     );
   }
 
-  Widget _buildImage() {
+  Widget _buildImage(double w, double h) {
     if (bytes != null && bytes!.isNotEmpty) {
-      return Image.memory(bytes!, fit: BoxFit.contain, width: size, height: size);
+      return Image.memory(bytes!, fit: BoxFit.contain, width: w, height: h);
     }
     if (path.trim().isNotEmpty) {
       final file = File(path);
       if (file.existsSync()) {
-        return Image.file(file, fit: BoxFit.contain, width: size, height: size);
+        return Image.file(file, fit: BoxFit.contain, width: w, height: h);
       }
     }
     return const SizedBox.shrink();

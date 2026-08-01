@@ -192,12 +192,15 @@ class StudentIdTemplatePortraitV5 extends StatelessWidget {
         ),
         if (data.hasSignature)
           Positioned(
-            right: _w * _PortraitV5Layout.frontSignatureRightRatio,
-            bottom: _h * _PortraitV5Layout.frontSignatureBottomRatio,
+            right: _w * 0.035,
+            bottom: _h * 0.035,
             child: StudentPortraitSignatureCircle(
-              size: _w * _PortraitV5Layout.frontSignatureSizeRatio,
+              size: _w * 0.08,
               path: data.signaturePath,
               bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
             ),
           ),
       ],

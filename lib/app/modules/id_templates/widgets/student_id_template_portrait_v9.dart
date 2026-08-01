@@ -36,10 +36,6 @@ abstract final class _PortraitV9Layout {
   static const double frontLineGapRelaxedMax = 48.0;
   static const double frontLineGapSpread = 1.05;
 
-  static const double frontSignatureSizeRatio = 0.10;
-  static const double frontSignatureRightRatio = 0.06;
-  static const double frontSignatureBottomRatio = 0.18;
-
   static const double backWhiteTop = 0.055;
   static const double backWhiteSide = 0.10;
   static const double backWhiteBottom = 0.48;
@@ -230,12 +226,15 @@ class StudentIdTemplatePortraitV9 extends StatelessWidget {
         ),
         if (data.hasSignature)
           Positioned(
-            right: _w * _PortraitV9Layout.frontSignatureRightRatio,
-            bottom: _h * _PortraitV9Layout.frontSignatureBottomRatio,
+            right: _w * 0.035,
+            bottom: _h * 0.035,
             child: StudentPortraitSignatureCircle(
-              size: _w * _PortraitV9Layout.frontSignatureSizeRatio,
+              size: _w * 0.08,
               path: data.signaturePath,
               bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
             ),
           ),
       ],

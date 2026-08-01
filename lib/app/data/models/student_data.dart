@@ -20,6 +20,9 @@ class StudentData {
     this.photoPath = '',
     this.signaturePath = '',
     this.signatureBytes,
+    this.signatureHasBorder = false,
+    this.signatureBorderColor = const Color(0xFF0F172A),
+    this.signatureBorderWidth = 1.0,
     this.term1 = '',
     this.term2 = '',
     this.term3 = '',
@@ -40,6 +43,9 @@ class StudentData {
   final String photoPath;
   final String signaturePath;
   final Uint8List? signatureBytes;
+  final bool signatureHasBorder;
+  final Color signatureBorderColor;
+  final double signatureBorderWidth;
   final String term1;
   final String term2;
   final String term3;
@@ -156,6 +162,9 @@ class StudentData {
       photoPath: flow.photoPath.value,
       signaturePath: flow.signaturePath.value,
       signatureBytes: flow.signatureImageBytes.value,
+      signatureHasBorder: flow.signatureHasBorder.value,
+      signatureBorderColor: flow.currentSignatureBorderColor,
+      signatureBorderWidth: flow.signatureBorderWidth.value,
       term1: flow.term1Ctrl.text,
       term2: flow.term2Ctrl.text,
       term3: flow.term3Ctrl.text,
