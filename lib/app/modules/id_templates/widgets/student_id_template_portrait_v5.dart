@@ -12,12 +12,12 @@ import 'student_id_portrait_widgets.dart';
 abstract final class _PortraitV5Layout {
   static const Color accentOrange = Color(0xFFF58B12);
 
-  static const double frontInstituteTop = 0.045;
-  static const double frontInstituteHeight = 0.095;
-  static const double frontInstituteSide = 0.08;
+  static const double frontInstituteTop = 0.070;
+  static const double frontInstituteHeight = 0.075;
+  static const double frontInstituteSide = 0.06;
 
-  static const double frontPhotoSizeRatio = 0.33;
-  static const double frontPhotoCenterYRatio = 0.368;
+  static const double frontPhotoSizeRatio = 0.38;
+  static const double frontPhotoCenterYRatio = 0.340;
   static const double frontPhotoBorderWidth = 6.5;
   static const double frontGapBelowPhoto = 22.0;
   static const double frontContentSide = 0.10;
