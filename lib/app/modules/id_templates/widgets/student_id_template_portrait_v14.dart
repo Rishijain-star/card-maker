@@ -37,7 +37,7 @@ abstract final class _PortraitV14Layout {
   static const double detailsTop = 0.360;
   static const double detailsLeft = 0.31;
   static const double detailsRight = 0.11;
-  static const double detailsBottom = 0.23;
+  static const double detailsBottom = 0.18;
   static const double detailFontSize = 24;
   static const double detailMinFontSize = 14;
 
@@ -402,14 +402,14 @@ class _PortraitV14DetailColumn extends StatelessWidget {
       builder: (context, constraints) {
         final double currentGapMax;
         if (lines.length <= 6) {
-          currentGapMax = compact ? 12.0 : (relaxed ? 22.0 : 18.0);
+          currentGapMax = compact ? 18.0 : (relaxed ? 32.0 : 26.0);
         } else if (lines.length <= 8) {
-          currentGapMax = compact ? 8.0 : (relaxed ? 15.0 : 12.0);
+          currentGapMax = compact ? 12.0 : (relaxed ? 24.0 : 18.0);
         } else {
-          currentGapMax = compact ? 5.0 : (relaxed ? 10.0 : 8.0);
+          currentGapMax = compact ? 8.0 : (relaxed ? 16.0 : 12.0);
         }
 
-        final double currentGapMin = compact ? 4.0 : (relaxed ? 8.0 : 6.0);
+        final double currentGapMin = compact ? 8.0 : (relaxed ? 14.0 : 10.0);
 
         final est = lines.length * (textStyle.fontSize ?? 24) * 1.2;
         final free =
