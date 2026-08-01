@@ -16,32 +16,32 @@ abstract final class _LandscapeV16Layout {
   static const Color textDark = Color(0xFF0F172A);
   static const Color photoBorderRed = Color(0xFFE53935);
 
-  static const double headerTop = 0.035;
-  static const double headerLeft = 0.42;
-  static const double headerRight = 0.05;
+  static const double headerTop = 0.038;
+  static const double headerLeft = 0.45;
+  static const double headerRight = 0.04;
   static const double headerHeight = 0.22;
 
-  static const double nameBannerTop = 0.280;
-  static const double nameBannerLeft = 0.40;
+  static const double nameBannerTop = 0.265;
+  static const double nameBannerLeft = 0.36;
   static const double nameBannerRight = 0.38;
   static const double nameBannerHeight = 0.075;
 
-  static const double detailsTop = 0.380;
-  static const double detailsLeft = 0.40;
+  static const double detailsTop = 0.360;
+  static const double detailsLeft = 0.36;
   static const double detailsRight = 0.38;
-  static const double detailsBottom = 0.08;
-  static const double detailFontSize = 22;
-  static const double detailMinFontSize = 12;
+  static const double detailsBottom = 0.10;
+  static const double detailFontSize = 19;
+  static const double detailMinFontSize = 11;
 
-  static const double photoTop = 0.25;
-  static const double photoRight = 0.045;
-  static const double photoSize = 0.56;
+  static const double photoTop = 0.27;
+  static const double photoRight = 0.055;
+  static const double photoSize = 0.54;
   static const double photoBorderWidth = 3.0;
 
-  static const double classBannerBottom = 0.080;
-  static const double classBannerRight = 0.045;
-  static const double classBannerWidth = 0.33;
-  static const double classBannerHeight = 0.080;
+  static const double classBannerBottom = 0.095;
+  static const double classBannerRight = 0.055;
+  static const double classBannerWidth = 0.31;
+  static const double classBannerHeight = 0.075;
 }
 
 class StudentIdTemplateLandscapeV16 extends StatelessWidget {
