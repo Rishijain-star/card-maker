@@ -255,7 +255,7 @@ class StudentPortraitSignatureCircle extends StatelessWidget {
     this.hasBorder = false,
     this.borderColor = const Color(0xFF0F172A),
     this.borderWidth = 1.0,
-    this.aspectRatio = 1.9,
+    this.aspectRatio = 2.0,
   });
 
   final double size;

@@ -195,7 +195,7 @@ class StudentIdTemplatePortraitV5 extends StatelessWidget {
             right: _w * 0.035,
             bottom: _h * 0.035,
             child: StudentPortraitSignatureCircle(
-              size: _w * 0.08,
+              size: _w * 0.125,
               path: data.signaturePath,
               bytes: data.signatureBytes,
               hasBorder: data.signatureHasBorder,

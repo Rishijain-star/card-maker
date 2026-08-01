@@ -194,7 +194,7 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
             right: _w * 0.035,
             bottom: _h * 0.035,
             child: StudentPortraitSignatureCircle(
-              size: _h * 0.16,
+              size: _h * 0.22,
               path: data.signaturePath,
               bytes: data.signatureBytes,
               hasBorder: data.signatureHasBorder,

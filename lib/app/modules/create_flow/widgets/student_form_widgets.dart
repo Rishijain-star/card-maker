@@ -737,12 +737,12 @@ class StudentSignatureSection extends GetView<CreateFlowController> {
                 child: Column(
                   children: [
                     Container(
-                      width: 170,
-                      height: 90,
+                      width: 220,
+                      height: 110,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: const BorderRadius.all(
-                          Radius.elliptical(85, 45),
+                          Radius.elliptical(110, 55),
                         ),
                         border: controller.signatureHasBorder.value
                             ? Border.all(
