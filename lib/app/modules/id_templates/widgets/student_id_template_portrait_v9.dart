@@ -24,10 +24,10 @@ abstract final class _PortraitV9Layout {
   static const double frontContentMinTopRatio = 0.478;
   static const double frontContentSide = 0.09;
   static const double frontContentBottomRatio = 0.24;
-  static const double frontNameFontSize = 38;
-  static const double frontNameMinFontSize = 22;
-  static const double frontBodyFontSize = 24;
-  static const double frontBodyMinFontSize = 15;
+  static const double frontNameFontSize = 44;
+  static const double frontNameMinFontSize = 26;
+  static const double frontBodyFontSize = 30;
+  static const double frontBodyMinFontSize = 20;
   static const double frontLineGapMin = 11.0;
   static const double frontLineGapMax = 18.0;
   static const double frontLineGapCompactMin = 7.0;
@@ -43,8 +43,8 @@ abstract final class _PortraitV9Layout {
   static const double backWhiteTop = 0.055;
   static const double backWhiteSide = 0.10;
   static const double backWhiteBottom = 0.48;
-  static const double backTermsFontSize = 20;
-  static const double backTermsMinFontSize = 13;
+  static const double backTermsFontSize = 26;
+  static const double backTermsMinFontSize = 18;
   static const double backBulletSize = 10.0;
   static const double backBulletGap = 12.0;
 
@@ -136,7 +136,7 @@ class StudentIdTemplatePortraitV9 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.4,
                 )),
@@ -184,39 +184,39 @@ class StudentIdTemplatePortraitV9 extends StatelessWidget {
                       nameStyle: _ts(const TextStyle(
                         color: _PortraitV9Layout.textDark,
                         fontSize: _PortraitV9Layout.frontNameFontSize,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w900,
                         height: 1.05,
                       )),
                       nameMinFontSize: _PortraitV9Layout.frontNameMinFontSize,
                       fatherStyle: _ts(const TextStyle(
                         color: _PortraitV9Layout.textDark,
                         fontSize: _PortraitV9Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w800,
                         height: 1.2,
                       )),
                       courseStyle: _ts(const TextStyle(
                         color: _PortraitV9Layout.textDark,
                         fontSize: _PortraitV9Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w900,
                         height: 1.15,
                       )),
                       bodyStyle: _ts(const TextStyle(
                         color: _PortraitV9Layout.textDark,
                         fontSize: _PortraitV9Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w800,
                         height: 1.28,
                       )),
                       bodyMinFontSize: _PortraitV9Layout.frontBodyMinFontSize,
                       validityLabelStyle: _ts(const TextStyle(
                         color: _PortraitV9Layout.textDark,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
                         letterSpacing: 0.2,
                       )),
                       validityValueStyle: _ts(const TextStyle(
                         color: _PortraitV9Layout.textDark,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
                       )),
                       compactSpacing: data.useCompactFrontSpacing,
                       relaxedSpacing: data.useRelaxedFrontSpacing,
