@@ -23,17 +23,17 @@ abstract final class _PortraitV9Layout {
   static const double frontGapBelowPhoto = 12.0;
   static const double frontContentMinTopRatio = 0.478;
   static const double frontContentSide = 0.09;
-  static const double frontContentBottomRatio = 0.24;
+  static const double frontContentBottomRatio = 0.08;
   static const double frontNameFontSize = 44;
   static const double frontNameMinFontSize = 26;
   static const double frontBodyFontSize = 30;
   static const double frontBodyMinFontSize = 20;
-  static const double frontLineGapMin = 11.0;
-  static const double frontLineGapMax = 18.0;
-  static const double frontLineGapCompactMin = 7.0;
-  static const double frontLineGapCompactMax = 13.0;
-  static const double frontLineGapRelaxedMin = 13.0;
-  static const double frontLineGapRelaxedMax = 20.0;
+  static const double frontLineGapMin = 16.0;
+  static const double frontLineGapMax = 38.0;
+  static const double frontLineGapCompactMin = 10.0;
+  static const double frontLineGapCompactMax = 24.0;
+  static const double frontLineGapRelaxedMin = 20.0;
+  static const double frontLineGapRelaxedMax = 48.0;
   static const double frontLineGapSpread = 1.05;
 
   static const double frontSignatureSizeRatio = 0.10;
@@ -448,10 +448,6 @@ class _PortraitV9FrontColumn extends StatelessWidget {
     }
 
     final estTotal = estimates.fold(0.0, (a, b) => a + b);
-    if (estTotal > maxHeight * 0.82) {
-      gapMin = 4;
-      gapMax = 9;
-    }
     final free = (maxHeight - estTotal).clamp(0.0, double.infinity);
     var gap = ((free / gapCount) * _PortraitV9Layout.frontLineGapSpread)
         .clamp(gapMin, gapMax);
