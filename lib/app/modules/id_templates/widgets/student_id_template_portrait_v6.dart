@@ -12,12 +12,12 @@ import 'student_id_portrait_widgets.dart';
 abstract final class _PortraitV6Layout {
   static const Color accentBlue = Color(0xFF1E9AD6);
 
-  static const double frontInstituteTop = 0.042;
-  static const double frontInstituteHeight = 0.10;
-  static const double frontInstituteSide = 0.08;
+  static const double frontInstituteTop = 0.065;
+  static const double frontInstituteHeight = 0.075;
+  static const double frontInstituteSide = 0.06;
 
-  static const double frontPhotoSizeRatio = 0.30;
-  static const double frontPhotoCenterYRatio = 0.285;
+  static const double frontPhotoSizeRatio = 0.37;
+  static const double frontPhotoCenterYRatio = 0.320;
   static const double frontPhotoBorderWidth = 4.0;
   static const double frontGapBelowPhoto = 24.0;
   static const double frontContentSide = 0.10;
