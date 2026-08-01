@@ -1095,10 +1095,20 @@ class CreateFlowController extends GetxController {
         signaturePath.value = '';
         signatureImageBytes.value = null;
 
-        Get.until((route) => route.settings.name == Routes.DETAILS_FORM);
+        var poppedToForm = false;
+        Get.until((route) {
+          if (route.settings.name == Routes.DETAILS_FORM) {
+            poppedToForm = true;
+            return true;
+          }
+          return false;
+        });
+        if (!poppedToForm) {
+          Get.offNamedUntil(Routes.DETAILS_FORM, (route) => route.isFirst);
+        }
       } else {
         _quickCreateAnother = false;
-        Get.until((route) => route.settings.name == Routes.TEMPLATES);
+        Get.toNamed<void>(Routes.SAVE_SUCCESS);
       }
     } catch (e) {
       if (context.mounted) {
@@ -1110,7 +1120,17 @@ class CreateFlowController extends GetxController {
 
   void handleSaveCancel() {
     _quickCreateAnother = false;
-    Get.until((route) => route.settings.name == Routes.TEMPLATES);
+    var poppedToTemplates = false;
+    Get.until((route) {
+      if (route.settings.name == Routes.TEMPLATES) {
+        poppedToTemplates = true;
+        return true;
+      }
+      return false;
+    });
+    if (!poppedToTemplates) {
+      Get.offNamedUntil(Routes.TEMPLATES, (route) => route.isFirst);
+    }
   }
 
   Future<void> exportSavedCardsToPdf() async {
