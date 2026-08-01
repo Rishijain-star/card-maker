@@ -9,6 +9,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_design_system_widgets.dart';
 import '../../../data/models/saved_design.dart';
 import '../../../routes/app_pages.dart';
+import '../../id_templates/controllers/template_controller.dart';
 import '../controllers/create_flow_controller.dart';
 
 class MyDesignsView extends GetView<CreateFlowController> {
@@ -45,11 +46,33 @@ class MyDesignsView extends GetView<CreateFlowController> {
   }
 
   void _openCardViewer(BuildContext context, SavedDesign design) {
-    SavedCardViewerDialog.show(
-      context,
-      design: design,
-      onDelete: () => _confirmDelete(context, design.id, design.title),
-    );
+    if (design.fontFamily.isNotEmpty) {
+      final fontIndex = controller.fonts.indexOf(design.fontFamily);
+      if (fontIndex != -1) {
+        controller.selectedFont.value = fontIndex;
+      }
+    }
+    if (design.instituteName.isNotEmpty) {
+      controller.instituteCtrl.text = design.instituteName;
+    }
+    if (design.studentName.isNotEmpty) {
+      controller.fullNameCtrl.text = design.studentName;
+    }
+
+    int templateIdx = int.tryParse(design.templatePairId) ?? 0;
+    for (int i = 0; i < controller.activeTemplates.length; i++) {
+      final name = controller.templateTitleAt(i).toLowerCase();
+      if (name == design.templateName.toLowerCase() ||
+          design.title.toLowerCase().contains('template ${i + 1}')) {
+        templateIdx = i;
+        break;
+      }
+    }
+
+    if (Get.isRegistered<TemplateController>()) {
+      final templateCtrl = Get.find<TemplateController>();
+      templateCtrl.openTemplateEditor(templateIdx);
+    }
   }
 
   @override

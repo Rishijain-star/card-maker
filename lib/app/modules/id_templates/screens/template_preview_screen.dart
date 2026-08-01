@@ -5,6 +5,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_design_system_widgets.dart';
 import '../../../core/widgets/shimmer_skeleton_loader.dart';
+import '../../../routes/app_pages.dart';
 import '../../create_flow/controllers/create_flow_controller.dart';
 import '../controllers/template_controller.dart';
 import '../../lanyard_templates/widgets/lanyard_live_preview.dart';
@@ -43,6 +44,23 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                       flow.templateTitleAt(globalIndex),
                       style: AppTextStyles.heading(context, size: 22),
                     ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      var poppedToMyDesigns = false;
+                      Get.until((route) {
+                        if (route.settings.name == Routes.MY_DESIGNS) {
+                          poppedToMyDesigns = true;
+                          return true;
+                        }
+                        return false;
+                      });
+                      if (!poppedToMyDesigns) {
+                        Get.back<void>();
+                      }
+                    },
+                    icon: const Icon(Icons.close_rounded, size: 26, color: Color(0xFF64748B)),
+                    tooltip: 'Close Preview',
                   ),
                 ],
               ),
