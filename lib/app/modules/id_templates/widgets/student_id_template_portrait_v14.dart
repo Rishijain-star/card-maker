@@ -18,31 +18,31 @@ abstract final class _PortraitV14Layout {
   static const Color nameBarBlue = Color(0xFF4FC3F7);
   static const Color sessionRed = Color(0xFFD32F2F);
 
-  static const double headerTop = 0.088;
+  static const double headerTop = 0.118;
   static const double headerHeight = 0.110;
-  static const double headerCenterY = 0.145;
+  static const double headerCenterY = 0.165;
 
   static const double photoLeft = 0.085;
-  static const double photoTop = 0.270;
+  static const double photoTop = 0.280;
   static const double photoWidth = 0.225;
   static const double photoHeight = 0.185;
   static const double photoRadius = 6.0;
   static const double photoBorderWidth = 3.0;
 
-  static const double nameBarLeft = 0.33;
-  static const double nameBarTop = 0.275;
-  static const double nameBarRight = 0.09;
-  static const double nameBarHeight = 0.058;
+  static const double nameBarLeft = 0.35;
+  static const double nameBarTop = 0.280;
+  static const double nameBarRight = 0.15;
+  static const double nameBarHeight = 0.054;
 
-  static const double detailsTop = 0.355;
-  static const double detailsLeft = 0.33;
-  static const double detailsRight = 0.09;
+  static const double detailsTop = 0.360;
+  static const double detailsLeft = 0.31;
+  static const double detailsRight = 0.11;
   static const double detailsBottom = 0.23;
   static const double detailFontSize = 24;
   static const double detailMinFontSize = 14;
 
   static const double sessionBottom = 0.18;
-  static const double sessionLeft = 0.10;
+  static const double sessionLeft = 0.09;
   static const double sessionMaxWidth = 0.44;
 
   static const double signatureRight = 0.09;
@@ -384,14 +384,14 @@ class _PortraitV14DetailColumn extends StatelessWidget {
         ),
         maxLines: 2,
         minFontSize: minFontSize,
-        textAlign: TextAlign.left,
+        textAlign: TextAlign.center,
       );
     }
     return AutoSizeText(
       line,
       maxLines: 2,
       minFontSize: minFontSize,
-      textAlign: TextAlign.left,
+      textAlign: TextAlign.center,
       style: textStyle.copyWith(fontWeight: FontWeight.w800),
     );
   }
@@ -420,11 +420,11 @@ class _PortraitV14DetailColumn extends StatelessWidget {
 
         return FittedBox(
           fit: BoxFit.scaleDown,
-          alignment: Alignment.topLeft,
+          alignment: Alignment.topCenter,
           child: SizedBox(
             width: constraints.maxWidth,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 for (var i = 0; i < lines.length; i++) ...[
                   if (i > 0) SizedBox(height: gap),
