@@ -530,23 +530,51 @@ class _ValidityDateCell extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextField(
-                    controller: controller,
-                    readOnly: true,
-                    onTap: onTap,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: const Color(0xFF0F172A),
-                      fontWeight: FontWeight.w500,
-                    ),
-                    decoration: StudentUnderlineField._fieldDecoration.copyWith(
-                      hintText: label,
-                      hintStyle: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: _kHint,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: controller,
+                    builder: (context, value, child) {
+                      final hasText = value.text.isNotEmpty;
+                      return TextField(
+                        controller: controller,
+                        readOnly: true,
+                        onTap: onTap,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : const Color(0xFF0F172A),
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: StudentUnderlineField._fieldDecoration.copyWith(
+                          hintText: label,
+                          hintStyle: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? const Color(0xFF94A3B8)
+                                : _kHint,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          suffixIcon: hasText
+                              ? IconButton(
+                                  icon: const Icon(
+                                    Icons.close_rounded,
+                                    size: 20,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    controller.clear();
+                                  },
+                                  tooltip: 'Clear date',
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(
+                                    minWidth: 28,
+                                    minHeight: 28,
+                                  ),
+                                )
+                              : null,
+                        ),
+                      );
+                    },
                   ),
                   const Divider(height: 1, thickness: 1.2, color: _kUnderline),
                 ],
