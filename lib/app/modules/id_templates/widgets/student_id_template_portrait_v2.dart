@@ -39,10 +39,10 @@ abstract final class _PortraitV2Layout {
   // ── Front — institute name ──────────────────────────────────────────────────
   // Green band is from top to ~90px (photo_top). Name lives in top 90px.
   // Left from card left edge, right stops before circle left (~28% of W)
-  static const double frontInstituteTop    = 0.0;   // absolute top
-  static const double frontInstituteHeight = 0.0892;// = original photo top ratio
-  static const double frontInstituteLeftRatio  = 0.04;
-  static const double frontInstituteRightRatio = 0.56; // stops left of circle
+  static const double frontInstituteTop    = 0.015;
+  static const double frontInstituteHeight = 0.080;
+  static const double frontInstituteLeftRatio  = 0.05;
+  static const double frontInstituteRightRatio = 0.05;
 
   // ── Front — student name (just below circle) ────────────────────────────────
   // Circle bottom moved down → name top updated accordingly
