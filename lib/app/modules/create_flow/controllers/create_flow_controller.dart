@@ -1048,48 +1048,15 @@ class CreateFlowController extends GetxController {
   /// Called from details form after validation — normal or batch-create flow.
   void navigateAfterFormSubmit() {
     if (_quickCreateAnother) {
-      _quickCreateAnother = false;
-      Get.find<TemplateController>().openTemplateEditor(selectedTemplate.value);
-      return;
-    }
-    Get.toNamed<void>(Routes.TEMPLATES);
-  }
-
-  Future<bool> saveCardFromPreview(
-    GlobalKey exportKey, {
-    required bool createAnother,
-  }) async {
-    if (isSavingCard.value) return false;
-    if (!canSaveMoreDesigns) {
-      showPremiumLimitDialog();
-      return false;
-    }
-
-    isSavingCard.value = true;
-    AppLoadingService.to.show(
-      createAnother ? 'Saving card...' : 'Saving your design...',
-    );
-
-    try {
-      final saved = await saveDesignFromPreview(exportKey);
-      if (!saved) return false;
-
-      AppLoadingService.to.forceHide();
-      await WidgetsBinding.instance.endOfFrame;
-
-      if (createAnother) {
-        _quickCreateAnother = true;
-        Get.until((route) => route.settings.name == Routes.DETAILS_FORM);
-      } else {
-        Get.until((route) => route.settings.name == Routes.TEMPLATES);
+      if (Get.isRegistered<TemplateController>()) {
+        final templateCtrl = Get.find<TemplateController>();
+        templateCtrl.selectTemplate(selectedTemplate.value);
+        templateCtrl.openTemplateEditor(selectedTemplate.value);
+        return;
       }
-      return true;
-    } catch (_) {
-      return false;
-    } finally {
-      AppLoadingService.to.forceHide();
-      isSavingCard.value = false;
     }
+    startTemplatesLoading();
+    Get.toNamed<void>(Routes.TEMPLATES);
   }
 
   Future<void> executeSaveDesignWorkflow(
@@ -1106,7 +1073,7 @@ class CreateFlowController extends GetxController {
     FiveDotLoadingOverlay.show(
       context,
       message: createNew
-          ? 'Saving design & preparing next card...'
+          ? 'Saving card & preparing next entry...'
           : 'Saving your card design...',
     );
 
@@ -1118,6 +1085,10 @@ class CreateFlowController extends GetxController {
       if (!saved) return;
 
       if (createNew) {
+        // Enable quick batch mode for continuous card creation on SAME template
+        _quickCreateAnother = true;
+
+        // Reset student-specific details for next card entry
         fullNameCtrl.clear();
         idNumberCtrl.clear();
         photoPath.value = '';
@@ -1126,6 +1097,7 @@ class CreateFlowController extends GetxController {
 
         Get.until((route) => route.settings.name == Routes.DETAILS_FORM);
       } else {
+        _quickCreateAnother = false;
         Get.until((route) => route.settings.name == Routes.TEMPLATES);
       }
     } catch (e) {
@@ -1137,6 +1109,7 @@ class CreateFlowController extends GetxController {
   }
 
   void handleSaveCancel() {
+    _quickCreateAnother = false;
     Get.until((route) => route.settings.name == Routes.TEMPLATES);
   }
 
