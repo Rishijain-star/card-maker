@@ -103,19 +103,21 @@ class StudentData {
     return lines;
   }
 
-  bool get hasFrontValidity =>
-      validFrom.trim().isNotEmpty || validTo.trim().isNotEmpty;
+  bool get hasFrontValidity => false;
 
-  /// Below email — single horizontal line, bold on card.
-  String? get frontValidityHorizontalLine {
+  /// Validity moved to back side of card.
+  String? get frontValidityHorizontalLine => null;
+
+  /// Single line text for validity on back side.
+  String? get backValidityText {
     final from = validFrom.trim();
     final to = validTo.trim();
     if (from.isEmpty && to.isEmpty) return null;
-    if (from.isNotEmpty && to.isNotEmpty) return '$from to $to';
-    return from.isNotEmpty ? from : to;
+    if (from.isNotEmpty && to.isNotEmpty) return 'VALIDITY: $from TO $to';
+    return from.isNotEmpty ? 'VALID FROM: $from' : 'VALID TILL: $to';
   }
 
-  /// Back — overflow / lower priority fields.
+  /// Back — terms + validity details in safe area.
   List<String> get backDetailLines {
     final lines = <String>[];
     void add(String value) {
@@ -126,6 +128,12 @@ class StudentData {
     add(term1);
     add(term2);
     add(term3);
+
+    final val = backValidityText;
+    if (val != null && val.isNotEmpty) {
+      add(val);
+    }
+
     return lines;
   }
 

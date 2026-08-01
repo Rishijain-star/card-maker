@@ -174,8 +174,8 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
                       fatherName: data.fatherName,
                       className: data.className,
                       detailLines: _frontDetailLines(),
-                      validFrom: data.validFrom.trim(),
-                      validTo: data.validTo.trim(),
+                      validFrom: '',
+                      validTo: '',
                       nameStyle: _ts(const TextStyle(
                         color: _PortraitV10Layout.textDark,
                         fontSize: _PortraitV10Layout.frontNameFontSize,
