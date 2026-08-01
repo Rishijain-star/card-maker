@@ -15,13 +15,13 @@ abstract final class _LandscapeV15Layout {
   static const Color instituteRed = Color(0xFFC62828);
   static const Color nameRed = Color(0xFFB71C1C);
   static const Color accentGreen = Color(0xFF2E7D32);
-  static const Color textDark = Color(0xFF1F2937);
+  static const Color textDark = Color(0xFF0F172A);
   static const Color sessionBadgeRed = Color(0xFFD32F2F);
 
-  static const double headerTop = 0.055;
-  static const double headerLeft = 0.22;
+  static const double headerTop = 0.040;
+  static const double headerLeft = 0.40;
   static const double headerRight = 0.28;
-  static const double headerHeight = 0.21;
+  static const double headerHeight = 0.22;
 
   static const double photoTop = 0.12;
   static const double photoRight = 0.065;
@@ -35,16 +35,16 @@ abstract final class _LandscapeV15Layout {
   static const double nameWidth = 0.245;
 
   static const double detailsTop = 0.28;
-  static const double detailsLeft = 0.24;
-  static const double detailsRight = 0.30;
-  static const double detailsBottom = 0.20;
-  static const double detailFontSize = 16;
-  static const double detailMinFontSize = 9;
+  static const double detailsLeft = 0.40;
+  static const double detailsRight = 0.28;
+  static const double detailsBottom = 0.15;
+  static const double detailFontSize = 22;
+  static const double detailMinFontSize = 11;
   static const double detailGapMin = 3.0;
   static const double detailGapMax = 7.0;
 
-  static const double sessionBadgeBottom = 0.195;
-  static const double sessionBadgeLeft = 0.24;
+  static const double sessionBadgeBottom = 0.12;
+  static const double sessionBadgeLeft = 0.40;
 
   static const double signatureLeft = 0.05;
   static const double signatureBottom = 0.06;
@@ -93,7 +93,6 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
     add(data.rollNo);
     add(data.bloodGroup);
     add(data.mobileNumber);
-    add(data.email);
     add(data.address);
     for (final term in data.backDetailLines) {
       add(term);
@@ -137,31 +136,31 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
             mobile: data.mobileNumber.trim(),
             instituteStyle: _ts(const TextStyle(
               color: _LandscapeV15Layout.instituteRed,
-              fontSize: 26,
+              fontSize: 36,
               fontWeight: FontWeight.w900,
               height: 1.02,
               letterSpacing: 0.3,
             )),
             bodyStyle: _ts(const TextStyle(
               color: _LandscapeV15Layout.textDark,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
               height: 1.2,
             )),
             greenStyle: _ts(const TextStyle(
               color: _LandscapeV15Layout.accentGreen,
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
               height: 1.15,
             )),
             mobileStyle: _ts(const TextStyle(
               color: _LandscapeV15Layout.textDark,
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
               height: 1.15,
             )),
             instituteMaxLines: _instituteMaxLines(data.instituteName),
-            minFontSize: 8,
+            minFontSize: 12,
           ),
         ),
         Positioned(
