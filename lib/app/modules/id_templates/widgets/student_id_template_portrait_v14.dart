@@ -18,37 +18,37 @@ abstract final class _PortraitV14Layout {
   static const Color nameBarBlue = Color(0xFF4FC3F7);
   static const Color sessionRed = Color(0xFFD32F2F);
 
-  static const double headerTop = 0.098;
-  static const double headerHeight = 0.098;
-  static const double headerCenterY = 0.155;
+  static const double headerTop = 0.088;
+  static const double headerHeight = 0.110;
+  static const double headerCenterY = 0.145;
 
   static const double photoLeft = 0.085;
-  static const double photoTop = 0.280;
+  static const double photoTop = 0.270;
   static const double photoWidth = 0.225;
-  static const double photoHeight = 0.178;
-  static const double photoRadius = 4.0;
-  static const double photoBorderWidth = 2.5;
+  static const double photoHeight = 0.185;
+  static const double photoRadius = 6.0;
+  static const double photoBorderWidth = 3.0;
 
   static const double nameBarLeft = 0.33;
-  static const double nameBarTop = 0.292;
+  static const double nameBarTop = 0.275;
   static const double nameBarRight = 0.09;
-  static const double nameBarHeight = 0.054;
+  static const double nameBarHeight = 0.058;
 
-  static const double detailsTop = 0.360;
+  static const double detailsTop = 0.355;
   static const double detailsLeft = 0.33;
   static const double detailsRight = 0.09;
-  static const double detailsBottom = 0.29;
-  static const double detailFontSize = 16;
-  static const double detailMinFontSize = 10;
+  static const double detailsBottom = 0.23;
+  static const double detailFontSize = 24;
+  static const double detailMinFontSize = 14;
 
-  static const double sessionBottom = 0.235;
-  static const double sessionLeft = 0.14;
-  static const double sessionMaxWidth = 0.42;
+  static const double sessionBottom = 0.18;
+  static const double sessionLeft = 0.10;
+  static const double sessionMaxWidth = 0.44;
 
-  static const double signatureRight = 0.11;
-  static const double signatureBottom = 0.215;
-  static const double signatureWidth = 0.30;
-  static const double signatureHeight = 0.085;
+  static const double signatureRight = 0.09;
+  static const double signatureBottom = 0.16;
+  static const double signatureWidth = 0.32;
+  static const double signatureHeight = 0.095;
 }
 
 /// Horizontal inset inside the mango white border (varies by height).
@@ -377,7 +377,7 @@ class _PortraitV14DetailColumn extends StatelessWidget {
             TextSpan(
               text: value,
               style: textStyle.copyWith(
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
               ),
             ),
           ],
@@ -392,7 +392,7 @@ class _PortraitV14DetailColumn extends StatelessWidget {
       maxLines: 2,
       minFontSize: minFontSize,
       textAlign: TextAlign.left,
-      style: textStyle,
+      style: textStyle.copyWith(fontWeight: FontWeight.w800),
     );
   }
 
@@ -402,14 +402,14 @@ class _PortraitV14DetailColumn extends StatelessWidget {
       builder: (context, constraints) {
         final double currentGapMax;
         if (lines.length <= 6) {
-          currentGapMax = compact ? 10.0 : (relaxed ? 18.0 : 14.5);
+          currentGapMax = compact ? 12.0 : (relaxed ? 22.0 : 18.0);
         } else if (lines.length <= 8) {
-          currentGapMax = compact ? 6.0 : (relaxed ? 11.0 : 8.5);
+          currentGapMax = compact ? 8.0 : (relaxed ? 15.0 : 12.0);
         } else {
-          currentGapMax = compact ? 3.0 : (relaxed ? 7.0 : 5.0);
+          currentGapMax = compact ? 5.0 : (relaxed ? 10.0 : 8.0);
         }
 
-        final double currentGapMin = compact ? 2.0 : (relaxed ? 4.5 : 3.0);
+        final double currentGapMin = compact ? 4.0 : (relaxed ? 8.0 : 6.0);
 
         final est = lines.length * (textStyle.fontSize ?? 24) * 1.2;
         final free =

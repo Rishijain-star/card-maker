@@ -62,7 +62,7 @@ abstract final class StudentIdTemplateAssets {
   static const String frontBackgroundV13 = 'assets/student 13 only front.png';
 
   /// Template 14 — mango shape, single-sided (front only).
-  static const String frontBackgroundV14 = 'assets/student 14th.png';
+  static const String frontBackgroundV14 = 'assets/original mango.png';
 
   /// Template 15 — deer / grass landscape, single-sided (front only).
   static const String frontBackgroundV15 = 'assets/Beer template.png';

@@ -743,9 +743,7 @@ class CreateFlowController extends GetxController {
       final file = await picker.pickImage(
         source: ImageSource.camera,
         preferredCameraDevice: CameraDevice.rear,
-        maxWidth: 1000,
-        maxHeight: 1000,
-        imageQuality: 85,
+        imageQuality: 90,
       );
       if (file != null) {
         final croppedPath = await Get.to<String>(
@@ -772,9 +770,7 @@ class CreateFlowController extends GetxController {
       final picker = ImagePicker();
       final file = await picker.pickImage(
         source: ImageSource.gallery,
-        maxWidth: 1000,
-        maxHeight: 1000,
-        imageQuality: 85,
+        imageQuality: 90,
       );
       if (file != null) {
         final croppedPath = await Get.to<String>(
