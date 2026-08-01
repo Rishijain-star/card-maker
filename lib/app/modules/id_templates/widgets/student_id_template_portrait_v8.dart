@@ -75,8 +75,11 @@ class StudentIdTemplatePortraitV8 extends StatelessWidget {
 
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
 
-  static int _instituteMaxLines(String name) =>
-      name.trim().length > 34 ? 2 : 1;
+  static int _instituteMaxLines(String name) {
+    final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
+    if (lines > 1) return lines.clamp(2, 4);
+    return 3;
+  }
 
   static (String first, String rest) _splitStudentName(String raw) {
     final parts = raw.trim().split(RegExp(r'\s+'));

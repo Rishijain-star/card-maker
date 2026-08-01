@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/models/student_data.dart';
-import '../design_system/id_card_portrait_dimensions.dart';
 import '../design_system/id_card_theme.dart';
 import 'id_card_scaled_preview.dart';
 import 'student_id_card_side.dart';
