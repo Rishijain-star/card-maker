@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:signature/signature.dart';
 
 import '../../../core/config/razorpay_config.dart';
+import '../../../core/widgets/shimmer_skeleton_loader.dart';
 import '../../../core/widgets/top_slide_notice.dart';
 import '../../../data/models/app_product.dart';
 import '../../../data/models/saved_design.dart';
@@ -81,6 +82,15 @@ class CreateFlowController extends GetxController {
   final RxBool isPremium = false.obs;
   final RxBool isSavingCard = false.obs;
   final RxBool isExportingPdf = false.obs;
+  final RxBool isTemplatesLoading = true.obs;
+
+  void startTemplatesLoading() {
+    isTemplatesLoading.value = true;
+    Future.delayed(const Duration(milliseconds: 1300), () {
+      isTemplatesLoading.value = false;
+    });
+  }
+
   final RxString photoPath = ''.obs;
   final RxString signaturePath = ''.obs;
   final Rx<Uint8List?> signatureImageBytes = Rx<Uint8List?>(null);
@@ -1080,6 +1090,54 @@ class CreateFlowController extends GetxController {
       AppLoadingService.to.forceHide();
       isSavingCard.value = false;
     }
+  }
+
+  Future<void> executeSaveDesignWorkflow(
+    GlobalKey exportKey, {
+    required bool createNew,
+    required BuildContext context,
+  }) async {
+    if (isSavingCard.value) return;
+    if (!canSaveMoreDesigns) {
+      showPremiumLimitDialog();
+      return;
+    }
+
+    FiveDotLoadingOverlay.show(
+      context,
+      message: createNew
+          ? 'Saving design & preparing next card...'
+          : 'Saving your card design...',
+    );
+
+    try {
+      final saved = await saveDesignFromPreview(exportKey);
+      if (context.mounted) {
+        FiveDotLoadingOverlay.hide(context);
+      }
+      if (!saved) return;
+
+      if (createNew) {
+        fullNameCtrl.clear();
+        idNumberCtrl.clear();
+        photoPath.value = '';
+        signaturePath.value = '';
+        signatureImageBytes.value = null;
+
+        Get.until((route) => route.settings.name == Routes.DETAILS_FORM);
+      } else {
+        Get.until((route) => route.settings.name == Routes.TEMPLATES);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        FiveDotLoadingOverlay.hide(context);
+      }
+      Get.snackbar('Save Error', 'Failed to save design: $e');
+    }
+  }
+
+  void handleSaveCancel() {
+    Get.until((route) => route.settings.name == Routes.TEMPLATES);
   }
 
   Future<void> exportSavedCardsToPdf() async {

@@ -20,6 +20,7 @@ class StudentDetailsFormView extends GetView<CreateFlowController> {
       Get.snackbar('Invalid Phone', phoneError);
       return;
     }
+    controller.startTemplatesLoading();
     Get.toNamed<void>(Routes.TEMPLATES);
   }
 

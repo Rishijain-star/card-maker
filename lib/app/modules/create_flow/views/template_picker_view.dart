@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_design_system_widgets.dart';
+import '../../../core/widgets/shimmer_skeleton_loader.dart';
 import '../../id_templates/controllers/template_controller.dart';
 import '../../id_templates/widgets/id_card_scaled_preview.dart';
 import '../controllers/create_flow_controller.dart';
@@ -42,32 +43,47 @@ class TemplatePickerView extends GetView<CreateFlowController> {
             ),
             const SizedBox(height: AppSpacing.sm),
             Expanded(
-              child: GetBuilder<CreateFlowController>(
-                id: 'template_screen',
-                builder: (flow) {
-                  return ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    itemCount: flow.activeTemplates.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 14),
-                    itemBuilder: (context, index) {
-                      final selected = flow.selectedTemplate.value == index;
-                      if (flow.isLanyardService) {
-                        return SizedBox(
-                          height: 220,
-                          child: LanyardTemplatePickerCard(
-                            selected: selected,
-                            templateIndex: index,
-                            onTap: () => _openTemplate(templateCtrl, index),
-                          ),
+              child: Obx(
+                () {
+                  if (controller.isTemplatesLoading.value) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        return TemplateSkeletonPickerCard(
+                          height: controller.isLanyardService ? 220 : rowHeight,
                         );
-                      }
-                      return SizedBox(
-                        height: rowHeight,
-                        child: StudentTemplatePickerCard(
-                          selected: selected,
-                          templateIndex: index,
-                          onTap: () => _openTemplate(templateCtrl, index),
-                        ),
+                      },
+                    );
+                  }
+                  return GetBuilder<CreateFlowController>(
+                    id: 'template_screen',
+                    builder: (flow) {
+                      return ListView.separated(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        itemCount: flow.activeTemplates.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 14),
+                        itemBuilder: (context, index) {
+                          final selected = flow.selectedTemplate.value == index;
+                          if (flow.isLanyardService) {
+                            return SizedBox(
+                              height: 220,
+                              child: LanyardTemplatePickerCard(
+                                selected: selected,
+                                templateIndex: index,
+                                onTap: () => _openTemplate(templateCtrl, index),
+                              ),
+                            );
+                          }
+                          return SizedBox(
+                            height: rowHeight,
+                            child: StudentTemplatePickerCard(
+                              selected: selected,
+                              templateIndex: index,
+                              onTap: () => _openTemplate(templateCtrl, index),
+                            ),
+                          );
+                        },
                       );
                     },
                   );

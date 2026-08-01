@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_design_system_widgets.dart';
-import '../../../routes/app_pages.dart';
+import '../../../core/widgets/shimmer_skeleton_loader.dart';
 import '../../create_flow/controllers/create_flow_controller.dart';
 import '../controllers/template_controller.dart';
 import '../../lanyard_templates/widgets/lanyard_live_preview.dart';
@@ -91,7 +91,28 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                   const SizedBox(height: AppSpacing.sm),
                   GradientButton(
                     label: 'Save & Finish',
-                    onPressed: () => Get.toNamed<void>(Routes.LIVE_PREVIEW),
+                    onPressed: () {
+                      SaveOptionsBottomSheet.show(
+                        context: context,
+                        onSaveOnly: () {
+                          flow.executeSaveDesignWorkflow(
+                            controller.frontExportKey,
+                            createNew: false,
+                            context: context,
+                          );
+                        },
+                        onSaveAndNew: () {
+                          flow.executeSaveDesignWorkflow(
+                            controller.frontExportKey,
+                            createNew: true,
+                            context: context,
+                          );
+                        },
+                        onCancel: () {
+                          flow.handleSaveCancel();
+                        },
+                      );
+                    },
                   ),
                 ],
               ),

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_design_system_widgets.dart';
+import '../../../core/widgets/shimmer_skeleton_loader.dart';
 import '../../../routes/app_pages.dart';
 import '../../id_templates/controllers/template_controller.dart';
 import '../../lanyard_templates/widgets/lanyard_live_preview.dart';
@@ -66,14 +67,27 @@ class LivePreviewView extends GetView<CreateFlowController> {
                     );
                   }
                   return GradientButton(
-                    label: 'Save Design',
-                    onPressed: () async {
-                      final saved = await controller.saveDesignFromPreview(
-                        templateCtrl.frontExportKey,
-                      );
-                      if (!saved) return;
-                      Get.until(
-                        (route) => route.settings.name == Routes.TEMPLATES,
+                    label: 'Save & Finish',
+                    onPressed: () {
+                      SaveOptionsBottomSheet.show(
+                        context: context,
+                        onSaveOnly: () {
+                          controller.executeSaveDesignWorkflow(
+                            templateCtrl.frontExportKey,
+                            createNew: false,
+                            context: context,
+                          );
+                        },
+                        onSaveAndNew: () {
+                          controller.executeSaveDesignWorkflow(
+                            templateCtrl.frontExportKey,
+                            createNew: true,
+                            context: context,
+                          );
+                        },
+                        onCancel: () {
+                          controller.handleSaveCancel();
+                        },
                       );
                     },
                   );
