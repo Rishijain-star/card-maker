@@ -11,11 +11,11 @@ import 'student_id_portrait_widgets.dart';
 /// Layout tuned for 3rd portrait PNG (1024×1536 → 638×1012).
 /// Ref: purple diamond header, photo straddling header/body line, centered name/body.
 abstract final class _PortraitV3Layout {
-  // ── Front — institute (purple band, left of circle; book icon in PNG) ───────
-  static const double frontInstituteTop = 0.048;
+  // ── Front — institute (purple header, centered) ──────────────────────────────
+  static const double frontInstituteTop = 0.040;
   static const double frontInstituteHeight = 0.115;
-  static const double frontInstituteLeftRatio = 0.20;
-  static const double frontInstituteRightRatio = 0.08;
+  static const double frontInstituteLeftRatio = 0.05;
+  static const double frontInstituteRightRatio = 0.05;
 
   // ── Front — photo circle on purple/white seam (~y 255 / 1012) ───────────────
   static const double frontPhotoSizeRatio = 0.30;
@@ -101,13 +101,12 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
             height: _h * _PortraitV3Layout.frontInstituteHeight,
             left: _w * _PortraitV3Layout.frontInstituteLeftRatio,
             right: _w * _PortraitV3Layout.frontInstituteRightRatio,
-            child: Align(
-              alignment: Alignment.centerLeft,
+            child: Center(
               child: AutoSizeText(
                 data.instituteName.trim().toUpperCase(),
                 maxLines: _instituteMaxLines(data.instituteName),
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: IdCardPortraitTypography.headerFontSize,
