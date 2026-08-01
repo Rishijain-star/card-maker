@@ -8,6 +8,6 @@ abstract final class ApiConfig {
     if (fromEnv.isNotEmpty) {
       return fromEnv.endsWith('/') ? fromEnv : '$fromEnv/';
     }
-    return 'https://idshaydi.in/backend/api/';
+    return 'http://192.168.1.43:8000/api/v1/';
   }
 }
