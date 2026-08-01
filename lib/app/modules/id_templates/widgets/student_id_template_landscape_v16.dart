@@ -16,32 +16,32 @@ abstract final class _LandscapeV16Layout {
   static const Color textDark = Color(0xFF0F172A);
   static const Color photoBorderRed = Color(0xFFE53935);
 
-  static const double headerTop = 0.040;
-  static const double headerLeft = 0.33;
-  static const double headerRight = 0.08;
-  static const double headerHeight = 0.20;
+  static const double headerTop = 0.035;
+  static const double headerLeft = 0.42;
+  static const double headerRight = 0.05;
+  static const double headerHeight = 0.22;
 
-  static const double nameBannerTop = 0.250;
-  static const double nameBannerLeft = 0.30;
+  static const double nameBannerTop = 0.280;
+  static const double nameBannerLeft = 0.40;
   static const double nameBannerRight = 0.38;
-  static const double nameBannerHeight = 0.080;
+  static const double nameBannerHeight = 0.075;
 
-  static const double detailsTop = 0.355;
-  static const double detailsLeft = 0.30;
+  static const double detailsTop = 0.380;
+  static const double detailsLeft = 0.40;
   static const double detailsRight = 0.38;
-  static const double detailsBottom = 0.12;
-  static const double detailFontSize = 17;
-  static const double detailMinFontSize = 10;
+  static const double detailsBottom = 0.08;
+  static const double detailFontSize = 22;
+  static const double detailMinFontSize = 12;
 
-  static const double photoTop = 0.27;
-  static const double photoRight = 0.055;
-  static const double photoSize = 0.54;
+  static const double photoTop = 0.25;
+  static const double photoRight = 0.045;
+  static const double photoSize = 0.56;
   static const double photoBorderWidth = 3.0;
 
-  static const double classBannerBottom = 0.095;
-  static const double classBannerRight = 0.055;
-  static const double classBannerWidth = 0.31;
-  static const double classBannerHeight = 0.075;
+  static const double classBannerBottom = 0.080;
+  static const double classBannerRight = 0.045;
+  static const double classBannerWidth = 0.33;
+  static const double classBannerHeight = 0.080;
 }
 
 class StudentIdTemplateLandscapeV16 extends StatelessWidget {
@@ -124,26 +124,26 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
             session: session,
             schoolStyle: _ts(const TextStyle(
               color: _LandscapeV16Layout.schoolBlue,
-              fontSize: 34,
+              fontSize: 40,
               fontWeight: FontWeight.w900,
               fontStyle: FontStyle.normal,
               height: 1.02,
             )),
             addressStyle: _ts(const TextStyle(
               color: _LandscapeV16Layout.addressBlue,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
               height: 1.15,
               letterSpacing: 0.5,
             )),
             sessionStyle: _ts(const TextStyle(
               color: _LandscapeV16Layout.sessionRed,
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: FontWeight.w900,
               height: 1.1,
             )),
             instituteMaxLines: _instituteMaxLines(data.instituteName),
-            minFontSize: 12,
+            minFontSize: 14,
           ),
         ),
         if (data.studentName.trim().isNotEmpty)
@@ -157,12 +157,12 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
               compact: data.useCompactFrontSpacing,
               textStyle: _ts(const TextStyle(
                 color: Colors.white,
-                fontSize: 26,
+                fontSize: 28,
                 fontWeight: FontWeight.w900,
                 height: 1.05,
                 letterSpacing: 0.5,
               )),
-              minFontSize: 12,
+              minFontSize: 14,
             ),
           ),
         if (detailLines.isNotEmpty)
@@ -176,8 +176,8 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
               textStyle: _ts(const TextStyle(
                 color: _LandscapeV16Layout.textDark,
                 fontSize: _LandscapeV16Layout.detailFontSize,
-                fontWeight: FontWeight.w700,
-                height: 1.28,
+                fontWeight: FontWeight.w800,
+                height: 1.30,
               )),
               minFontSize: _LandscapeV16Layout.detailMinFontSize,
               compact: data.useCompactFrontSpacing,
@@ -301,25 +301,25 @@ class _LandscapeV16GreenBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(
-        horizontal: compact ? 10 : 16,
-        vertical: compact ? 3 : 6,
-      ),
-      decoration: BoxDecoration(
-        color: _LandscapeV16Layout.bannerGreen,
-        borderRadius: BorderRadius.circular(28),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 4,
+        ),
+        decoration: BoxDecoration(
+          color: _LandscapeV16Layout.bannerGreen,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.12),
+              blurRadius: 3,
+              offset: const Offset(0, 1.5),
+            ),
+          ],
+        ),
         child: AutoSizeText(
           text,
           maxLines: 1,
