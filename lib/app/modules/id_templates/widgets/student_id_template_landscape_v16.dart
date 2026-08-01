@@ -26,10 +26,10 @@ abstract final class _LandscapeV16Layout {
   static const double nameBannerRight = 0.38;
   static const double nameBannerHeight = 0.075;
 
-  static const double detailsTop = 0.360;
+  static const double detailsTop = 0.370;
   static const double detailsLeft = 0.36;
   static const double detailsRight = 0.38;
-  static const double detailsBottom = 0.10;
+  static const double detailsBottom = 0.08;
   static const double detailFontSize = 19;
   static const double detailMinFontSize = 11;
 
@@ -38,10 +38,10 @@ abstract final class _LandscapeV16Layout {
   static const double photoSize = 0.54;
   static const double photoBorderWidth = 3.0;
 
-  static const double classBannerBottom = 0.095;
-  static const double classBannerRight = 0.055;
-  static const double classBannerWidth = 0.31;
-  static const double classBannerHeight = 0.075;
+  static const double classBannerBottom = 0.080;
+  static const double classBannerRight = 0.040;
+  static const double classBannerWidth = 0.34;
+  static const double classBannerHeight = 0.085;
 }
 
 class StudentIdTemplateLandscapeV16 extends StatelessWidget {
@@ -209,11 +209,11 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
               text: classLine.toUpperCase(),
               textStyle: _ts(const TextStyle(
                 color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
                 height: 1.05,
               )),
-              minFontSize: 10,
+              minFontSize: 12,
             ),
           ),
       ],
@@ -392,7 +392,7 @@ class _LandscapeV16DetailColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        var gap = compact ? 1.5 : (relaxed ? 4.0 : 2.5);
+        var gap = compact ? 3.0 : (relaxed ? 7.0 : 4.5);
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
