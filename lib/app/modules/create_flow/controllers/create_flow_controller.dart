@@ -21,6 +21,7 @@ import '../../../services/card_pdf_export_service.dart';
 import '../../../services/design_export_service.dart';
 import '../../../services/local_storage_services/local_storage_services.dart';
 import '../../../services/template_capture_service.dart';
+import '../views/profile_image_crop_view.dart';
 import '../../id_templates/controllers/template_controller.dart';
 import '../../id_templates/widgets/student_id_card_side.dart';
 
@@ -741,9 +742,16 @@ class CreateFlowController extends GetxController {
     final file = await picker.pickImage(
       source: ImageSource.camera,
       preferredCameraDevice: CameraDevice.rear,
-      imageQuality: 85,
+      imageQuality: 95,
     );
-    if (file != null) photoPath.value = file.path;
+    if (file != null) {
+      final croppedPath = await Get.to<String>(
+        () => ProfileImageCropScreen(imagePath: file.path),
+      );
+      if (croppedPath != null && croppedPath.isNotEmpty) {
+        photoPath.value = croppedPath;
+      }
+    }
   }
 
   Future<void> pickFromGallery() async {
@@ -753,8 +761,15 @@ class CreateFlowController extends GetxController {
       return;
     }
     final picker = ImagePicker();
-    final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
-    if (file != null) photoPath.value = file.path;
+    final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 95);
+    if (file != null) {
+      final croppedPath = await Get.to<String>(
+        () => ProfileImageCropScreen(imagePath: file.path),
+      );
+      if (croppedPath != null && croppedPath.isNotEmpty) {
+        photoPath.value = croppedPath;
+      }
+    }
   }
 
   Future<void> pickSignatureFromGallery() async {
