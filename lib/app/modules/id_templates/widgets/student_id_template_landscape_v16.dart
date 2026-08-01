@@ -21,27 +21,27 @@ abstract final class _LandscapeV16Layout {
   static const double headerRight = 0.04;
   static const double headerHeight = 0.22;
 
-  static const double nameBannerTop = 0.265;
-  static const double nameBannerLeft = 0.36;
+  static const double nameBannerTop = 0.350;
+  static const double nameBannerLeft = 0.38;
   static const double nameBannerRight = 0.38;
   static const double nameBannerHeight = 0.075;
 
-  static const double detailsTop = 0.370;
-  static const double detailsLeft = 0.36;
+  static const double detailsTop = 0.440;
+  static const double detailsLeft = 0.38;
   static const double detailsRight = 0.38;
-  static const double detailsBottom = 0.08;
-  static const double detailFontSize = 19;
-  static const double detailMinFontSize = 11;
+  static const double detailsBottom = 0.05;
+  static const double detailFontSize = 24;
+  static const double detailMinFontSize = 13;
 
-  static const double photoTop = 0.27;
+  static const double photoTop = 0.25;
   static const double photoRight = 0.055;
   static const double photoSize = 0.54;
   static const double photoBorderWidth = 3.0;
 
-  static const double classBannerBottom = 0.080;
-  static const double classBannerRight = 0.040;
-  static const double classBannerWidth = 0.34;
-  static const double classBannerHeight = 0.085;
+  static const double classBannerBottom = 0.085;
+  static const double classBannerRight = 0.165;
+  static const double classBannerWidth = 0.32;
+  static const double classBannerHeight = 0.080;
 }
 
 class StudentIdTemplateLandscapeV16 extends StatelessWidget {
@@ -84,7 +84,6 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
     add(data.bloodGroup);
     add(data.mobileNumber);
     add(data.address);
-    add(data.email);
     return lines;
   }
 
@@ -209,11 +208,11 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
               text: classLine.toUpperCase(),
               textStyle: _ts(const TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 26,
                 fontWeight: FontWeight.w900,
                 height: 1.05,
               )),
-              minFontSize: 12,
+              minFontSize: 14,
             ),
           ),
       ],
