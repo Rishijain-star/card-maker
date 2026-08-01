@@ -97,7 +97,9 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - imagesss/
+    - assets/original mango.png
     - assets/ChatGPT Image Jun 4, 2026, 03_15_17 PM.png
     - assets/ChatGPT Image Jun 4, 2026, 03_26_42 PM.png
     - assets/ChatGPT Image Jun 4, 2026, 05_04_07 PM.png
