@@ -297,12 +297,12 @@ class StudentPortraitSignatureCircle extends StatelessWidget {
 
   Widget _buildImage(double w, double h) {
     if (bytes != null && bytes!.isNotEmpty) {
-      return Image.memory(bytes!, fit: BoxFit.contain, width: w, height: h);
+      return Image.memory(bytes!, fit: BoxFit.fill, width: w, height: h);
     }
     if (path.trim().isNotEmpty) {
       final file = File(path);
       if (file.existsSync()) {
-        return Image.file(file, fit: BoxFit.contain, width: w, height: h);
+        return Image.file(file, fit: BoxFit.fill, width: w, height: h);
       }
     }
     return const SizedBox.shrink();

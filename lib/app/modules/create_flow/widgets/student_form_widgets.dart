@@ -954,12 +954,12 @@ class StudentSignatureSection extends GetView<CreateFlowController> {
     final bytes = controller.signatureImageBytes.value;
     final path = controller.signaturePath.value;
     if (bytes != null && bytes.isNotEmpty) {
-      return Image.memory(bytes, fit: BoxFit.contain);
+      return Image.memory(bytes, fit: BoxFit.fill);
     }
     if (path.trim().isNotEmpty) {
       final file = File(path);
       if (file.existsSync()) {
-        return Image.file(file, fit: BoxFit.contain);
+        return Image.file(file, fit: BoxFit.fill);
       }
     }
     return Column(
