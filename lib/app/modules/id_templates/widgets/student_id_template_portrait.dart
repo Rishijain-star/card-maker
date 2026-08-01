@@ -46,8 +46,8 @@ abstract final class _PortraitFrontLayout {
   static const double backBodyTopRatio = 0.26;
   static const double backBodyBottomRatio = 0.152;
 
-  static const double headerFontSize = 32;
-  static const double headerMinFontSize = 15;
+  static const double headerFontSize = 44;
+  static const double headerMinFontSize = 20;
 
   static const double nameFontSize = 40;
   static const double nameMinFontSize = 22;

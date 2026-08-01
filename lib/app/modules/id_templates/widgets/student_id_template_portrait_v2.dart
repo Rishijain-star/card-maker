@@ -17,8 +17,8 @@ import 'student_id_portrait_widgets.dart';
 /// Circle bottom:           y=599 image → 395px flutter (ratio 0.390)
 abstract final class _PortraitV2Layout {
   // ── Typography (same as Template 2 / student_id_template_portrait.dart) ─────
-  static const double headerFontSize = 32;
-  static const double headerMinFontSize = 15;
+  static const double headerFontSize = 44;
+  static const double headerMinFontSize = 20;
   static const double nameFontSize = 40;
   static const double nameMinFontSize = 22;
   static const double bodyFontSize = 27;
