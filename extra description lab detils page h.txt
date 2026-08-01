@@ -1,0 +1,11 @@
+extra description lab detils page hide 
+
+cireticae badge is not showgin it shoud be iisble on overview page 
+
+ourtline page per task 2 baar likhe he ek baar karna he 
+
+on tha lab create sturctere page taskh\ shoud be editable 
+
+download block hamesa nexrt ktab ke adnar khule usi tab ke andar nhi 
+
+abhi jo reqermnmts ka widget he project bl;ock woh froted per render heota he uska contet bus us block me frtnoed woh user wha per uload kar paye usi files and imageas and document and zip 

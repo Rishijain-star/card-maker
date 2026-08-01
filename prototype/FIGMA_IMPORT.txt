@@ -1,0 +1,42 @@
+TripMates — one HTML file, every screen visible (no hash URLs needed)
+======================================================================
+
+DEFAULT (what you asked for)
+- Open **index.html** directly — even:
+    file:///D:/projects/tripmates/prototype/index.html
+- You get **one long page**: every app screen stacked + every popup/sheet listed below + bottom nav + toast.
+- **Buttons and links do nothing** (safe for Figma / screenshots). **Scroll** to move through “pages.”
+- No `#screen-…` in the URL required.
+
+CLICKABLE DEMO (optional)
+- Add **`?interactive=1`** to use the old prototype: one screen at a time, taps work.
+- Examples:
+    index.html?interactive=1
+    index.html?interactive=1#screen-home
+    index.html?interactive=1#screen-new-ride
+
+LEGACY QUERY FLAGS (optional)
+- `?figma=1` — same stacked layout as default (redundant now).
+- `?static=1` — non-clickable only (stacked layout still needs figma-export; default already includes static).
+
+FIGMA PLUGIN
+- Use **html.to.design** with a **local server URL** if `file://` fails:
+    http://127.0.0.1:5500/index.html
+  (same “all screens” layout as double-clicking the file — no extra params.)
+
+SCREEN IDS (for naming layers in Figma — labels also appear as “Frame · …” on each block)
+  screen-launch-white, screen-onboard-1, screen-onboard-2, screen-onboard-3,
+  screen-welcome, screen-login, screen-register, screen-forgot-password,
+  screen-home, screen-search, screen-results, screen-new-ride, screen-datetime,
+  screen-preferences, screen-booking, screen-live-trip, screen-review,
+  screen-ride-detail, screen-my-rides, screen-garage, screen-account,
+  screen-settings, screen-edit-profile, screen-trip-history, screen-payment-history,
+  screen-profile-setup
+
+BOTTOM TABS (4): Home · Search · My rides (1) · Account — curved floating bar in the prototype.
+
+POPUPS IN THE SAME FILE
+  modal-search-filters, modal-book-confirm, modal-archive-confirm,
+  modal-publish-success, modal-countries
+
+TOKENS: css/tripmates.css (:root)

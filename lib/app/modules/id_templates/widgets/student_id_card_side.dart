@@ -1,0 +1,1 @@
+enum StudentIdCardSide { front, back }

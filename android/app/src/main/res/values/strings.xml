@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Google Sign-In (Android / Credential Manager):
+      Set to your OAuth 2.0 Web client ID from Google Cloud Console.
+      Also pass the same value at build time via dart-define GOOGLE_SERVER_CLIENT_ID
+      (see auth_config.dart). XML comments cannot contain two consecutive hyphens.
+    -->
+    <string name="default_web_client_id" translatable="false">REPLACE_WITH_WEB_CLIENT_ID.apps.googleusercontent.com</string>
+</resources>

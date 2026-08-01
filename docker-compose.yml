@@ -1,0 +1,29 @@
+# ID-Shaydi — Laravel admin backend (Mac / Windows / Linux)
+# Flutter + Android Studio host par chalenge (Docker mein nahi).
+
+services:
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: idshaydi-admin
+    ports:
+      - "${ADMIN_PORT:-8000}:8000"
+    volumes:
+      - ./admin:/var/www/html
+      - admin_vendor:/var/www/html/vendor
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:${ADMIN_PORT:-8000}
+      DB_CONNECTION: sqlite
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "php -r \"echo @file_get_contents('http://127.0.0.1:8000/up') ? 0 : 1;\""]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+volumes:
+  admin_vendor:

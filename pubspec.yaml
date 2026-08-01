@@ -1,0 +1,195 @@
+name: card_maker
+description: "Card Maker application"
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  get: ^4.7.3
+  get_storage: ^2.1.1
+  dio: ^5.9.2
+  pretty_dio_logger: ^1.4.0
+  dio_smart_retry: ^7.0.1
+  shared_preferences: ^2.5.4
+  flutter_secure_storage: ^9.2.4
+  fluttertoast: ^9.0.0
+  flutter_screenutil: ^5.9.3
+  init: ^1.0.0
+  intl: ^0.20.2
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.17
+  url_launcher: ^6.3.1
+  lottie: ^3.3.1
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  image_picker: ^1.1.2
+  permission_handler: ^11.3.1
+  camera: ^0.11.0+2
+  phosphor_flutter: ^2.1.0
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^7.0.1
+  audioplayers: ^6.6.0
+  pay: ^2.0.0
+  shimmer: ^3.0.0
+  dotted_border: ^2.1.0
+  signature: ^5.5.0
+  cached_network_image: ^3.4.1
+  photo_view: ^0.15.0
+  flutter_staggered_grid_view: ^0.7.0
+  file_picker: ^11.0.2
+  auto_size_text: ^3.0.0
+  gal: ^2.3.2
+  path_provider: ^2.1.6
+  razorpay_flutter: ^1.4.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^6.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  assets:
+    - imagesss/
+    - assets/ChatGPT Image Jun 4, 2026, 03_15_17 PM.png
+    - assets/ChatGPT Image Jun 4, 2026, 03_26_42 PM.png
+    - assets/ChatGPT Image Jun 4, 2026, 05_04_07 PM.png
+    - assets/ChatGPT Image Jun 4, 2026, 05_06_29 PM.png
+    - assets/3rd tempolate front.png
+    - assets/3rd back.png
+    - assets/4th tempalte front.png
+    - assets/4th template back.png
+    - assets/5th template fronted.png
+    - assets/5th tempate back.png
+    - assets/6th front.png
+    - assets/6th back.png
+    - assets/7th front.png
+    - assets/7th back.png
+    - assets/8th front.png
+    - assets/8th back.png
+    - assets/9th front.png
+    - assets/9thback.png
+    - assets/10 front.png
+    - assets/10th back.png
+    - assets/11th front.png
+    - assets/11th back.png
+    - assets/company 1st frnt.png
+    - assets/company 1st back.png
+    - assets/company front 2.png
+    - assets/company front 2 back.png
+    - assets/3rd company front.png
+    - assets/3rd company back.png
+    - assets/4th company front.png
+    - assets/4th back comanpy.png
+    - assets/front comapny 5.png
+    - assets/back company 5.png
+    - assets/sisxth frotn comapny.png
+    - assets/sixsth back company.png
+    - assets/7th frotn comapony.png
+    - assets/7th back company.png
+    - assets/8th front company.png
+    - assets/8th backl company.png
+    - assets/9th fronted company.png
+    - assets/9th backed company.png
+    - assets/10th front company.png
+    - assets/10th back companyu.png
+    - assets/11th company frotn.png
+    - assets/11th company bacl.png
+    - assets/student 13 only front.png
+    - assets/student 14th.png
+    - assets/student 15tth.png
+    - assets/student 16th.png
+    - assets/template 16.png
+    - assets/lottie/
+    - assets/icons/
+    - assets/driver image.png
+    - assets/passport (1).png
+    - assets/ChatGPT Image May 13, 2026, 12_02_32 AM.png
+    - assets/user.png
+    - assets/luthfi-alfarizi-0piYmLeSgTQ-unsplash.jpg
+    - assets/david-chang-kit-6ml7EMjw1EQ-unsplash.jpg
+    - assets/4276414.jpg
+    - assets/pexels-vadutskevich-15296469.jpg
+    - assets/sounds/soundshelfstudio-ui-success-chime-513565.mp3
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/to/resolution-aware-images
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/to/asset-from-package
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "imagesss/ID-Shaydi-removebg-preview.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "imagesss/ID-Shaydi-removebg-preview.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
