@@ -19,8 +19,8 @@ abstract final class _LandscapeV15Layout {
   static const Color sessionBadgeRed = Color(0xFFD32F2F);
 
   static const double headerTop = 0.040;
-  static const double headerLeft = 0.40;
-  static const double headerRight = 0.28;
+  static const double headerLeft = 0.28;
+  static const double headerRight = 0.32;
   static const double headerHeight = 0.22;
 
   static const double photoTop = 0.12;
@@ -35,8 +35,8 @@ abstract final class _LandscapeV15Layout {
   static const double nameWidth = 0.245;
 
   static const double detailsTop = 0.28;
-  static const double detailsLeft = 0.40;
-  static const double detailsRight = 0.28;
+  static const double detailsLeft = 0.28;
+  static const double detailsRight = 0.32;
   static const double detailsBottom = 0.15;
   static const double detailFontSize = 22;
   static const double detailMinFontSize = 11;
@@ -44,7 +44,7 @@ abstract final class _LandscapeV15Layout {
   static const double detailGapMax = 7.0;
 
   static const double sessionBadgeBottom = 0.12;
-  static const double sessionBadgeLeft = 0.40;
+  static const double sessionBadgeLeft = 0.28;
 
   static const double signatureLeft = 0.05;
   static const double signatureBottom = 0.06;
