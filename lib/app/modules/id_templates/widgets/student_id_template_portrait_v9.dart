@@ -71,9 +71,11 @@ class StudentIdTemplatePortraitV9 extends StatelessWidget {
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
 
   static int _instituteMaxLines(String name) {
-    final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
-    if (lines > 1) return lines.clamp(2, 4);
-    return 3;
+    if (name.contains('\n')) {
+      final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
+      return lines.clamp(2, 4);
+    }
+    return 1;
   }
 
   /// Main form fields on front (optional terms stay on back).
