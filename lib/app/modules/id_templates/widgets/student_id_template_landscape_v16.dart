@@ -21,12 +21,12 @@ abstract final class _LandscapeV16Layout {
   static const double headerRight = 0.04;
   static const double headerHeight = 0.22;
 
-  static const double nameBannerTop = 0.350;
+  static const double nameBannerTop = 0.320;
   static const double nameBannerLeft = 0.38;
   static const double nameBannerRight = 0.38;
   static const double nameBannerHeight = 0.075;
 
-  static const double detailsTop = 0.440;
+  static const double detailsTop = 0.395;
   static const double detailsLeft = 0.38;
   static const double detailsRight = 0.38;
   static const double detailsBottom = 0.05;
@@ -38,10 +38,10 @@ abstract final class _LandscapeV16Layout {
   static const double photoSize = 0.54;
   static const double photoBorderWidth = 3.0;
 
-  static const double classBannerBottom = 0.085;
+  static const double classBannerBottom = 0.125;
   static const double classBannerRight = 0.165;
   static const double classBannerWidth = 0.32;
-  static const double classBannerHeight = 0.080;
+  static const double classBannerHeight = 0.075;
 }
 
 class StudentIdTemplateLandscapeV16 extends StatelessWidget {

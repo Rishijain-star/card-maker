@@ -90,12 +90,6 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                       controller: controller.phoneCtrl,
                     ),
                     StudentUnderlineField(
-                      iconAsset: EmployeeFormAssets.email,
-                      hint: 'Write Email Address',
-                      controller: controller.emailCtrl,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    StudentUnderlineField(
                       iconAsset: EmployeeFormAssets.blood,
                       hint: 'Write Blood Group',
                       controller: controller.bloodGroupCtrl,
