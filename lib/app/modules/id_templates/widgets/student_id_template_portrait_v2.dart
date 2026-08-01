@@ -375,14 +375,19 @@ class _LabeledBodyList extends StatelessWidget {
   Widget build(BuildContext context) {
     final blocks = <Widget>[];
 
-    for (final line in lines) {
-      blocks.add(AutoSizeText(
-        line,
-        maxLines: 2,
-        minFontSize: bodyMinFontSize,
-        textAlign: TextAlign.left,
-        style: bodyStyle,
-      ));
+    for (final rawLine in lines) {
+      final subLines = rawLine.split('\n');
+      for (final line in subLines) {
+        final v = line.trim();
+        if (v.isEmpty) continue;
+        blocks.add(AutoSizeText(
+          v,
+          maxLines: 2,
+          minFontSize: bodyMinFontSize,
+          textAlign: TextAlign.left,
+          style: bodyStyle,
+        ));
+      }
     }
 
     final footer = footerLine?.trim() ?? '';

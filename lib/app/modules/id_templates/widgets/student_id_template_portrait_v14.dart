@@ -418,6 +418,15 @@ class _PortraitV14DetailColumn extends StatelessWidget {
             ? 0.0
             : (free / (lines.length - 1)).clamp(currentGapMin, currentGapMax);
 
+        final expandedLines = <String>[];
+        for (final rawLine in lines) {
+          final subLines = rawLine.split('\n');
+          for (final line in subLines) {
+            final v = line.trim();
+            if (v.isNotEmpty) expandedLines.add(v);
+          }
+        }
+
         return FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.topCenter,
@@ -426,9 +435,9 @@ class _PortraitV14DetailColumn extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                for (var i = 0; i < lines.length; i++) ...[
+                for (var i = 0; i < expandedLines.length; i++) ...[
                   if (i > 0) SizedBox(height: gap),
-                  _buildRow(lines[i]),
+                  _buildRow(expandedLines[i]),
                 ],
               ],
             ),
