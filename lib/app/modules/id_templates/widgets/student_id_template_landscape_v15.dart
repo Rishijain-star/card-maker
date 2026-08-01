@@ -330,6 +330,7 @@ class _LandscapeV15Header extends StatelessWidget {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: rows,
     );
   }
@@ -423,14 +424,14 @@ class _LandscapeV15DetailColumn extends StatelessWidget {
         ),
         maxLines: 2,
         minFontSize: minFontSize,
-        textAlign: TextAlign.left,
+        textAlign: TextAlign.center,
       );
     }
     return AutoSizeText(
       line,
       maxLines: 2,
       minFontSize: minFontSize,
-      textAlign: TextAlign.left,
+      textAlign: TextAlign.center,
       style: textStyle,
     );
   }
@@ -455,11 +456,11 @@ class _LandscapeV15DetailColumn extends StatelessWidget {
 
         return FittedBox(
           fit: BoxFit.scaleDown,
-          alignment: Alignment.topLeft,
+          alignment: Alignment.topCenter,
           child: SizedBox(
             width: constraints.maxWidth,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 for (var i = 0; i < lines.length; i++) ...[
                   if (i > 0) SizedBox(height: gap),
