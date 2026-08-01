@@ -15,7 +15,6 @@ abstract final class _LandscapeV15Layout {
   static const Color instituteRed = Color(0xFFC62828);
   static const Color nameRed = Color(0xFFB71C1C);
   static const Color textDark = Color(0xFF0F172A);
-  static const Color sessionBadgeRed = Color(0xFFD32F2F);
 
   static const double headerTop = 0.040;
   static const double headerLeft = 0.28;
@@ -41,9 +40,6 @@ abstract final class _LandscapeV15Layout {
   static const double detailMinFontSize = 11;
   static const double detailGapMin = 3.0;
   static const double detailGapMax = 7.0;
-
-  static const double sessionBadgeBottom = 0.12;
-  static const double sessionBadgeLeft = 0.28;
 
   static const double signatureLeft = 0.05;
   static const double signatureBottom = 0.06;
@@ -118,7 +114,6 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
 
   Widget _buildFront() {
     final detailLines = _detailLines();
-    final session = data.validityText.trim();
 
     return Stack(
       fit: StackFit.expand,
@@ -192,29 +187,6 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
               minFontSize: _LandscapeV15Layout.detailMinFontSize,
               compact: data.useCompactFrontSpacing,
               relaxed: data.useRelaxedFrontSpacing,
-            ),
-          ),
-        if (session.isNotEmpty)
-          Positioned(
-            left: _w * _LandscapeV15Layout.sessionBadgeLeft,
-            bottom: _h * _LandscapeV15Layout.sessionBadgeBottom,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-              decoration: BoxDecoration(
-                color: _LandscapeV15Layout.sessionBadgeRed,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: AutoSizeText(
-                session,
-                maxLines: 1,
-                minFontSize: 8,
-                style: _ts(const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  height: 1.0,
-                )),
-              ),
             ),
           ),
         if (data.hasSignature)
