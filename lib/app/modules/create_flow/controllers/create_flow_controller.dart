@@ -95,7 +95,7 @@ class CreateFlowController extends GetxController {
   static const String kDefaultSection = 'A';
   static const String kDefaultRollNo = '12345677';
   static const String kDefaultPhone = '8085909343';
-  static const String kDefaultEmail = 'rishijain9343@gmail.com';
+  static const String kDefaultEmail = '';
   static const String kDefaultBloodGroup = 'A+';
   static const String kDefaultAddress = '33 d new angin nagar indore';
   static const String kDefaultValidFrom = '04-06-2026';
@@ -127,7 +127,7 @@ class CreateFlowController extends GetxController {
   final term3Ctrl = TextEditingController(text: kDefaultTerm3);
   final bloodGroupCtrl = TextEditingController(text: kDefaultBloodGroup);
   final phoneCtrl = TextEditingController(text: kDefaultPhone);
-  final emailCtrl = TextEditingController(text: kDefaultEmail);
+  final emailCtrl = TextEditingController(text: '');
   final addressCtrl = TextEditingController(text: kDefaultAddress);
   final expiryDateCtrl = TextEditingController();
   final validFromCtrl = TextEditingController(text: kDefaultValidFrom);
