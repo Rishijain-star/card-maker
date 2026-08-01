@@ -10,8 +10,6 @@ import 'student_id_portrait_widgets.dart';
 /// Template 16 — elephant landscape card; front only; main form fields only.
 abstract final class _LandscapeV16Layout {
   static const Color schoolBlue = Color(0xFF0F2B5B);
-  static const Color addressBlue = Color(0xFF1E3A8A);
-  static const Color sessionRed = Color(0xFFD32F2F);
   static const Color bannerGreen = Color(0xFF1B6B3A);
   static const Color textDark = Color(0xFF0F172A);
   static const Color photoBorderRed = Color(0xFFE53935);
@@ -104,7 +102,6 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
 
   Widget _buildFront() {
     final detailLines = _detailLines();
-    final session = data.validityText.trim();
     final classLine = _classLine();
     final photoDiameter = _h * _LandscapeV16Layout.photoSize;
 
@@ -122,27 +119,12 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
           height: _h * _LandscapeV16Layout.headerHeight,
           child: _LandscapeV16Header(
             instituteName: data.instituteName.trim(),
-            address: data.address.trim(),
-            session: session,
             schoolStyle: _ts(const TextStyle(
               color: _LandscapeV16Layout.schoolBlue,
               fontSize: 40,
               fontWeight: FontWeight.w900,
               fontStyle: FontStyle.normal,
               height: 1.02,
-            )),
-            addressStyle: _ts(const TextStyle(
-              color: _LandscapeV16Layout.addressBlue,
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              height: 1.15,
-              letterSpacing: 0.5,
-            )),
-            sessionStyle: _ts(const TextStyle(
-              color: _LandscapeV16Layout.sessionRed,
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              height: 1.1,
             )),
             instituteMaxLines: _instituteMaxLines(data.instituteName),
             minFontSize: 14,
@@ -228,67 +210,28 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
 class _LandscapeV16Header extends StatelessWidget {
   const _LandscapeV16Header({
     required this.instituteName,
-    required this.address,
-    required this.session,
     required this.schoolStyle,
-    required this.addressStyle,
-    required this.sessionStyle,
     required this.instituteMaxLines,
     required this.minFontSize,
   });
 
   final String instituteName;
-  final String address;
-  final String session;
   final TextStyle schoolStyle;
-  final TextStyle addressStyle;
-  final TextStyle sessionStyle;
   final int instituteMaxLines;
   final double minFontSize;
 
   @override
   Widget build(BuildContext context) {
-    final rows = <Widget>[];
+    if (instituteName.isEmpty) return const SizedBox.shrink();
 
-    if (instituteName.isNotEmpty) {
-      rows.add(
-        AutoSizeText(
-          instituteName,
-          maxLines: instituteMaxLines,
-          minFontSize: minFontSize + 4,
-          textAlign: TextAlign.center,
-          style: schoolStyle,
-        ),
-      );
-    }
-    if (address.isNotEmpty) {
-      if (rows.isNotEmpty) rows.add(const SizedBox(height: 3));
-      rows.add(
-        AutoSizeText(
-          address.toUpperCase(),
-          maxLines: 2,
-          minFontSize: minFontSize,
-          textAlign: TextAlign.center,
-          style: addressStyle,
-        ),
-      );
-    }
-    if (session.isNotEmpty) {
-      if (rows.isNotEmpty) rows.add(const SizedBox(height: 4));
-      rows.add(
-        AutoSizeText(
-          session.toUpperCase(),
-          maxLines: 1,
-          minFontSize: minFontSize,
-          textAlign: TextAlign.center,
-          style: sessionStyle,
-        ),
-      );
-    }
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: rows,
+    return Center(
+      child: AutoSizeText(
+        instituteName,
+        maxLines: instituteMaxLines,
+        minFontSize: minFontSize + 4,
+        textAlign: TextAlign.center,
+        style: schoolStyle,
+      ),
     );
   }
 }
