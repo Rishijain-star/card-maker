@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/utils/dd_mm_yyyy_input_formatter.dart';
@@ -266,6 +265,9 @@ class StudentUnderlineField extends StatelessWidget {
     this.iconSize = 28,
     this.iconWidget,
     this.keyboardType,
+    this.maxLines,
+    this.minLines = 1,
+    this.textInputAction,
   }) : assert(iconAsset != null || iconWidget != null);
 
   final String? iconAsset;
@@ -274,6 +276,9 @@ class StudentUnderlineField extends StatelessWidget {
   final TextEditingController controller;
   final double iconSize;
   final TextInputType? keyboardType;
+  final int? maxLines;
+  final int? minLines;
+  final TextInputAction? textInputAction;
 
   static const InputDecoration _fieldDecoration = InputDecoration(
     border: InputBorder.none,
@@ -289,6 +294,10 @@ class StudentUnderlineField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSpecialKey = keyboardType == TextInputType.phone ||
+        keyboardType == TextInputType.number ||
+        keyboardType == TextInputType.emailAddress;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -316,7 +325,14 @@ class StudentUnderlineField extends StatelessWidget {
               children: [
                 TextField(
                   controller: controller,
-                  keyboardType: keyboardType,
+                  keyboardType: keyboardType ??
+                      (isSpecialKey ? keyboardType : TextInputType.multiline),
+                  minLines: minLines,
+                  maxLines: maxLines ?? (isSpecialKey ? 1 : null),
+                  textInputAction: textInputAction ??
+                      (isSpecialKey
+                          ? TextInputAction.next
+                          : TextInputAction.newline),
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: Theme.of(context).brightness == Brightness.dark
