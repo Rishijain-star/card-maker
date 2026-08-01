@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/utils/dd_mm_yyyy_input_formatter.dart';
+import '../../id_templates/controllers/template_controller.dart';
+import '../controllers/create_flow_controller.dart';
 
 const Color _kFormBlue = Color(0xFF1E88E5);
 const Color _kUnderline = Color(0xFFB3D4F5);
@@ -845,7 +848,7 @@ class StudentSignatureSection extends GetView<CreateFlowController> {
                   ),
                   Switch.adaptive(
                     value: controller.signatureHasBorder.value,
-                    activeColor: _kFormBlue,
+                    activeTrackColor: _kFormBlue,
                     onChanged: (val) {
                       controller.signatureHasBorder.value = val;
                       if (Get.isRegistered<TemplateController>()) {
