@@ -152,17 +152,20 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
             left: _w * _LandscapeV16Layout.nameBannerLeft,
             right: _w * _LandscapeV16Layout.nameBannerRight,
             height: _h * _LandscapeV16Layout.nameBannerHeight,
-            child: _LandscapeV16GreenBanner(
-              text: data.studentName.trim().toUpperCase(),
-              compact: data.useCompactFrontSpacing,
-              textStyle: _ts(const TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-                height: 1.05,
-                letterSpacing: 0.5,
-              )),
-              minFontSize: 14,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: _LandscapeV16GreenBanner(
+                text: data.studentName.trim().toUpperCase(),
+                compact: data.useCompactFrontSpacing,
+                textStyle: _ts(const TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  height: 1.05,
+                  letterSpacing: 0.5,
+                )),
+                minFontSize: 14,
+              ),
             ),
           ),
         if (detailLines.isNotEmpty)
@@ -303,8 +306,9 @@ class _LandscapeV16GreenBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return FittedBox(
       fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
       child: Container(
-        alignment: Alignment.center,
+        alignment: Alignment.centerLeft,
         padding: const EdgeInsets.symmetric(
           horizontal: 14,
           vertical: 4,
@@ -324,7 +328,7 @@ class _LandscapeV16GreenBanner extends StatelessWidget {
           text,
           maxLines: 1,
           minFontSize: minFontSize,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.left,
           style: textStyle,
         ),
       ),
