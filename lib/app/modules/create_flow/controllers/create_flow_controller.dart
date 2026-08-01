@@ -733,42 +733,57 @@ class CreateFlowController extends GetxController {
   }
 
   Future<void> pickFromCamera() async {
-    final granted = await _requestCameraPermission();
-    if (!granted) {
-      Get.snackbar('Permission required', 'Camera permission is needed.');
-      return;
-    }
-    final picker = ImagePicker();
-    final file = await picker.pickImage(
-      source: ImageSource.camera,
-      preferredCameraDevice: CameraDevice.rear,
-      imageQuality: 95,
-    );
-    if (file != null) {
-      final croppedPath = await Get.to<String>(
-        () => ProfileImageCropScreen(imagePath: file.path),
-      );
-      if (croppedPath != null && croppedPath.isNotEmpty) {
-        photoPath.value = croppedPath;
+    try {
+      final granted = await _requestCameraPermission();
+      if (!granted) {
+        Get.snackbar('Permission required', 'Camera permission is needed.');
+        return;
       }
+      final picker = ImagePicker();
+      final file = await picker.pickImage(
+        source: ImageSource.camera,
+        preferredCameraDevice: CameraDevice.rear,
+        imageQuality: 90,
+      );
+      if (file != null) {
+        final croppedPath = await Get.to<String>(
+          () => ProfileImageCropScreen(imagePath: file.path),
+        );
+        if (croppedPath != null && croppedPath.isNotEmpty) {
+          photoPath.value = croppedPath;
+        } else {
+          photoPath.value = file.path;
+        }
+      }
+    } catch (e) {
+      Get.snackbar('Photo Notice', 'Unable to capture photo: $e');
     }
   }
 
   Future<void> pickFromGallery() async {
-    final granted = await _requestGalleryPermission();
-    if (!granted) {
-      Get.snackbar('Permission required', 'Gallery permission is needed.');
-      return;
-    }
-    final picker = ImagePicker();
-    final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 95);
-    if (file != null) {
-      final croppedPath = await Get.to<String>(
-        () => ProfileImageCropScreen(imagePath: file.path),
-      );
-      if (croppedPath != null && croppedPath.isNotEmpty) {
-        photoPath.value = croppedPath;
+    try {
+      final granted = await _requestGalleryPermission();
+      if (!granted) {
+        Get.snackbar('Permission required', 'Gallery permission is needed.');
+        return;
       }
+      final picker = ImagePicker();
+      final file = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 90,
+      );
+      if (file != null) {
+        final croppedPath = await Get.to<String>(
+          () => ProfileImageCropScreen(imagePath: file.path),
+        );
+        if (croppedPath != null && croppedPath.isNotEmpty) {
+          photoPath.value = croppedPath;
+        } else {
+          photoPath.value = file.path;
+        }
+      }
+    } catch (e) {
+      Get.snackbar('Photo Notice', 'Unable to pick photo: $e');
     }
   }
 
