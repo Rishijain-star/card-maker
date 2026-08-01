@@ -113,7 +113,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
                 const TextStyle(
                   color: Colors.white,
                   fontSize: _PortraitFrontLayout.headerFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.5,
                 ),
@@ -139,7 +139,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
               const TextStyle(
                 color: Color(0xFF1E293B),
                 fontSize: _PortraitFrontLayout.validityFontSize,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w900,
                 height: 1.2,
               ),
             ),
@@ -157,7 +157,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
               const TextStyle(
                 color: Color(0xFF1E293B),
                 fontSize: _PortraitFrontLayout.bodyFontSize,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w800,
                 height: 1.28,
               ),
             ),

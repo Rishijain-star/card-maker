@@ -1,23 +1,23 @@
 /// Shared portrait student ID font sizes (all student PNG templates).
 abstract final class IdCardPortraitTypography {
-  static const double headerFontSize = 44;
-  static const double headerMinFontSize = 20;
+  static const double headerFontSize = 48;
+  static const double headerMinFontSize = 22;
 
-  static const double nameFontSize = 40;
-  static const double nameMinFontSize = 22;
+  static const double nameFontSize = 44;
+  static const double nameMinFontSize = 24;
 
-  static const double bodyFontSize = 27;
-  static const double bodyMinFontSize = 18;
+  static const double bodyFontSize = 30;
+  static const double bodyMinFontSize = 20;
 
-  static const double validityFontSize = 17;
-  static const double validityMinFontSize = 13;
+  static const double validityFontSize = 20;
+  static const double validityMinFontSize = 15;
 
-  static const double addressFontSize = 20;
-  static const double addressMinFontSize = 15;
+  static const double addressFontSize = 22;
+  static const double addressMinFontSize = 16;
 
-  static const double backHeaderFontSize = 28;
-  static const double backBodyFontSize = 27;
-  static const double backBodyMinFontSize = 18;
+  static const double backHeaderFontSize = 32;
+  static const double backBodyFontSize = 30;
+  static const double backBodyMinFontSize = 20;
 
   static const double frontGapMin = 15;
   static const double frontGapMax = 25;

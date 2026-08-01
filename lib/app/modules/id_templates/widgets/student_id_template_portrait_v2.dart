@@ -153,7 +153,7 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: _PortraitV2Layout.headerFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.3,
                 )),
@@ -214,14 +214,14 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
             bodyStyle: _ts(const TextStyle(
               color: Color(0xFF1E293B),
               fontSize: _PortraitV2Layout.bodyFontSize,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w800,
               height: 1.35,
             )),
             bodyMinFontSize: _PortraitV2Layout.bodyMinFontSize,
             footerStyle: _ts(const TextStyle(
               color: Color(0xFF1E293B),
               fontSize: _PortraitV2Layout.validityFontSize,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w900,
               height: 1.2,
             )),
             footerMinFontSize: _PortraitV2Layout.validityMinFontSize,
