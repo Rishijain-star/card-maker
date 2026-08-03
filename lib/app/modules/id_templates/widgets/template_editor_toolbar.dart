@@ -146,7 +146,7 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
                       label: 'Change Logo',
                       icon: Icons.add_photo_alternate_rounded,
                       active: false,
-                      onTap: flow.pickFromGallery,
+                      onTap: () => flow.showPhotoSourcePicker(context),
                     ),
                   ],
                 ],

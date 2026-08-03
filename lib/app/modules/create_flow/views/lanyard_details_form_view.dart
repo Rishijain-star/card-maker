@@ -37,7 +37,7 @@ class LanyardDetailsFormView extends GetView<CreateFlowController> {
                     Center(
                       child: StudentPhotoPicker(
                         photoPath: controller.photoPath.value,
-                        onAddPhoto: controller.pickFromGallery,
+                        onAddPhoto: () => controller.showPhotoSourcePicker(context),
                       ),
                     ),
                     const SizedBox(height: 8),
