@@ -47,10 +47,13 @@ class LanyardTemplateWidget extends StatelessWidget {
               alignment: Alignment.center,
             ),
 
-            // Horizontal repeating Logo + Lanyard Text in cyan safe areas
-            _HorizontalRibbonContent(
-              data: data,
-              variant: variant,
+            // Horizontal repeating Logo + Lanyard Text translated by custom position offset
+            Transform.translate(
+              offset: Offset(data.offsetX, data.offsetY),
+              child: _HorizontalRibbonContent(
+                data: data,
+                variant: variant,
+              ),
             ),
           ],
         ),

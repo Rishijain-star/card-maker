@@ -130,6 +130,83 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
               ),
               const SizedBox(height: AppSpacing.sm),
             ],
+            if (panel == TemplateEditorPanel.position && flow.isLanyardService) ...[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.open_with_rounded, size: 16, color: Color(0xFF2563EB)),
+                        SizedBox(width: 5),
+                        Text(
+                          'Adjust Position',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      onPressed: flow.resetLanyardTextOffset,
+                      icon: const Icon(Icons.refresh_rounded, size: 18, color: Color(0xFF64748B)),
+                      tooltip: 'Reset position',
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        const Text('X:', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+                        Expanded(
+                          child: Slider(
+                            value: flow.lanyardTextOffsetX.value,
+                            min: -100.0,
+                            max: 100.0,
+                            onChanged: flow.setLanyardTextOffsetX,
+                          ),
+                        ),
+                        Text('${flow.lanyardTextOffsetX.value.round()}', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text('Y:', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+                        Expanded(
+                          child: Slider(
+                            value: flow.lanyardTextOffsetY.value,
+                            min: -20.0,
+                            max: 20.0,
+                            onChanged: flow.setLanyardTextOffsetY,
+                          ),
+                        ),
+                        Text('${flow.lanyardTextOffsetY.value.round()}', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -141,6 +218,13 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
                     onTap: () => controller.togglePanel(TemplateEditorPanel.fonts),
                   ),
                   if (flow.isLanyardService) ...[
+                    const SizedBox(width: 10),
+                    _ToolChip(
+                      label: 'Adjust Position',
+                      icon: Icons.open_with_rounded,
+                      active: panel == TemplateEditorPanel.position,
+                      onTap: () => controller.togglePanel(TemplateEditorPanel.position),
+                    ),
                     const SizedBox(width: 10),
                     _ToolChip(
                       label: 'Change Logo',

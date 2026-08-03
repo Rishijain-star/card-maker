@@ -10,7 +10,7 @@ import '../design_system/id_card_dimensions.dart';
 import '../design_system/id_card_theme.dart';
 import '../widgets/student_id_card_view.dart';
 
-enum TemplateEditorPanel { none, fonts, colors, logos }
+enum TemplateEditorPanel { none, fonts, colors, logos, position }
 
 /// Coordinates template selection, live card data, and export capture keys.
 class TemplateController extends GetxController {
@@ -74,6 +74,9 @@ class TemplateController extends GetxController {
     ever(_flow.selectedService, (_) => refreshCardData());
     ever(_flow.selectedCompanyLogo, (_) => refreshCardData());
     ever(_flow.selectedColor, (_) => refreshCardData());
+    ever(_flow.lanyardRepeatCount, (_) => refreshCardData());
+    ever(_flow.lanyardTextOffsetX, (_) => refreshCardData());
+    ever(_flow.lanyardTextOffsetY, (_) => refreshCardData());
   }
 
   void selectCompanyLogo(int pickerIndex) {
