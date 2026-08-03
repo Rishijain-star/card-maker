@@ -40,7 +40,7 @@ class LanyardTemplateWidget extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background: Asset Image (variants 0-5) or Procedural Custom Artwork (variants 6-16)
+            // Background: Asset Image (variants 0-5) or Procedural Custom Artwork (variants 6-17)
             if (variant >= 6)
               CustomPaint(
                 painter: _RibbonStripePainter(
@@ -539,7 +539,7 @@ class _RibbonStripePainter extends CustomPainter {
       canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
       canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
     } else if (variant == 16) {
-      // 10. Vibrant Rainbow Spectrum Festival Lanyard (Exact User Reference Image)
+      // 10. Vibrant Rainbow Spectrum Festival Lanyard
       final rainbowGradient = const LinearGradient(
         colors: [
           Color(0xFFEA580C),
@@ -577,6 +577,62 @@ class _RibbonStripePainter extends CustomPainter {
       final glossPaint = Paint()..color = Colors.white.withValues(alpha: 0.30);
       canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), glossPaint);
       canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), glossPaint);
+    } else if (variant == 17) {
+      // 11. Neon Purple & Royal Blue Halftone Sport (Exact User Reference Image)
+      for (int i = 0; i < count; i++) {
+        final slotLeft = i * slotWidth;
+        final purpleWidth = slotWidth * 0.32;
+        final blueWidth = slotWidth * 0.68;
+
+        // A. Purple / Magenta Section with Halftone Dot Matrix
+        final purpleRect = Rect.fromLTWH(slotLeft, 0, purpleWidth, size.height);
+        final purpleGradient = const LinearGradient(
+          colors: [Color(0xFF7E22CE), Color(0xFF9333EA), Color(0xFFA855F7)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        );
+        canvas.drawRect(purpleRect, Paint()..shader = purpleGradient.createShader(purpleRect));
+
+        final dotPaint = Paint()..color = Colors.white.withValues(alpha: 0.18);
+        for (double dx = slotLeft + 4; dx < slotLeft + purpleWidth - 6; dx += 8) {
+          for (double dy = 4; dy < size.height; dy += 7) {
+            canvas.drawCircle(Offset(dx, dy), 1.6, dotPaint);
+          }
+        }
+
+        // B. Royal Blue Wide Text Section
+        final blueRect = Rect.fromLTWH(slotLeft + purpleWidth, 0, blueWidth, size.height);
+        final blueGradient = const LinearGradient(
+          colors: [Color(0xFF1D4ED8), Color(0xFF2563EB), Color(0xFF1E40AF)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        );
+        canvas.drawRect(blueRect, Paint()..shader = blueGradient.createShader(blueRect));
+
+        // C. Yellow & Pink Slash Accent Dividers at boundary
+        final edgeX = slotLeft + purpleWidth;
+        final slashOffset = size.height * 0.45;
+
+        final yellowSlash = Path()
+          ..moveTo(edgeX - 10, 0)
+          ..lineTo(edgeX - 4, 0)
+          ..lineTo(edgeX - 4 - slashOffset, size.height)
+          ..lineTo(edgeX - 10 - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(yellowSlash, Paint()..color = const Color(0xFFFACC15));
+
+        final pinkSlash = Path()
+          ..moveTo(edgeX - 2, 0)
+          ..lineTo(edgeX + 4, 0)
+          ..lineTo(edgeX + 4 - slashOffset, size.height)
+          ..lineTo(edgeX - 2 - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(pinkSlash, Paint()..color = const Color(0xFFEC4899));
+      }
+
+      final borderPaint = Paint()..color = const Color(0xFF1E1B4B);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
+      canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
     }
   }
 
@@ -602,27 +658,31 @@ class _CircularLogoWidget extends StatelessWidget {
     final isAsset = logoPath.isNotEmpty &&
         (logoPath.startsWith('assets/') || logoPath.startsWith('imagesss/'));
 
-    final borderColor = variant == 16
-        ? const Color(0xFF1D4ED8)
-        : (variant == 15
-            ? const Color(0xFF38BDF8)
-            : (variant == 14
-                ? const Color(0xFFDC2626)
-                : (variant == 13
-                    ? const Color(0xFFFFE4E6)
-                    : (variant == 12
-                        ? const Color(0xFFEF4444)
-                        : (variant == 6 || variant == 9
-                            ? const Color(0xFFFFD700)
-                            : (variant == 10
-                                ? const Color(0xFFF8FAFC)
-                                : (variant == 11
-                                    ? const Color(0xFFFECDD3)
-                                    : (variant == 7 || variant == 8
-                                        ? const Color(0xFF00E5FF)
-                                        : (variant == 1
+    final borderColor = variant == 17
+        ? const Color(0xFFFACC15)
+        : (variant == 16
+            ? const Color(0xFF1D4ED8)
+            : (variant == 15
+                ? const Color(0xFF38BDF8)
+                : (variant == 14
+                    ? const Color(0xFFDC2626)
+                    : (variant == 13
+                        ? const Color(0xFFFFE4E6)
+                        : (variant == 12
+                            ? const Color(0xFFEF4444)
+                            : (variant == 6 || variant == 9
+                                ? const Color(0xFFFFD700)
+                                : (variant == 10
+                                    ? const Color(0xFFF8FAFC)
+                                    : (variant == 11
+                                        ? const Color(0xFFFECDD3)
+                                        : (variant == 7 || variant == 8
                                             ? const Color(0xFF00E5FF)
-                                            : (variant == 3 ? const Color(0xFFFFD700) : Colors.white))))))))));
+                                            : (variant == 1
+                                                ? const Color(0xFF00E5FF)
+                                                : (variant == 3
+                                                    ? const Color(0xFFFFD700)
+                                                    : Colors.white)))))))))));
 
     Widget content;
     if (isFile) {
@@ -645,23 +705,27 @@ class _CircularLogoWidget extends StatelessWidget {
         alignment: Alignment.center,
         child: Icon(
           Icons.verified_rounded,
-          color: variant == 16
-              ? const Color(0xFF1D4ED8)
-              : (variant == 15
-                  ? const Color(0xFF0284C7)
-                  : (variant == 14
-                      ? const Color(0xFFDC2626)
-                      : (variant == 13
-                          ? const Color(0xFFE11D48)
-                          : (variant == 12
-                              ? const Color(0xFFEF4444)
-                              : (variant == 6 || variant == 9
-                                  ? const Color(0xFFD97706)
-                                  : (variant == 10
-                                      ? const Color(0xFF047857)
-                                      : (variant == 11
-                                          ? const Color(0xFFBE123C)
-                                          : (variant == 8 ? const Color(0xFF7C3AED) : const Color(0xFF0284C7))))))))),
+          color: variant == 17
+              ? const Color(0xFF7E22CE)
+              : (variant == 16
+                  ? const Color(0xFF1D4ED8)
+                  : (variant == 15
+                      ? const Color(0xFF0284C7)
+                      : (variant == 14
+                          ? const Color(0xFFDC2626)
+                          : (variant == 13
+                              ? const Color(0xFFE11D48)
+                              : (variant == 12
+                                  ? const Color(0xFFEF4444)
+                                  : (variant == 6 || variant == 9
+                                      ? const Color(0xFFD97706)
+                                      : (variant == 10
+                                          ? const Color(0xFF047857)
+                                          : (variant == 11
+                                              ? const Color(0xFFBE123C)
+                                              : (variant == 8
+                                                  ? const Color(0xFF7C3AED)
+                                                  : const Color(0xFF0284C7)))))))))),
           size: size * 0.55,
         ),
       );
@@ -702,13 +766,14 @@ class _HorizontalRibbonContent extends StatelessWidget {
       textColor = Color(data.textColorHex!);
     } else {
       switch (variant) {
-        case 16:
-          textColor = const Color(0xFF1D4ED8);
-          break;
+        case 17:
         case 15:
         case 14:
         case 13:
           textColor = Colors.white;
+          break;
+        case 16:
+          textColor = const Color(0xFF1D4ED8);
           break;
         case 12:
           textColor = const Color(0xFF0F172A);
@@ -774,8 +839,9 @@ class _HorizontalRibbonContent extends StatelessWidget {
 
     final count = data.repeatCount.clamp(2, 6);
 
-    if (variant == 15) {
+    if (variant == 15 || variant == 17) {
       final slotWidth = LanyardDimensions.designWidth / count;
+      final skipWidth = variant == 17 ? slotWidth * 0.33 : slotWidth * 0.28;
       return Row(
         children: List.generate(
           count,
@@ -783,7 +849,7 @@ class _HorizontalRibbonContent extends StatelessWidget {
             width: slotWidth,
             child: Row(
               children: [
-                SizedBox(width: slotWidth * 0.28),
+                SizedBox(width: skipWidth),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
