@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../create_flow/controllers/create_flow_controller.dart';
 import '../../id_templates/controllers/template_controller.dart';
-import '../widgets/lanyard_neck_mockup_widget.dart';
 import '../widgets/lanyard_scaled_preview.dart';
 import '../widgets/lanyard_template_selector.dart';
 
@@ -26,14 +25,6 @@ class LanyardLivePreview extends GetView<TemplateController> {
         flow.selectedFont.value;
         flow.selectedColor.value;
         final data = controller.lanyardData.value;
-        final isMockup = flow.isLanyardNeckMockupMode.value;
-
-        if (isMockup) {
-          return LanyardNeckMockupWidget(
-            data: data,
-            variant: templateIndex,
-          );
-        }
 
         return RepaintBoundary(
           key: repaintBoundaryKey,
