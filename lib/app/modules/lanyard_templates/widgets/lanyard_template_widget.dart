@@ -40,7 +40,7 @@ class LanyardTemplateWidget extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background: Asset Image (variants 0-5) or Procedural Custom Artwork (variants 6-15)
+            // Background: Asset Image (variants 0-5) or Procedural Custom Artwork (variants 6-16)
             if (variant >= 6)
               CustomPaint(
                 painter: _RibbonStripePainter(
@@ -441,12 +441,11 @@ class _RibbonStripePainter extends CustomPainter {
         canvas.drawPath(archPath, latticePaint..strokeWidth = 1.6);
       }
     } else if (variant == 14) {
-      // 8. Red & Black Slash Divider Sport Lanyard (Exact User Reference Image Artwork)
+      // 8. Red & Black Slash Divider Sport Lanyard
       for (int i = 0; i < count; i++) {
         final slotLeft = i * slotWidth;
         final halfWidth = slotWidth / 2;
 
-        // 1. Black Block Section with subtle carbon dot grid texture
         final blackRect = Rect.fromLTWH(slotLeft, 0, halfWidth, size.height);
         canvas.drawRect(blackRect, Paint()..color = const Color(0xFF090A0F));
 
@@ -457,18 +456,15 @@ class _RibbonStripePainter extends CustomPainter {
           }
         }
 
-        // 2. Red Block Section
         final redRect = Rect.fromLTWH(slotLeft + halfWidth, 0, halfWidth, size.height);
         canvas.drawRect(redRect, Paint()..color = const Color(0xFFDC2626));
 
-        // 3. Exact Artwork Slashes & Sharp Whisker Spikes near Black Area (as per Reference Screenshot)
         final edgeX = slotLeft + halfWidth;
         final slashOffset = size.height * 0.50;
 
         final redPaint = Paint()..color = const Color(0xFFEF4444);
         final darkRedPaint = Paint()..color = const Color(0xFF991B1B);
 
-        // A. Main Bold Red Slash Band
         final mainSlash = Path()
           ..moveTo(edgeX - 18, 0)
           ..lineTo(edgeX - 5, 0)
@@ -477,7 +473,6 @@ class _RibbonStripePainter extends CustomPainter {
           ..close();
         canvas.drawPath(mainSlash, redPaint);
 
-        // B. Sharp Secondary Whisker Spike 1 (Long razor spike near main slash)
         final spike1 = Path()
           ..moveTo(edgeX - 28, size.height)
           ..lineTo(edgeX - 22, size.height)
@@ -485,7 +480,6 @@ class _RibbonStripePainter extends CustomPainter {
           ..close();
         canvas.drawPath(spike1, redPaint);
 
-        // C. Sharp Secondary Whisker Spike 2 (Shorter razor spike)
         final spike2 = Path()
           ..moveTo(edgeX - 38, size.height)
           ..lineTo(edgeX - 33, size.height)
@@ -493,7 +487,6 @@ class _RibbonStripePainter extends CustomPainter {
           ..close();
         canvas.drawPath(spike2, darkRedPaint);
 
-        // D. Top Edge Downward Red Counter-Spike (pointed down at top right of black area)
         final topSpike = Path()
           ..moveTo(edgeX - 34, 0)
           ..lineTo(edgeX - 26, 0)
@@ -501,7 +494,6 @@ class _RibbonStripePainter extends CustomPainter {
           ..close();
         canvas.drawPath(topSpike, redPaint);
 
-        // E. Accent Red Slash inside Red area
         final innerSlash = Path()
           ..moveTo(edgeX + 14, 0)
           ..lineTo(edgeX + 22, 0)
@@ -546,6 +538,45 @@ class _RibbonStripePainter extends CustomPainter {
       final borderPaint = Paint()..color = const Color(0xFF0F172A);
       canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
       canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
+    } else if (variant == 16) {
+      // 10. Vibrant Rainbow Spectrum Festival Lanyard (Exact User Reference Image)
+      final rainbowGradient = const LinearGradient(
+        colors: [
+          Color(0xFFEA580C),
+          Color(0xFFFACC15),
+          Color(0xFF84CC16),
+          Color(0xFF06B6D4),
+          Color(0xFF3B82F6),
+          Color(0xFFEF4444),
+          Color(0xFF8B5CF6),
+        ],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
+      canvas.drawRect(rect, Paint()..shader = rainbowGradient.createShader(rect));
+
+      final wavePaint = Paint()
+        ..color = Colors.white.withValues(alpha: 0.18)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5;
+
+      final wavePath = Path();
+      for (double dy = -10; dy <= size.height + 10; dy += 12) {
+        wavePath.moveTo(0, dy);
+        wavePath.cubicTo(
+          size.width * 0.3,
+          dy + 8,
+          size.width * 0.7,
+          dy - 8,
+          size.width,
+          dy,
+        );
+      }
+      canvas.drawPath(wavePath, wavePaint);
+
+      final glossPaint = Paint()..color = Colors.white.withValues(alpha: 0.30);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), glossPaint);
+      canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), glossPaint);
     }
   }
 
@@ -571,25 +602,27 @@ class _CircularLogoWidget extends StatelessWidget {
     final isAsset = logoPath.isNotEmpty &&
         (logoPath.startsWith('assets/') || logoPath.startsWith('imagesss/'));
 
-    final borderColor = variant == 15
-        ? const Color(0xFF38BDF8)
-        : (variant == 14
-            ? const Color(0xFFDC2626)
-            : (variant == 13
-                ? const Color(0xFFFFE4E6)
-                : (variant == 12
-                    ? const Color(0xFFEF4444)
-                    : (variant == 6 || variant == 9
-                        ? const Color(0xFFFFD700)
-                        : (variant == 10
-                            ? const Color(0xFFF8FAFC)
-                            : (variant == 11
-                                ? const Color(0xFFFECDD3)
-                                : (variant == 7 || variant == 8
-                                    ? const Color(0xFF00E5FF)
-                                    : (variant == 1
+    final borderColor = variant == 16
+        ? const Color(0xFF1D4ED8)
+        : (variant == 15
+            ? const Color(0xFF38BDF8)
+            : (variant == 14
+                ? const Color(0xFFDC2626)
+                : (variant == 13
+                    ? const Color(0xFFFFE4E6)
+                    : (variant == 12
+                        ? const Color(0xFFEF4444)
+                        : (variant == 6 || variant == 9
+                            ? const Color(0xFFFFD700)
+                            : (variant == 10
+                                ? const Color(0xFFF8FAFC)
+                                : (variant == 11
+                                    ? const Color(0xFFFECDD3)
+                                    : (variant == 7 || variant == 8
                                         ? const Color(0xFF00E5FF)
-                                        : (variant == 3 ? const Color(0xFFFFD700) : Colors.white)))))))));
+                                        : (variant == 1
+                                            ? const Color(0xFF00E5FF)
+                                            : (variant == 3 ? const Color(0xFFFFD700) : Colors.white))))))))));
 
     Widget content;
     if (isFile) {
@@ -612,21 +645,23 @@ class _CircularLogoWidget extends StatelessWidget {
         alignment: Alignment.center,
         child: Icon(
           Icons.verified_rounded,
-          color: variant == 15
-              ? const Color(0xFF0284C7)
-              : (variant == 14
-                  ? const Color(0xFFDC2626)
-                  : (variant == 13
-                      ? const Color(0xFFE11D48)
-                      : (variant == 12
-                          ? const Color(0xFFEF4444)
-                          : (variant == 6 || variant == 9
-                              ? const Color(0xFFD97706)
-                              : (variant == 10
-                                  ? const Color(0xFF047857)
-                                  : (variant == 11
-                                      ? const Color(0xFFBE123C)
-                                      : (variant == 8 ? const Color(0xFF7C3AED) : const Color(0xFF0284C7)))))))),
+          color: variant == 16
+              ? const Color(0xFF1D4ED8)
+              : (variant == 15
+                  ? const Color(0xFF0284C7)
+                  : (variant == 14
+                      ? const Color(0xFFDC2626)
+                      : (variant == 13
+                          ? const Color(0xFFE11D48)
+                          : (variant == 12
+                              ? const Color(0xFFEF4444)
+                              : (variant == 6 || variant == 9
+                                  ? const Color(0xFFD97706)
+                                  : (variant == 10
+                                      ? const Color(0xFF047857)
+                                      : (variant == 11
+                                          ? const Color(0xFFBE123C)
+                                          : (variant == 8 ? const Color(0xFF7C3AED) : const Color(0xFF0284C7))))))))),
           size: size * 0.55,
         ),
       );
@@ -667,6 +702,9 @@ class _HorizontalRibbonContent extends StatelessWidget {
       textColor = Color(data.textColorHex!);
     } else {
       switch (variant) {
+        case 16:
+          textColor = const Color(0xFF1D4ED8);
+          break;
         case 15:
         case 14:
         case 13:
@@ -708,13 +746,20 @@ class _HorizontalRibbonContent extends StatelessWidget {
         color: textColor,
         letterSpacing: 0.8,
         height: 1.0,
-        shadows: const [
-          Shadow(
-            color: Colors.black87,
-            blurRadius: 4,
-            offset: Offset(0, 1),
-          ),
-        ],
+        shadows: variant == 16
+            ? const [
+                Shadow(color: Colors.white, blurRadius: 4, offset: Offset(1, 1)),
+                Shadow(color: Colors.white, blurRadius: 4, offset: Offset(-1, -1)),
+                Shadow(color: Colors.white, blurRadius: 4, offset: Offset(1, -1)),
+                Shadow(color: Colors.white, blurRadius: 4, offset: Offset(-1, 1)),
+              ]
+            : const [
+                Shadow(
+                  color: Colors.black87,
+                  blurRadius: 4,
+                  offset: Offset(0, 1),
+                ),
+              ],
       ),
       data.fontFamily,
     );
