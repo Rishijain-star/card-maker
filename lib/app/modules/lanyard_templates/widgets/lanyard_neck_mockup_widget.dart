@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../data/models/lanyard_data.dart';
 import '../widgets/lanyard_template_widget.dart';
 
-/// 100% Visually Identical Curved Lanyard Neck Mockup Preview.
-/// Uses the exact LanyardTemplateWidget design so colors, artwork,
-/// logo closeness, fonts, and repeat counts (2x-5x) match straight ribbon preview 100%.
+/// 100% Visually Identical & RenderFlex Overflow-Free Lanyard Neck Mockup Preview.
+/// Uses FittedBox scaling so LanyardTemplateWidget fits into straps cleanly without any terminal errors.
 class LanyardNeckMockupWidget extends StatelessWidget {
   const LanyardNeckMockupWidget({
     super.key,
@@ -27,7 +26,7 @@ class LanyardNeckMockupWidget extends StatelessWidget {
           alignment: Alignment.topCenter,
           clipBehavior: Clip.none,
           children: [
-            // 1. Top Neck Ribbon Fold Band (Seamless connection at top)
+            // 1. Top Neck Ribbon Fold Band (Scaled with FittedBox to prevent overflow)
             Positioned(
               top: 10,
               child: Container(
@@ -43,11 +42,14 @@ class LanyardNeckMockupWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: LanyardTemplateWidget(data: data, variant: variant),
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: LanyardTemplateWidget(data: data, variant: variant),
+                ),
               ),
             ),
 
-            // 2. Left Slanted Hanging Strap (100% Identical template artwork & repeats)
+            // 2. Left Slanted Hanging Strap (FittedBox scaled 100% identical template)
             Positioned(
               left: 56,
               top: 10,
@@ -62,7 +64,7 @@ class LanyardNeckMockupWidget extends StatelessWidget {
               ),
             ),
 
-            // 3. Right Slanted Hanging Strap (100% Identical template artwork & repeats)
+            // 3. Right Slanted Hanging Strap (FittedBox scaled 100% identical template)
             Positioned(
               right: 56,
               top: 10,
@@ -77,7 +79,7 @@ class LanyardNeckMockupWidget extends StatelessWidget {
               ),
             ),
 
-            // 4. Black Plastic Side-Release Buckle Clip (Attached at strap junction)
+            // 4. Black Plastic Side-Release Buckle Clip
             const Positioned(
               top: 270,
               child: _BlackBuckleClipWidget(),
@@ -100,7 +102,10 @@ class LanyardNeckMockupWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: LanyardTemplateWidget(data: data, variant: variant),
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: LanyardTemplateWidget(data: data, variant: variant),
+                ),
               ),
             ),
 
@@ -146,12 +151,16 @@ class _MockupStrapSegment extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // 100% Exact Lanyard Template Design (Same artwork, colors, logo closeness, fonts, repeats)
-          RotatedBox(
-            quarterTurns: 1,
-            child: LanyardTemplateWidget(
-              data: data,
-              variant: variant,
+          // FittedBox scales LanyardTemplateWidget cleanly into strap without layout errors
+          FittedBox(
+            fit: BoxFit.cover,
+            clipBehavior: Clip.antiAlias,
+            child: RotatedBox(
+              quarterTurns: 1,
+              child: LanyardTemplateWidget(
+                data: data,
+                variant: variant,
+              ),
             ),
           ),
 
