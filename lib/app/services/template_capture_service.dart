@@ -19,6 +19,11 @@ abstract final class TemplateCaptureService {
     required StudentIdCardSide side,
     GlobalKey? onScreenFrontKey,
   }) async {
+    final flow = Get.find<CreateFlowController>();
+    if (!flow.isLanyardService) {
+      final bytes = await captureFromFlow(side: side);
+      if (bytes != null && bytes.isNotEmpty) return bytes;
+    }
     if (side == StudentIdCardSide.front && onScreenFrontKey != null) {
       return DesignExportService.capturePng(onScreenFrontKey);
     }

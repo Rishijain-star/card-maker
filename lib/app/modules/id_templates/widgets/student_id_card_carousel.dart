@@ -97,43 +97,44 @@ class _StudentIdCardCarouselState extends State<StudentIdCardCarousel> {
                   final side = index == 0
                       ? StudentIdCardSide.front
                       : StudentIdCardSide.back;
-                  final card = Center(
-                    child: SizedBox(
-                      width: cardWidth,
-                      height: cardHeight,
-                      child: landscape
-                          ? IdCardScaledPreview.landscapeCard(
-                              child: buildStudentPortraitTemplate(
-                                globalIndex: widget.templateIndex,
-                                data: widget.studentData!,
-                                side: side,
-                                fontFamily: widget.fontFamily,
-                              ),
-                            )
-                          : IdCardScaledPreview.portraitCard(
-                              child: widget.isEmployee
-                                  ? buildCompanyPortraitTemplate(
-                                      globalIndex: widget.templateIndex,
-                                      data: widget.employeeData!,
-                                      side: side,
-                                      fontFamily: widget.fontFamily,
-                                    )
-                                  : buildStudentPortraitTemplate(
-                                      globalIndex: widget.templateIndex,
-                                      data: widget.studentData!,
-                                      side: side,
-                                      fontFamily: widget.fontFamily,
-                                    ),
+                  final innerCard = SizedBox(
+                    width: cardWidth,
+                    height: cardHeight,
+                    child: landscape
+                        ? IdCardScaledPreview.landscapeCard(
+                            child: buildStudentPortraitTemplate(
+                              globalIndex: widget.templateIndex,
+                              data: widget.studentData!,
+                              side: side,
+                              fontFamily: widget.fontFamily,
                             ),
-                    ),
+                          )
+                        : IdCardScaledPreview.portraitCard(
+                            child: widget.isEmployee
+                                ? buildCompanyPortraitTemplate(
+                                    globalIndex: widget.templateIndex,
+                                    data: widget.employeeData!,
+                                    side: side,
+                                    fontFamily: widget.fontFamily,
+                                  )
+                                : buildStudentPortraitTemplate(
+                                    globalIndex: widget.templateIndex,
+                                    data: widget.studentData!,
+                                    side: side,
+                                    fontFamily: widget.fontFamily,
+                                  ),
+                          ),
                   );
+
                   if (index == 0 && widget.repaintBoundaryKey != null) {
-                    return RepaintBoundary(
-                      key: widget.repaintBoundaryKey,
-                      child: card,
+                    return Center(
+                      child: RepaintBoundary(
+                        key: widget.repaintBoundaryKey,
+                        child: innerCard,
+                      ),
                     );
                   }
-                  return card;
+                  return Center(child: innerCard);
                 },
               );
             },
