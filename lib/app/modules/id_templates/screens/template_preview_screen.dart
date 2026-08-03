@@ -52,7 +52,24 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                       style: AppTextStyles.heading(context, size: 22),
                     ),
                   ),
-                  if (flow.isLanyardService)
+                  if (flow.isLanyardService) ...[
+                    Obx(
+                      () => IconButton(
+                        onPressed: () {
+                          flow.isLanyardNeckMockupMode.toggle();
+                        },
+                        icon: Icon(
+                          flow.isLanyardNeckMockupMode.value
+                              ? Icons.badge_rounded
+                              : Icons.badge_outlined,
+                          size: 26,
+                          color: flow.isLanyardNeckMockupMode.value
+                              ? const Color(0xFF2563EB)
+                              : const Color(0xFF64748B),
+                        ),
+                        tooltip: 'Neck Lanyard Badge View',
+                      ),
+                    ),
                     Obx(
                       () => IconButton(
                         onPressed: () {
@@ -68,6 +85,7 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                         tooltip: 'Rotate Ribbon View',
                       ),
                     ),
+                  ],
                   IconButton(
                     onPressed: () {
                       flow.resetQuickCreate();

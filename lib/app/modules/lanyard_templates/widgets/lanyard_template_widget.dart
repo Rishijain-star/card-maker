@@ -40,7 +40,7 @@ class LanyardTemplateWidget extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background: Asset Image (variants 0-5) or Procedural Custom Artwork (variants 6-8)
+            // Background: Asset Image (variants 0-5) or Procedural Custom Artwork (variants 6-11)
             if (variant >= 6)
               CustomPaint(
                 painter: _RibbonStripePainter(
@@ -111,7 +111,6 @@ class _RibbonStripePainter extends CustomPainter {
       );
       canvas.drawRect(rect, Paint()..shader = bgGradient.createShader(rect));
 
-      // Draw Diamond Lattice Artwork inside each slot
       final artPaint = Paint()
         ..color = const Color(0xFFFFD700).withValues(alpha: 0.10)
         ..style = PaintingStyle.stroke
@@ -133,7 +132,6 @@ class _RibbonStripePainter extends CustomPainter {
         canvas.drawPath(artPath, artPaint);
       }
 
-      // Slot Boundary Dividers
       final goldPaint = Paint()
         ..color = const Color(0xFFFFD700).withValues(alpha: 0.9)
         ..style = PaintingStyle.fill;
@@ -178,7 +176,6 @@ class _RibbonStripePainter extends CustomPainter {
 
       canvas.drawRect(rect, Paint()..shader = bgGradient.createShader(rect));
 
-      // Wave Artwork lines inside each section
       final wavePaint = Paint()
         ..color = Colors.white.withValues(alpha: 0.14)
         ..style = PaintingStyle.stroke
@@ -202,7 +199,6 @@ class _RibbonStripePainter extends CustomPainter {
         canvas.drawPath(wavePath, wavePaint);
       }
 
-      // Slot Boundary Dividers
       final whitePaint = Paint()
         ..color = Colors.white.withValues(alpha: 0.95)
         ..style = PaintingStyle.fill;
@@ -231,6 +227,124 @@ class _RibbonStripePainter extends CustomPainter {
           ..close();
         canvas.drawPath(path2, darkPaint);
       }
+    } else if (variant == 9) {
+      // 3. Luxury Black Gold Velvet
+      final bgGradient = const LinearGradient(
+        colors: [Color(0xFF090A0F), Color(0xFF171923), Color(0xFF0D0E15)],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
+      canvas.drawRect(rect, Paint()..shader = bgGradient.createShader(rect));
+
+      final artPaint = Paint()
+        ..color = const Color(0xFFFFD700).withValues(alpha: 0.18)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4;
+
+      for (int i = 0; i < count; i++) {
+        final slotLeft = i * slotWidth;
+        final slotCenter = slotLeft + slotWidth / 2;
+
+        final artPath = Path();
+        for (double r = 8; r <= 36; r += 7) {
+          artPath.addOval(Rect.fromCircle(center: Offset(slotCenter, size.height / 2), radius: r));
+        }
+        canvas.drawPath(artPath, artPaint);
+      }
+
+      final goldPaint = Paint()
+        ..color = const Color(0xFFFFD700).withValues(alpha: 0.95)
+        ..style = PaintingStyle.fill;
+
+      const stripeWidth = 12.0;
+      for (int i = 1; i < count; i++) {
+        final x = i * slotWidth;
+        final path1 = Path()
+          ..moveTo(x - 8, 0)
+          ..lineTo(x - 8 + stripeWidth, 0)
+          ..lineTo(x - 8 + stripeWidth - size.height * 0.45, size.height)
+          ..lineTo(x - 8 - size.height * 0.45, size.height)
+          ..close();
+        canvas.drawPath(path1, goldPaint);
+      }
+    } else if (variant == 10) {
+      // 4. Emerald & Platinum Executive
+      final bgGradient = const LinearGradient(
+        colors: [Color(0xFF064E3B), Color(0xFF047857), Color(0xFF022C22)],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
+      canvas.drawRect(rect, Paint()..shader = bgGradient.createShader(rect));
+
+      final artPaint = Paint()
+        ..color = const Color(0xFFE2E8F0).withValues(alpha: 0.15)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4;
+
+      for (int i = 0; i < count; i++) {
+        final slotLeft = i * slotWidth;
+        final wavePath = Path();
+        for (double dy = -10; dy <= size.height + 10; dy += 8) {
+          wavePath.moveTo(slotLeft, dy);
+          wavePath.quadraticBezierTo(slotLeft + slotWidth / 2, dy + 8, slotLeft + slotWidth, dy);
+        }
+        canvas.drawPath(wavePath, artPaint);
+      }
+
+      final silverPaint = Paint()
+        ..color = const Color(0xFFF8FAFC).withValues(alpha: 0.95)
+        ..style = PaintingStyle.fill;
+
+      for (int i = 1; i < count; i++) {
+        final x = i * slotWidth;
+        final path1 = Path()
+          ..moveTo(x - 6, 0)
+          ..lineTo(x + 4, 0)
+          ..lineTo(x + 4 - size.height * 0.45, size.height)
+          ..lineTo(x - 6 - size.height * 0.45, size.height)
+          ..close();
+        canvas.drawPath(path1, silverPaint);
+      }
+    } else if (variant == 11) {
+      // 5. Rose Gold & Ruby Luxury
+      final bgGradient = const LinearGradient(
+        colors: [Color(0xFF881337), Color(0xFFBE123C), Color(0xFF4C0519)],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
+      canvas.drawRect(rect, Paint()..shader = bgGradient.createShader(rect));
+
+      final artPaint = Paint()
+        ..color = const Color(0xFFFDA4AF).withValues(alpha: 0.18)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5;
+
+      for (int i = 0; i < count; i++) {
+        final slotLeft = i * slotWidth;
+        final slotCenter = slotLeft + slotWidth / 2;
+        final artPath = Path()
+          ..moveTo(slotCenter - 40, size.height / 2)
+          ..lineTo(slotCenter, size.height / 2 - 14)
+          ..lineTo(slotCenter + 40, size.height / 2)
+          ..lineTo(slotCenter, size.height / 2 + 14)
+          ..close();
+        canvas.drawPath(artPath, artPaint);
+      }
+
+      final roseGoldPaint = Paint()
+        ..color = const Color(0xFFFECDD3).withValues(alpha: 0.95)
+        ..style = PaintingStyle.fill;
+
+      for (int i = 1; i < count; i++) {
+        final x = i * slotWidth;
+        final path1 = Path()
+          ..moveTo(x - 6, 0)
+          ..lineTo(x + 5, 0)
+          ..lineTo(x + 5 - size.height * 0.45, size.height)
+          ..lineTo(x - 6 - size.height * 0.45, size.height)
+          ..close();
+        canvas.drawPath(path1, roseGoldPaint);
+      }
     }
   }
 
@@ -256,13 +370,17 @@ class _CircularLogoWidget extends StatelessWidget {
     final isAsset = logoPath.isNotEmpty &&
         (logoPath.startsWith('assets/') || logoPath.startsWith('imagesss/'));
 
-    final borderColor = variant == 6
+    final borderColor = variant == 6 || variant == 9
         ? const Color(0xFFFFD700)
-        : (variant == 7 || variant == 8
-            ? const Color(0xFF00E5FF)
-            : (variant == 1
-                ? const Color(0xFF00E5FF)
-                : (variant == 3 ? const Color(0xFFFFD700) : Colors.white)));
+        : (variant == 10
+            ? const Color(0xFFF8FAFC)
+            : (variant == 11
+                ? const Color(0xFFFECDD3)
+                : (variant == 7 || variant == 8
+                    ? const Color(0xFF00E5FF)
+                    : (variant == 1
+                        ? const Color(0xFF00E5FF)
+                        : (variant == 3 ? const Color(0xFFFFD700) : Colors.white)))));
 
     Widget content;
     if (isFile) {
@@ -285,9 +403,13 @@ class _CircularLogoWidget extends StatelessWidget {
         alignment: Alignment.center,
         child: Icon(
           Icons.verified_rounded,
-          color: variant == 6
+          color: variant == 6 || variant == 9
               ? const Color(0xFFD97706)
-              : (variant == 8 ? const Color(0xFF7C3AED) : const Color(0xFF0284C7)),
+              : (variant == 10
+                  ? const Color(0xFF047857)
+                  : (variant == 11
+                      ? const Color(0xFFBE123C)
+                      : (variant == 8 ? const Color(0xFF7C3AED) : const Color(0xFF0284C7)))),
           size: size * 0.55,
         ),
       );
@@ -329,7 +451,14 @@ class _HorizontalRibbonContent extends StatelessWidget {
     } else {
       switch (variant) {
         case 6:
+        case 9:
           textColor = const Color(0xFFFFD700);
+          break;
+        case 10:
+          textColor = const Color(0xFFF8FAFC);
+          break;
+        case 11:
+          textColor = const Color(0xFFFECDD3);
           break;
         case 7:
         case 8:

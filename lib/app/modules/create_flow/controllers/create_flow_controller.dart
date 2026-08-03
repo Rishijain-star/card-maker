@@ -330,6 +330,7 @@ class CreateFlowController extends GetxController {
   }
 
   final isLanyardRotated = false.obs;
+  final isLanyardNeckMockupMode = false.obs;
   final lanyardRepeatCount = 3.obs;
   final lanyardTextOffsetX = 0.0.obs;
   final lanyardTextOffsetY = 0.0.obs;
@@ -420,6 +421,27 @@ class CreateFlowController extends GetxController {
       'category': 'Lanyard',
       'lanyardEngine': true,
       'variant': 8,
+    },
+    <String, dynamic>{
+      'id': 9,
+      'title': 'Luxury Black Gold Velvet',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 9,
+    },
+    <String, dynamic>{
+      'id': 10,
+      'title': 'Emerald & Platinum Executive',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 10,
+    },
+    <String, dynamic>{
+      'id': 11,
+      'title': 'Rose Gold & Ruby Luxury',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 11,
     },
   ];
 
