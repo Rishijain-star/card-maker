@@ -6,8 +6,8 @@ import '../../../data/models/lanyard_data.dart';
 import '../../id_templates/design_system/id_card_typography.dart';
 import '../design_system/lanyard_dimensions.dart';
 
-/// Horizontal Lanyard Ribbon Strip featuring assets/lanyard/blue.png background image,
-/// circular logo filling, and repeating form text printed horizontally across the ribbon.
+/// Full-width Horizontal Lanyard Ribbon Strip featuring assets/lanyard/blue.png background image,
+/// circular logo filling, and repeating form text placed across the bright sky blue safe areas.
 class LanyardTemplateWidget extends StatelessWidget {
   const LanyardTemplateWidget({
     super.key,
@@ -28,7 +28,7 @@ class LanyardTemplateWidget extends StatelessWidget {
         height: double.infinity,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(4),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.25),
@@ -40,10 +40,10 @@ class LanyardTemplateWidget extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Blue lanyard ribbon background image
+            // Blue lanyard ribbon background image - full width span
             Image.asset(
               'assets/lanyard/blue.png',
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
               alignment: Alignment.center,
             ),
 
@@ -51,11 +51,11 @@ class LanyardTemplateWidget extends StatelessWidget {
             if (variant == 2)
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0F172A).withValues(alpha: 0.25),
+                  color: const Color(0xFF0F172A).withValues(alpha: 0.22),
                 ),
               ),
 
-            // Horizontal repeating Logo + Lanyard Text Row
+            // Horizontal repeating Logo + Lanyard Text in cyan safe areas
             _HorizontalRibbonContent(
               data: data,
               variant: variant,
@@ -71,7 +71,7 @@ class _CircularLogoWidget extends StatelessWidget {
   const _CircularLogoWidget({
     required this.logoPath,
     this.variant = 0,
-    this.size = 28.0,
+    this.size = 26.0,
   });
 
   final String logoPath;
@@ -117,7 +117,7 @@ class _CircularLogoWidget extends StatelessWidget {
                   color: variant == 3
                       ? const Color(0xFFD97706)
                       : const Color(0xFF0284C7),
-                  size: 16,
+                  size: 15,
                 ),
               ),
       ),
@@ -150,10 +150,10 @@ class _HorizontalRibbonContent extends StatelessWidget {
 
     return IdCardTypography.apply(
       TextStyle(
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: FontWeight.w900,
         color: textColor,
-        letterSpacing: 0.5,
+        letterSpacing: 0.6,
         height: 1.0,
         shadows: const [
           Shadow(
@@ -175,61 +175,60 @@ class _HorizontalRibbonContent extends StatelessWidget {
     final textStyle = _textStyle();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Repeating Unit 1
-          _CircularLogoWidget(
-            logoPath: data.logoPath,
-            variant: variant,
-            size: 28,
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              textOnLanyard.toUpperCase(),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: textStyle,
-            ),
-          ),
-
-          const SizedBox(width: 14),
-
-          // Repeating Unit 2
-          _CircularLogoWidget(
-            logoPath: data.logoPath,
-            variant: variant,
-            size: 28,
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              textOnLanyard.toUpperCase(),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: textStyle,
-            ),
+          // Unit 1
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _CircularLogoWidget(
+                logoPath: data.logoPath,
+                variant: variant,
+                size: 26,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                textOnLanyard.toUpperCase(),
+                style: textStyle,
+              ),
+            ],
           ),
 
-          const SizedBox(width: 14),
-
-          // Repeating Unit 3
-          _CircularLogoWidget(
-            logoPath: data.logoPath,
-            variant: variant,
-            size: 28,
+          // Unit 2
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _CircularLogoWidget(
+                logoPath: data.logoPath,
+                variant: variant,
+                size: 26,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                textOnLanyard.toUpperCase(),
+                style: textStyle,
+              ),
+            ],
           ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              textOnLanyard.toUpperCase(),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: textStyle,
-            ),
+
+          // Unit 3
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _CircularLogoWidget(
+                logoPath: data.logoPath,
+                variant: variant,
+                size: 26,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                textOnLanyard.toUpperCase(),
+                style: textStyle,
+              ),
+            ],
           ),
         ],
       ),

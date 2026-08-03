@@ -49,9 +49,9 @@ class LanyardTemplatePickerCard extends GetView<TemplateController> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(selected ? 9 : 11),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
                 child: LanyardScaledPreview(
-                  maxWidth: MediaQuery.sizeOf(context).width - 64,
+                  maxWidth: MediaQuery.sizeOf(context).width - 32,
                   child: buildLanyardTemplate(
                     variant: templateIndex,
                     data: data,
