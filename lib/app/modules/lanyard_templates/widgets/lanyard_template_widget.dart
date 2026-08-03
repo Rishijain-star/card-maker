@@ -150,10 +150,10 @@ class _HorizontalRibbonContent extends StatelessWidget {
 
     return IdCardTypography.apply(
       TextStyle(
-        fontSize: 14,
+        fontSize: 17,
         fontWeight: FontWeight.w900,
         color: textColor,
-        letterSpacing: 0.6,
+        letterSpacing: 0.8,
         height: 1.0,
         shadows: const [
           Shadow(

@@ -51,6 +51,22 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                       style: AppTextStyles.heading(context, size: 22),
                     ),
                   ),
+                  if (flow.isLanyardService)
+                    Obx(
+                      () => IconButton(
+                        onPressed: () {
+                          flow.isLanyardRotated.toggle();
+                        },
+                        icon: Icon(
+                          Icons.rotate_right_rounded,
+                          size: 26,
+                          color: flow.isLanyardRotated.value
+                              ? const Color(0xFF2563EB)
+                              : const Color(0xFF64748B),
+                        ),
+                        tooltip: 'Rotate Ribbon View',
+                      ),
+                    ),
                   IconButton(
                     onPressed: () {
                       if (Navigator.of(context).canPop()) {

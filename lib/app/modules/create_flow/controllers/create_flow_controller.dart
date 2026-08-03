@@ -329,11 +329,16 @@ class CreateFlowController extends GetxController {
     return studentTemplates[index]['landscape'] == true;
   }
 
+  final isLanyardRotated = false.obs;
+
   final List<Map<String, dynamic>> lanyardTemplates = <Map<String, dynamic>>[
-    <String, dynamic>{'id': 0, 'title': 'Classic', 'category': 'Lanyard', 'lanyardEngine': true, 'variant': 0},
-    <String, dynamic>{'id': 1, 'title': 'Band Style', 'category': 'Lanyard', 'lanyardEngine': true, 'variant': 1},
-    <String, dynamic>{'id': 2, 'title': 'Striped', 'category': 'Lanyard', 'lanyardEngine': true, 'variant': 2},
-    <String, dynamic>{'id': 3, 'title': 'Header Logo', 'category': 'Lanyard', 'lanyardEngine': true, 'variant': 3},
+    <String, dynamic>{
+      'id': 0,
+      'title': 'Blue Ribbon Lanyard',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 0,
+    },
   ];
 
   final List<Map<String, dynamic>> employeeTemplates = <Map<String, dynamic>>[
