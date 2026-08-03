@@ -29,7 +29,7 @@ class LanyardLivePreview extends GetView<TemplateController> {
         return RepaintBoundary(
           key: repaintBoundaryKey,
           child: LanyardScaledPreview(
-            maxHeight: MediaQuery.sizeOf(context).height * 0.58,
+            maxWidth: MediaQuery.sizeOf(context).width - 32,
             child: buildLanyardTemplate(
               variant: templateIndex,
               data: data,

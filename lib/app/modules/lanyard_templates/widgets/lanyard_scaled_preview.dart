@@ -6,21 +6,21 @@ class LanyardScaledPreview extends StatelessWidget {
   const LanyardScaledPreview({
     super.key,
     required this.child,
-    this.maxHeight = 320,
+    this.maxWidth = 360,
   });
 
   final Widget child;
-  final double maxHeight;
+  final double maxWidth;
 
   @override
   Widget build(BuildContext context) {
-    final scale = maxHeight / LanyardDimensions.designHeight;
-    final width = LanyardDimensions.designWidth * scale;
+    final scale = maxWidth / LanyardDimensions.designWidth;
+    final height = LanyardDimensions.designHeight * scale;
 
     return Center(
       child: SizedBox(
-        width: width,
-        height: maxHeight,
+        width: maxWidth,
+        height: height,
         child: FittedBox(
           fit: BoxFit.contain,
           child: SizedBox(

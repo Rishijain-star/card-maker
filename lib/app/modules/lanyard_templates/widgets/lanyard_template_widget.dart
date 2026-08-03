@@ -6,8 +6,8 @@ import '../../../data/models/lanyard_data.dart';
 import '../../id_templates/design_system/id_card_typography.dart';
 import '../design_system/lanyard_dimensions.dart';
 
-/// Lanyard strap featuring assets/lanyard/blue.png background image,
-/// circular logo filling, and form text overlay in the sky blue (aasmani) area.
+/// Horizontal Lanyard Ribbon Strip featuring assets/lanyard/blue.png background image,
+/// circular logo filling, and repeating form text printed horizontally across the ribbon.
 class LanyardTemplateWidget extends StatelessWidget {
   const LanyardTemplateWidget({
     super.key,
@@ -20,91 +20,48 @@ class LanyardTemplateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = Color(data.accentColorHex);
-
     return SizedBox(
       width: LanyardDimensions.designWidth,
       height: LanyardDimensions.designHeight,
-      child: Column(
-        children: [
-          _MetalClip(accent: accent),
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(8),
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.25),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Blue lanyard ribbon background image
+            Image.asset(
+              'assets/lanyard/blue.png',
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+            ),
+
+            // Variant-specific tint overlay
+            if (variant == 2)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F172A).withValues(alpha: 0.25),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.25),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
               ),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  // Blue lanyard ribbon background image
-                  Image.asset(
-                    'assets/lanyard/blue.png',
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
-                  ),
 
-                  // Overlay Lanyard Form Details (Logo in Circle + Text in aasmani area)
-                  _StrapContentOverlay(data: data, variant: variant),
-                ],
-              ),
+            // Horizontal repeating Logo + Lanyard Text Row
+            _HorizontalRibbonContent(
+              data: data,
+              variant: variant,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MetalClip extends StatelessWidget {
-  const _MetalClip({required this.accent});
-
-  final Color accent;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 32,
-      child: Column(
-        children: [
-          // Steel Ring
-          Container(
-            width: 38,
-            height: 12,
-            decoration: BoxDecoration(
-              color: const Color(0xFFCBD5E1),
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: const Color(0xFF64748B), width: 1.5),
-            ),
-          ),
-          // Metallic Clamp Hook
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: const Color(0xFF94A3B8),
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -113,15 +70,21 @@ class _MetalClip extends StatelessWidget {
 class _CircularLogoWidget extends StatelessWidget {
   const _CircularLogoWidget({
     required this.logoPath,
-    this.size = 38.0,
+    this.variant = 0,
+    this.size = 28.0,
   });
 
   final String logoPath;
+  final int variant;
   final double size;
 
   @override
   Widget build(BuildContext context) {
     final hasFile = logoPath.isNotEmpty && File(logoPath).existsSync();
+
+    final borderColor = variant == 1
+        ? const Color(0xFF00E5FF)
+        : (variant == 3 ? const Color(0xFFFFD700) : Colors.white);
 
     return Container(
       width: size,
@@ -129,12 +92,12 @@ class _CircularLogoWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
-        border: Border.all(color: const Color(0xFF0284C7), width: 2),
+        border: Border.all(color: borderColor, width: 1.8),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -148,11 +111,13 @@ class _CircularLogoWidget extends StatelessWidget {
               )
             : Container(
                 color: Colors.white,
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
+                padding: const EdgeInsets.all(3),
+                child: Icon(
                   Icons.verified_rounded,
-                  color: Color(0xFF0284C7),
-                  size: 20,
+                  color: variant == 3
+                      ? const Color(0xFFD97706)
+                      : const Color(0xFF0284C7),
+                  size: 16,
                 ),
               ),
       ),
@@ -160,8 +125,8 @@ class _CircularLogoWidget extends StatelessWidget {
   }
 }
 
-class _StrapContentOverlay extends StatelessWidget {
-  const _StrapContentOverlay({
+class _HorizontalRibbonContent extends StatelessWidget {
+  const _HorizontalRibbonContent({
     required this.data,
     required this.variant,
   });
@@ -169,21 +134,31 @@ class _StrapContentOverlay extends StatelessWidget {
   final LanyardData data;
   final int variant;
 
-  TextStyle _textStyle({
-    required double size,
-    required FontWeight weight,
-    Color color = Colors.white,
-  }) {
+  TextStyle _textStyle() {
+    Color textColor;
+    switch (variant) {
+      case 1:
+        textColor = const Color(0xFF00E5FF);
+        break;
+      case 3:
+        textColor = const Color(0xFFFFD700);
+        break;
+      default:
+        textColor = Colors.white;
+        break;
+    }
+
     return IdCardTypography.apply(
       TextStyle(
-        fontSize: size,
-        fontWeight: weight,
-        color: color,
-        height: 1.15,
+        fontSize: 13,
+        fontWeight: FontWeight.w900,
+        color: textColor,
+        letterSpacing: 0.5,
+        height: 1.0,
         shadows: const [
           Shadow(
-            color: Colors.black54,
-            blurRadius: 3,
+            color: Colors.black87,
+            blurRadius: 4,
             offset: Offset(0, 1),
           ),
         ],
@@ -197,62 +172,65 @@ class _StrapContentOverlay extends StatelessWidget {
     final textOnLanyard =
         data.organization.isNotEmpty ? data.organization : 'ID-SHAYDI';
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-      child: Column(
-        children: [
-          const SizedBox(height: 28),
+    final textStyle = _textStyle();
 
-          // Circle Logo filled neatly
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Repeating Unit 1
           _CircularLogoWidget(
             logoPath: data.logoPath,
-            size: variant == 3 ? 44.0 : 38.0,
+            variant: variant,
+            size: 28,
           ),
-
-          const SizedBox(height: 14),
-
-          // Lanyard Form Text in the aasmani (sky blue) section
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.18),
-              borderRadius: BorderRadius.circular(6),
-            ),
+          const SizedBox(width: 8),
+          Flexible(
             child: Text(
               textOnLanyard.toUpperCase(),
-              textAlign: TextAlign.center,
-              maxLines: 3,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: _textStyle(
-                size: 11,
-                weight: FontWeight.w800,
-                color: const Color(0xFF00E5FF),
-              ),
+              style: textStyle,
             ),
           ),
 
-          const Spacer(),
+          const SizedBox(width: 14),
 
-          // Repeating Logo + Text Section lower down the ribbon
-          if (variant == 0 || variant == 2) ...[
-            _CircularLogoWidget(
-              logoPath: data.logoPath,
-              size: 28.0,
-            ),
-            const SizedBox(height: 4),
-            Text(
+          // Repeating Unit 2
+          _CircularLogoWidget(
+            logoPath: data.logoPath,
+            variant: variant,
+            size: 28,
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
               textOnLanyard.toUpperCase(),
-              textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: _textStyle(
-                size: 8,
-                weight: FontWeight.w700,
-                color: Colors.white,
-              ),
+              style: textStyle,
             ),
-            const SizedBox(height: 16),
-          ],
+          ),
+
+          const SizedBox(width: 14),
+
+          // Repeating Unit 3
+          _CircularLogoWidget(
+            logoPath: data.logoPath,
+            variant: variant,
+            size: 28,
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              textOnLanyard.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: textStyle,
+            ),
+          ),
         ],
       ),
     );
