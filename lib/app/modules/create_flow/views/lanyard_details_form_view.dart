@@ -57,61 +57,6 @@ class LanyardDetailsFormView extends GetView<CreateFlowController> {
                       hint: 'Enter Lanyard Text (e.g. CITY PUBLIC SCHOOL)',
                       controller: controller.instituteCtrl,
                     ),
-                    const SizedBox(height: 24),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Text & Logo Repeats on Lanyard',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF334155),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Obx(
-                      () => Row(
-                        children: [2, 3, 4, 5].map((count) {
-                          final isSelected =
-                              controller.lanyardRepeatCount.value == count;
-                          return Expanded(
-                            child: GestureDetector(
-                              onTap: () =>
-                                  controller.setLanyardRepeatCount(count),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                margin: const EdgeInsets.symmetric(horizontal: 4),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? const Color(0xFF2563EB)
-                                      : const Color(0xFFF1F5F9),
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? const Color(0xFF2563EB)
-                                        : const Color(0xFFCBD5E1),
-                                  ),
-                                ),
-                                child: Text(
-                                  '${count}x',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: isSelected
-                                        ? Colors.white
-                                        : const Color(0xFF0F172A),
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
                   ],
                 ),
               ),
