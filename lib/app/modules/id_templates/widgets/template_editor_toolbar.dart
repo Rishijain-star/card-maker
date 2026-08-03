@@ -207,6 +207,108 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
                 ),
               ),
             ],
+            if (panel == TemplateEditorPanel.colors) ...[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(Icons.palette_rounded, size: 16, color: Color(0xFF2563EB)),
+                        SizedBox(width: 5),
+                        Text(
+                          'Text Color',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF0F172A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (flow.isLanyardService)
+                      TextButton(
+                        onPressed: () => flow.setLanyardTextColorHex(null),
+                        child: const Text('Reset', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                      ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      const Color(0xFFFFFFFF),
+                      const Color(0xFFFFD700),
+                      const Color(0xFF00E5FF),
+                      const Color(0xFFFF4757),
+                      const Color(0xFF2ED573),
+                      const Color(0xFFFFA500),
+                      const Color(0xFFA855F7),
+                      const Color(0xFF0F172A),
+                      const Color(0xFF2563EB),
+                    ].map((color) {
+                      final isSelected = flow.isLanyardService
+                          ? flow.lanyardCustomTextColorHex.value == color.toARGB32()
+                          : false;
+
+                      return GestureDetector(
+                        onTap: () {
+                          if (flow.isLanyardService) {
+                            flow.setLanyardTextColorHex(color.toARGB32());
+                          }
+                        },
+                        child: Container(
+                          width: 34,
+                          height: 34,
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFF2563EB)
+                                  : (color == Colors.white ? const Color(0xFFCBD5E1) : Colors.transparent),
+                              width: isSelected ? 3.0 : 1.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: isSelected
+                              ? Icon(
+                                  Icons.check_rounded,
+                                  size: 18,
+                                  color: color.computeLuminance() > 0.5 ? Colors.black : Colors.white,
+                                )
+                              : null,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ],
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -218,6 +320,13 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
                     onTap: () => controller.togglePanel(TemplateEditorPanel.fonts),
                   ),
                   if (flow.isLanyardService) ...[
+                    const SizedBox(width: 10),
+                    _ToolChip(
+                      label: 'Font Color',
+                      icon: Icons.palette_rounded,
+                      active: panel == TemplateEditorPanel.colors,
+                      onTap: () => controller.togglePanel(TemplateEditorPanel.colors),
+                    ),
                     const SizedBox(width: 10),
                     _ToolChip(
                       label: 'Adjust Position',

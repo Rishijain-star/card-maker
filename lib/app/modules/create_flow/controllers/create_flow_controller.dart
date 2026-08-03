@@ -346,6 +346,12 @@ class CreateFlowController extends GetxController {
     lanyardTextOffsetY.value = val;
   }
 
+  final lanyardCustomTextColorHex = RxnInt();
+
+  void setLanyardTextColorHex(int? colorHex) {
+    lanyardCustomTextColorHex.value = colorHex;
+  }
+
   void resetLanyardTextOffset() {
     lanyardTextOffsetX.value = 0.0;
     lanyardTextOffsetY.value = 0.0;

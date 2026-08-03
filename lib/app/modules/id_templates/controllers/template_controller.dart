@@ -77,6 +77,7 @@ class TemplateController extends GetxController {
     ever(_flow.lanyardRepeatCount, (_) => refreshCardData());
     ever(_flow.lanyardTextOffsetX, (_) => refreshCardData());
     ever(_flow.lanyardTextOffsetY, (_) => refreshCardData());
+    ever(_flow.lanyardCustomTextColorHex, (_) => refreshCardData());
   }
 
   void selectCompanyLogo(int pickerIndex) {

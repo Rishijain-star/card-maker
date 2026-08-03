@@ -160,16 +160,20 @@ class _HorizontalRibbonContent extends StatelessWidget {
 
   TextStyle _textStyle() {
     Color textColor;
-    switch (variant) {
-      case 5:
-        textColor = const Color(0xFF0F172A);
-        break;
-      case 3:
-        textColor = const Color(0xFFFFD700);
-        break;
-      default:
-        textColor = Colors.white;
-        break;
+    if (data.textColorHex != null) {
+      textColor = Color(data.textColorHex!);
+    } else {
+      switch (variant) {
+        case 5:
+          textColor = const Color(0xFF0F172A);
+          break;
+        case 3:
+          textColor = const Color(0xFFFFD700);
+          break;
+        default:
+          textColor = Colors.white;
+          break;
+      }
     }
 
     return IdCardTypography.apply(
