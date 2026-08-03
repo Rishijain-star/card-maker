@@ -6,8 +6,8 @@ import '../../../data/models/lanyard_data.dart';
 import '../../id_templates/design_system/id_card_typography.dart';
 import '../design_system/lanyard_dimensions.dart';
 
-/// Full-width Horizontal Lanyard Ribbon Strip featuring assets/lanyard/blue.png background image,
-/// circular logo filling, and repeating form text placed across the bright sky blue safe areas.
+/// Full-width Horizontal Lanyard Ribbon Strip featuring asset images & custom procedural designs,
+/// circular logo filling, and repeating form text placed across safe areas.
 class LanyardTemplateWidget extends StatelessWidget {
   const LanyardTemplateWidget({
     super.key,
@@ -40,12 +40,17 @@ class LanyardTemplateWidget extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Ribbon background image based on variant
-            Image.asset(
-              _assetForVariant(variant),
-              fit: BoxFit.fill,
-              alignment: Alignment.center,
-            ),
+            // Background: Asset Image (variants 0-5) or Procedural Custom Painter (variants 6-7)
+            if (variant >= 6)
+              CustomPaint(
+                painter: _RibbonStripePainter(variant: variant),
+              )
+            else
+              Image.asset(
+                _assetForVariant(variant),
+                fit: BoxFit.fill,
+                alignment: Alignment.center,
+              ),
 
             // Horizontal repeating Logo + Lanyard Text translated by custom position offset
             Transform.translate(
@@ -79,6 +84,99 @@ class LanyardTemplateWidget extends StatelessWidget {
   }
 }
 
+class _RibbonStripePainter extends CustomPainter {
+  const _RibbonStripePainter({required this.variant});
+
+  final int variant;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+
+    if (variant == 6) {
+      // Gold & Dark Premium Ribbon Gradient
+      final bgGradient = const LinearGradient(
+        colors: [Color(0xFF0B0F19), Color(0xFF1E293B), Color(0xFF0F172A)],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
+      final bgPaint = Paint()..shader = bgGradient.createShader(rect);
+      canvas.drawRect(rect, bgPaint);
+
+      // Gold diagonal accent stripes
+      final stripePaint = Paint()
+        ..color = const Color(0xFFFFD700).withValues(alpha: 0.85)
+        ..style = PaintingStyle.fill;
+
+      final goldDarkPaint = Paint()
+        ..color = const Color(0xFFB8860B).withValues(alpha: 0.6)
+        ..style = PaintingStyle.fill;
+
+      const stripeWidth = 14.0;
+      const spacing = 220.0;
+
+      for (double x = -size.height; x < size.width + size.height; x += spacing) {
+        final path1 = Path()
+          ..moveTo(x, 0)
+          ..lineTo(x + stripeWidth, 0)
+          ..lineTo(x + stripeWidth - size.height * 0.5, size.height)
+          ..lineTo(x - size.height * 0.5, size.height)
+          ..close();
+        canvas.drawPath(path1, stripePaint);
+
+        final path2 = Path()
+          ..moveTo(x + stripeWidth + 6, 0)
+          ..lineTo(x + stripeWidth * 2 + 6, 0)
+          ..lineTo(x + stripeWidth * 2 + 6 - size.height * 0.5, size.height)
+          ..lineTo(x + stripeWidth + 6 - size.height * 0.5, size.height)
+          ..close();
+        canvas.drawPath(path2, goldDarkPaint);
+      }
+    } else if (variant == 7) {
+      // Cyber Cyan Mesh Ribbon Gradient
+      final bgGradient = const LinearGradient(
+        colors: [Color(0xFF0284C7), Color(0xFF00E5FF), Color(0xFF0369A1)],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
+      final bgPaint = Paint()..shader = bgGradient.createShader(rect);
+      canvas.drawRect(rect, bgPaint);
+
+      // White/Black diagonal cyber stripes
+      final whiteStripe = Paint()
+        ..color = Colors.white.withValues(alpha: 0.9)
+        ..style = PaintingStyle.fill;
+
+      final darkStripe = Paint()
+        ..color = const Color(0xFF0F172A).withValues(alpha: 0.75)
+        ..style = PaintingStyle.fill;
+
+      const spacing = 180.0;
+      for (double x = -size.height; x < size.width + size.height; x += spacing) {
+        final path1 = Path()
+          ..moveTo(x, 0)
+          ..lineTo(x + 12, 0)
+          ..lineTo(x + 12 - size.height * 0.6, size.height)
+          ..lineTo(x - size.height * 0.6, size.height)
+          ..close();
+        canvas.drawPath(path1, whiteStripe);
+
+        final path2 = Path()
+          ..moveTo(x + 16, 0)
+          ..lineTo(x + 28, 0)
+          ..lineTo(x + 28 - size.height * 0.6, size.height)
+          ..lineTo(x + 16 - size.height * 0.6, size.height)
+          ..close();
+        canvas.drawPath(path2, darkStripe);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _RibbonStripePainter oldDelegate) =>
+      oldDelegate.variant != variant;
+}
+
 class _CircularLogoWidget extends StatelessWidget {
   const _CircularLogoWidget({
     required this.logoPath,
@@ -96,9 +194,13 @@ class _CircularLogoWidget extends StatelessWidget {
     final isAsset = logoPath.isNotEmpty &&
         (logoPath.startsWith('assets/') || logoPath.startsWith('imagesss/'));
 
-    final borderColor = variant == 1
-        ? const Color(0xFF00E5FF)
-        : (variant == 3 ? const Color(0xFFFFD700) : Colors.white);
+    final borderColor = variant == 6
+        ? const Color(0xFFFFD700)
+        : (variant == 7
+            ? const Color(0xFF00E5FF)
+            : (variant == 1
+                ? const Color(0xFF00E5FF)
+                : (variant == 3 ? const Color(0xFFFFD700) : Colors.white)));
 
     Widget content;
     if (isFile) {
@@ -121,9 +223,9 @@ class _CircularLogoWidget extends StatelessWidget {
         alignment: Alignment.center,
         child: Icon(
           Icons.verified_rounded,
-          color: variant == 3
+          color: variant == 6
               ? const Color(0xFFD97706)
-              : const Color(0xFF0284C7),
+              : (variant == 7 ? const Color(0xFF0284C7) : const Color(0xFF0284C7)),
           size: size * 0.55,
         ),
       );
@@ -164,6 +266,12 @@ class _HorizontalRibbonContent extends StatelessWidget {
       textColor = Color(data.textColorHex!);
     } else {
       switch (variant) {
+        case 6:
+          textColor = const Color(0xFFFFD700);
+          break;
+        case 7:
+          textColor = Colors.white;
+          break;
         case 5:
           textColor = const Color(0xFF0F172A);
           break;

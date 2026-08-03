@@ -400,6 +400,20 @@ class CreateFlowController extends GetxController {
       'lanyardEngine': true,
       'variant': 5,
     },
+    <String, dynamic>{
+      'id': 6,
+      'title': 'Gold & Dark Premium',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 6,
+    },
+    <String, dynamic>{
+      'id': 7,
+      'title': 'Cyber Cyan Mesh',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 7,
+    },
   ];
 
   final List<Map<String, dynamic>> employeeTemplates = <Map<String, dynamic>>[
