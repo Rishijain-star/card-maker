@@ -441,58 +441,86 @@ class _RibbonStripePainter extends CustomPainter {
         canvas.drawPath(archPath, latticePaint..strokeWidth = 1.6);
       }
     } else if (variant == 14) {
-      // 8. Red & Black Slash Divider Sport Lanyard
+      // 8. Red & Black Slash Divider Sport Lanyard (Exact User Reference Image Artwork)
       for (int i = 0; i < count; i++) {
         final slotLeft = i * slotWidth;
         final halfWidth = slotWidth / 2;
 
+        // 1. Black Block Section with subtle carbon dot grid texture
         final blackRect = Rect.fromLTWH(slotLeft, 0, halfWidth, size.height);
-        canvas.drawRect(blackRect, Paint()..color = const Color(0xFF0F172A));
+        canvas.drawRect(blackRect, Paint()..color = const Color(0xFF090A0F));
 
+        final carbonDotPaint = Paint()..color = Colors.white.withValues(alpha: 0.05);
+        for (double dx = slotLeft + 4; dx < slotLeft + halfWidth - 10; dx += 10) {
+          for (double dy = 4; dy < size.height; dy += 8) {
+            canvas.drawCircle(Offset(dx, dy), 1.2, carbonDotPaint);
+          }
+        }
+
+        // 2. Red Block Section
         final redRect = Rect.fromLTWH(slotLeft + halfWidth, 0, halfWidth, size.height);
         canvas.drawRect(redRect, Paint()..color = const Color(0xFFDC2626));
 
+        // 3. Exact Artwork Slashes & Sharp Whisker Spikes near Black Area (as per Reference Screenshot)
         final edgeX = slotLeft + halfWidth;
-        final slashWidth = 14.0;
-        final slashOffset = size.height * 0.45;
+        final slashOffset = size.height * 0.50;
 
-        final slash1 = Path()
-          ..moveTo(edgeX - 16, 0)
-          ..lineTo(edgeX - 16 + slashWidth, 0)
-          ..lineTo(edgeX - 16 + slashWidth - slashOffset, size.height)
-          ..lineTo(edgeX - 16 - slashOffset, size.height)
+        final redPaint = Paint()..color = const Color(0xFFEF4444);
+        final darkRedPaint = Paint()..color = const Color(0xFF991B1B);
+
+        // A. Main Bold Red Slash Band
+        final mainSlash = Path()
+          ..moveTo(edgeX - 18, 0)
+          ..lineTo(edgeX - 5, 0)
+          ..lineTo(edgeX - 5 - slashOffset, size.height)
+          ..lineTo(edgeX - 18 - slashOffset, size.height)
           ..close();
-        canvas.drawPath(slash1, Paint()..color = const Color(0xFFEF4444));
+        canvas.drawPath(mainSlash, redPaint);
 
-        final slash2 = Path()
-          ..moveTo(edgeX - 2, 0)
-          ..lineTo(edgeX - 2 + slashWidth * 0.7, 0)
-          ..lineTo(edgeX - 2 + slashWidth * 0.7 - slashOffset, size.height)
-          ..lineTo(edgeX - 2 - slashOffset, size.height)
+        // B. Sharp Secondary Whisker Spike 1 (Long razor spike near main slash)
+        final spike1 = Path()
+          ..moveTo(edgeX - 28, size.height)
+          ..lineTo(edgeX - 22, size.height)
+          ..lineTo(edgeX - 14, size.height * 0.25)
           ..close();
-        canvas.drawPath(slash2, Paint()..color = const Color(0xFF090A0F));
+        canvas.drawPath(spike1, redPaint);
 
-        final slash3 = Path()
-          ..moveTo(edgeX + 16, 0)
+        // C. Sharp Secondary Whisker Spike 2 (Shorter razor spike)
+        final spike2 = Path()
+          ..moveTo(edgeX - 38, size.height)
+          ..lineTo(edgeX - 33, size.height)
+          ..lineTo(edgeX - 27, size.height * 0.55)
+          ..close();
+        canvas.drawPath(spike2, darkRedPaint);
+
+        // D. Top Edge Downward Red Counter-Spike (pointed down at top right of black area)
+        final topSpike = Path()
+          ..moveTo(edgeX - 34, 0)
+          ..lineTo(edgeX - 26, 0)
+          ..lineTo(edgeX - 22, size.height * 0.40)
+          ..close();
+        canvas.drawPath(topSpike, redPaint);
+
+        // E. Accent Red Slash inside Red area
+        final innerSlash = Path()
+          ..moveTo(edgeX + 14, 0)
           ..lineTo(edgeX + 22, 0)
           ..lineTo(edgeX + 22 - slashOffset, size.height)
-          ..lineTo(edgeX + 16 - slashOffset, size.height)
+          ..lineTo(edgeX + 14 - slashOffset, size.height)
           ..close();
-        canvas.drawPath(slash3, Paint()..color = const Color(0xFF991B1B));
+        canvas.drawPath(innerSlash, darkRedPaint);
       }
 
-      final topBorder = Paint()..color = const Color(0xFF090A0F);
-      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 2), topBorder);
-      canvas.drawRect(Rect.fromLTWH(0, size.height - 2, size.width, 2), topBorder);
+      final borderPaint = Paint()..color = const Color(0xFF090A0F);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 2), borderPaint);
+      canvas.drawRect(Rect.fromLTWH(0, size.height - 2, size.width, 2), borderPaint);
     } else if (variant == 15) {
-      // 9. Navy & Pink Wide Block Lanyard (Exact User Reference Image)
-      // Navy Text area = 74% slot width (Wider for perfect text fit), Pink Accent = 26% (Narrower)
+      // 9. Navy & Pink Wide Block Lanyard
       for (int i = 0; i < count; i++) {
         final slotLeft = i * slotWidth;
         final pinkWidth = slotWidth * 0.26;
         final navyWidth = slotWidth * 0.74;
 
-        // Pink Accent Block Section
         final pinkRect = Rect.fromLTWH(slotLeft, 0, pinkWidth, size.height);
         final pinkGradient = const LinearGradient(
           colors: [Color(0xFFE11D48), Color(0xFFF43F5E), Color(0xFFBE123C)],
@@ -501,13 +529,11 @@ class _RibbonStripePainter extends CustomPainter {
         );
         canvas.drawRect(pinkRect, Paint()..shader = pinkGradient.createShader(pinkRect));
 
-        // Thin Light Pink Accent Line
         canvas.drawRect(
           Rect.fromLTWH(slotLeft + pinkWidth - 3, 0, 3, size.height),
           Paint()..color = const Color(0xFFFDA4AF),
         );
 
-        // Navy Blue Wide Text Block Section
         final navyRect = Rect.fromLTWH(slotLeft + pinkWidth, 0, navyWidth, size.height);
         final navyGradient = const LinearGradient(
           colors: [Color(0xFF1E293B), Color(0xFF334155), Color(0xFF0F172A)],
@@ -704,7 +730,6 @@ class _HorizontalRibbonContent extends StatelessWidget {
     final count = data.repeatCount.clamp(2, 6);
 
     if (variant == 15) {
-      // Special layout for variant 15: Shift Logo + Text slightly to align right inside the wider 74% Navy Blue text area
       final slotWidth = LanyardDimensions.designWidth / count;
       return Row(
         children: List.generate(
@@ -713,7 +738,7 @@ class _HorizontalRibbonContent extends StatelessWidget {
             width: slotWidth,
             child: Row(
               children: [
-                SizedBox(width: slotWidth * 0.28), // Skip pink section
+                SizedBox(width: slotWidth * 0.28),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
