@@ -24,6 +24,11 @@ class LanyardLivePreview extends GetView<TemplateController> {
       () {
         flow.selectedFont.value;
         flow.selectedColor.value;
+        flow.lanyardRepeatCount.value;
+        flow.lanyardTextOffsetX.value;
+        flow.lanyardTextOffsetY.value;
+        flow.lanyardLogoTextSpacing.value;
+        flow.lanyardCustomTextColorHex.value;
         final data = controller.lanyardData.value;
 
         return RepaintBoundary(

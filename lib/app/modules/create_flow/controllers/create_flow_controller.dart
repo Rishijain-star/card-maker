@@ -338,30 +338,48 @@ class CreateFlowController extends GetxController {
 
   void setLanyardRepeatCount(int count) {
     lanyardRepeatCount.value = count.clamp(2, 6);
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
+    }
   }
 
   void setLanyardTextOffsetX(double val) {
     lanyardTextOffsetX.value = val;
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
+    }
   }
 
   void setLanyardTextOffsetY(double val) {
     lanyardTextOffsetY.value = val;
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
+    }
   }
 
   void setLanyardLogoTextSpacing(double val) {
     lanyardLogoTextSpacing.value = val.clamp(0.0, 40.0);
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
+    }
   }
 
   final lanyardCustomTextColorHex = RxnInt();
 
   void setLanyardTextColorHex(int? colorHex) {
     lanyardCustomTextColorHex.value = colorHex;
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
+    }
   }
 
   void resetLanyardTextOffset() {
     lanyardTextOffsetX.value = 0.0;
     lanyardTextOffsetY.value = 0.0;
     lanyardLogoTextSpacing.value = 6.0;
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
+    }
   }
 
   final List<Map<String, dynamic>> lanyardTemplates = <Map<String, dynamic>>[
