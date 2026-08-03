@@ -13,6 +13,13 @@ class SavedDesign {
     required this.savedAtMs,
     required this.instituteName,
     required this.studentName,
+    this.lanyardVariant,
+    this.lanyardRepeatCount,
+    this.lanyardTextOffsetX,
+    this.lanyardTextOffsetY,
+    this.lanyardLogoTextSpacing,
+    this.lanyardTextColorHex,
+    this.logoPath,
   });
 
   final String templatePairId;
@@ -26,6 +33,13 @@ class SavedDesign {
   final int savedAtMs;
   final String instituteName;
   final String studentName;
+  final int? lanyardVariant;
+  final int? lanyardRepeatCount;
+  final double? lanyardTextOffsetX;
+  final double? lanyardTextOffsetY;
+  final double? lanyardLogoTextSpacing;
+  final int? lanyardTextColorHex;
+  final String? logoPath;
 
   /// Same as [templatePairId] — one ID links front + back images.
   String get id => templatePairId;
@@ -58,6 +72,13 @@ class SavedDesign {
         'savedAtMs': savedAtMs,
         'instituteName': instituteName,
         'studentName': studentName,
+        if (lanyardVariant != null) 'lanyardVariant': lanyardVariant,
+        if (lanyardRepeatCount != null) 'lanyardRepeatCount': lanyardRepeatCount,
+        if (lanyardTextOffsetX != null) 'lanyardTextOffsetX': lanyardTextOffsetX,
+        if (lanyardTextOffsetY != null) 'lanyardTextOffsetY': lanyardTextOffsetY,
+        if (lanyardLogoTextSpacing != null) 'lanyardLogoTextSpacing': lanyardLogoTextSpacing,
+        if (lanyardTextColorHex != null) 'lanyardTextColorHex': lanyardTextColorHex,
+        if (logoPath != null) 'logoPath': logoPath,
       };
 
   factory SavedDesign.fromJson(Map<String, dynamic> json) {
@@ -76,6 +97,13 @@ class SavedDesign {
       savedAtMs: json['savedAtMs'] as int? ?? 0,
       instituteName: '${json['instituteName'] ?? ''}',
       studentName: '${json['studentName'] ?? title}',
+      lanyardVariant: json['lanyardVariant'] as int?,
+      lanyardRepeatCount: json['lanyardRepeatCount'] as int?,
+      lanyardTextOffsetX: (json['lanyardTextOffsetX'] as num?)?.toDouble(),
+      lanyardTextOffsetY: (json['lanyardTextOffsetY'] as num?)?.toDouble(),
+      lanyardLogoTextSpacing: (json['lanyardLogoTextSpacing'] as num?)?.toDouble(),
+      lanyardTextColorHex: json['lanyardTextColorHex'] as int?,
+      logoPath: json['logoPath'] as String?,
     );
   }
 

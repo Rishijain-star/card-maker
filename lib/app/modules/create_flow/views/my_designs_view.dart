@@ -46,12 +46,18 @@ class MyDesignsView extends GetView<CreateFlowController> {
   }
 
   void _openCardViewer(BuildContext context, SavedDesign design) {
+    if (design.service.isNotEmpty) {
+      controller.selectedService.value = design.service;
+    }
     if (design.fontFamily.isNotEmpty) {
       final fontIndex = controller.fonts.indexOf(design.fontFamily);
       if (fontIndex != -1) {
         controller.selectedFont.value = fontIndex;
       }
     }
+
+    controller.fontSizeScale.value = design.fontSizeScale;
+
     if (design.instituteName.isNotEmpty) {
       controller.instituteCtrl.text = design.instituteName;
     }
@@ -59,7 +65,25 @@ class MyDesignsView extends GetView<CreateFlowController> {
       controller.fullNameCtrl.text = design.studentName;
     }
 
-    int templateIdx = int.tryParse(design.templatePairId) ?? 0;
+    if (design.logoPath != null && design.logoPath!.isNotEmpty) {
+      controller.photoPath.value = design.logoPath!;
+    }
+
+    if (design.lanyardRepeatCount != null) {
+      controller.lanyardRepeatCount.value = design.lanyardRepeatCount!;
+    }
+    if (design.lanyardTextOffsetX != null) {
+      controller.lanyardTextOffsetX.value = design.lanyardTextOffsetX!;
+    }
+    if (design.lanyardTextOffsetY != null) {
+      controller.lanyardTextOffsetY.value = design.lanyardTextOffsetY!;
+    }
+    if (design.lanyardLogoTextSpacing != null) {
+      controller.lanyardLogoTextSpacing.value = design.lanyardLogoTextSpacing!;
+    }
+    controller.lanyardCustomTextColorHex.value = design.lanyardTextColorHex;
+
+    int templateIdx = design.lanyardVariant ?? (int.tryParse(design.templatePairId) ?? 0);
     for (int i = 0; i < controller.activeTemplates.length; i++) {
       final name = controller.templateTitleAt(i).toLowerCase();
       if (name == design.templateName.toLowerCase() ||
@@ -69,8 +93,12 @@ class MyDesignsView extends GetView<CreateFlowController> {
       }
     }
 
+    controller.setSelectedTemplate(templateIdx);
+
     if (Get.isRegistered<TemplateController>()) {
       final templateCtrl = Get.find<TemplateController>();
+      templateCtrl.selectTemplate(templateIdx);
+      templateCtrl.refreshCardData();
       templateCtrl.openTemplateEditor(templateIdx);
     }
   }
@@ -106,7 +134,7 @@ class MyDesignsView extends GetView<CreateFlowController> {
                   }
                   return ListView.separated(
                     itemCount: controller.savedDesigns.length,
-                    separatorBuilder: (_, __) =>
+                    separatorBuilder: (context, index) =>
                         const SizedBox(height: AppSpacing.sm),
                     itemBuilder: (context, index) {
                       final design = controller.savedDesigns[index];
@@ -419,35 +447,99 @@ class _SavedCardViewerDialogState extends State<SavedCardViewerDialog> {
                     icon: const Icon(Icons.delete_outline_rounded,
                         color: Color(0xFFEF4444), size: 18),
                     label: Text(
-                      'Delete Card',
+                      'Delete',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                         color: const Color(0xFFEF4444),
+                        fontSize: 13,
                       ),
                     ),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Color(0xFFEF4444)),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.check_rounded, size: 18),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      if (Get.isRegistered<CreateFlowController>()) {
+                        final flow = Get.find<CreateFlowController>();
+                        if (design.service.isNotEmpty) {
+                          flow.selectedService.value = design.service;
+                        }
+                        if (design.fontFamily.isNotEmpty) {
+                          final fontIndex = flow.fonts.indexOf(design.fontFamily);
+                          if (fontIndex != -1) {
+                            flow.selectedFont.value = fontIndex;
+                          }
+                        }
+                        flow.fontSizeScale.value = design.fontSizeScale;
+                        if (design.instituteName.isNotEmpty) {
+                          flow.instituteCtrl.text = design.instituteName;
+                        }
+                        if (design.studentName.isNotEmpty) {
+                          flow.fullNameCtrl.text = design.studentName;
+                        }
+                        if (design.logoPath != null && design.logoPath!.isNotEmpty) {
+                          flow.photoPath.value = design.logoPath!;
+                        }
+                        if (design.lanyardRepeatCount != null) {
+                          flow.lanyardRepeatCount.value = design.lanyardRepeatCount!;
+                        }
+                        if (design.lanyardTextOffsetX != null) {
+                          flow.lanyardTextOffsetX.value = design.lanyardTextOffsetX!;
+                        }
+                        if (design.lanyardTextOffsetY != null) {
+                          flow.lanyardTextOffsetY.value = design.lanyardTextOffsetY!;
+                        }
+                        if (design.lanyardLogoTextSpacing != null) {
+                          flow.lanyardLogoTextSpacing.value = design.lanyardLogoTextSpacing!;
+                        }
+                        flow.lanyardCustomTextColorHex.value = design.lanyardTextColorHex;
+                        int templateIdx = design.lanyardVariant ?? (int.tryParse(design.templatePairId) ?? 0);
+                        flow.setSelectedTemplate(templateIdx);
+                        if (Get.isRegistered<TemplateController>()) {
+                          final templateCtrl = Get.find<TemplateController>();
+                          templateCtrl.selectTemplate(templateIdx);
+                          templateCtrl.refreshCardData();
+                          templateCtrl.openTemplateEditor(templateIdx);
+                        }
+                      }
+                    },
+                    icon: const Icon(Icons.edit_rounded, size: 18),
                     label: Text(
-                      'Close',
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                      'Open Editor',
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 13),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1E88E5),
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.check_rounded, size: 18),
+                    label: Text(
+                      'Close',
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 13),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF334155),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                     ),
                   ),
                 ),

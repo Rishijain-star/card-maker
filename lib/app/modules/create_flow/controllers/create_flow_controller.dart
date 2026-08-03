@@ -1305,6 +1305,13 @@ class CreateFlowController extends GetxController {
       savedAtMs: int.parse(pairId),
       instituteName: instituteName,
       studentName: studentName,
+      lanyardVariant: isLanyardService ? selectedTemplate.value : null,
+      lanyardRepeatCount: lanyardRepeatCount.value,
+      lanyardTextOffsetX: lanyardTextOffsetX.value,
+      lanyardTextOffsetY: lanyardTextOffsetY.value,
+      lanyardLogoTextSpacing: lanyardLogoTextSpacing.value,
+      lanyardTextColorHex: lanyardCustomTextColorHex.value,
+      logoPath: photoPath.value,
     );
     savedDesigns.insert(0, design);
     await _persistSavedDesigns();
@@ -1380,9 +1387,11 @@ class CreateFlowController extends GetxController {
         // Reset student-specific details for next card entry
         fullNameCtrl.clear();
         idNumberCtrl.clear();
-        photoPath.value = '';
-        signaturePath.value = '';
-        signatureImageBytes.value = null;
+        if (!isLanyardService) {
+          photoPath.value = '';
+          signaturePath.value = '';
+          signatureImageBytes.value = null;
+        }
 
         var poppedToForm = false;
         Get.until((route) {
