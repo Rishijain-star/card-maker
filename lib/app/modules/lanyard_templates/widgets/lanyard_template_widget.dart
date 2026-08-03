@@ -7,7 +7,7 @@ import '../../id_templates/design_system/id_card_typography.dart';
 import '../design_system/lanyard_dimensions.dart';
 
 /// Full-width Horizontal Lanyard Ribbon Strip featuring asset images & custom procedural designs,
-/// circular logo filling, and repeating form text placed across safe areas.
+/// circular logo filling, repeating form text, and subtle section background artwork.
 class LanyardTemplateWidget extends StatelessWidget {
   const LanyardTemplateWidget({
     super.key,
@@ -40,7 +40,7 @@ class LanyardTemplateWidget extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background: Asset Image (variants 0-5) or Procedural Custom Painter (variants 6-7)
+            // Background: Asset Image (variants 0-5) or Procedural Custom Artwork (variants 6-8)
             if (variant >= 6)
               CustomPaint(
                 painter: _RibbonStripePainter(
@@ -103,16 +103,37 @@ class _RibbonStripePainter extends CustomPainter {
     final slotWidth = size.width / count;
 
     if (variant == 6) {
-      // Gold & Dark Premium Ribbon Gradient
+      // 1. Gold & Dark Premium Ribbon with Diamond Lattice Artwork
       final bgGradient = const LinearGradient(
         colors: [Color(0xFF0B0F19), Color(0xFF1E293B), Color(0xFF0F172A)],
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
       );
-      final bgPaint = Paint()..shader = bgGradient.createShader(rect);
-      canvas.drawRect(rect, bgPaint);
+      canvas.drawRect(rect, Paint()..shader = bgGradient.createShader(rect));
 
-      // Gold boundary dividers between slots (at exact 33.3%, 66.6% marks)
+      // Draw Diamond Lattice Artwork inside each slot
+      final artPaint = Paint()
+        ..color = const Color(0xFFFFD700).withValues(alpha: 0.10)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2;
+
+      for (int i = 0; i < count; i++) {
+        final slotLeft = i * slotWidth;
+        final slotCenter = slotLeft + slotWidth / 2;
+
+        final artPath = Path();
+        for (double r = 10; r <= 32; r += 8) {
+          artPath
+            ..moveTo(slotCenter, size.height / 2 - r)
+            ..lineTo(slotCenter + r * 2.2, size.height / 2)
+            ..lineTo(slotCenter, size.height / 2 + r)
+            ..lineTo(slotCenter - r * 2.2, size.height / 2)
+            ..close();
+        }
+        canvas.drawPath(artPath, artPaint);
+      }
+
+      // Slot Boundary Dividers
       final goldPaint = Paint()
         ..color = const Color(0xFFFFD700).withValues(alpha: 0.9)
         ..style = PaintingStyle.fill;
@@ -122,7 +143,6 @@ class _RibbonStripePainter extends CustomPainter {
         ..style = PaintingStyle.fill;
 
       const stripeWidth = 10.0;
-
       for (int i = 1; i < count; i++) {
         final x = i * slotWidth;
 
@@ -142,17 +162,47 @@ class _RibbonStripePainter extends CustomPainter {
           ..close();
         canvas.drawPath(path2, goldDarkPaint);
       }
-    } else if (variant == 7) {
-      // Cyber Cyan Mesh Ribbon Gradient
-      final bgGradient = const LinearGradient(
-        colors: [Color(0xFF0284C7), Color(0xFF00E5FF), Color(0xFF0369A1)],
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-      );
-      final bgPaint = Paint()..shader = bgGradient.createShader(rect);
-      canvas.drawRect(rect, bgPaint);
+    } else if (variant == 7 || variant == 8) {
+      // 2. Cyber Wave / Royal Purple Wave Artwork
+      final bgGradient = variant == 8
+          ? const LinearGradient(
+              colors: [Color(0xFF3B0764), Color(0xFF6D28D9), Color(0xFF1E1B4B)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            )
+          : const LinearGradient(
+              colors: [Color(0xFF0284C7), Color(0xFF00E5FF), Color(0xFF0369A1)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            );
 
-      // White/Dark boundary dividers between slots
+      canvas.drawRect(rect, Paint()..shader = bgGradient.createShader(rect));
+
+      // Wave Artwork lines inside each section
+      final wavePaint = Paint()
+        ..color = Colors.white.withValues(alpha: 0.14)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.4;
+
+      for (int i = 0; i < count; i++) {
+        final slotLeft = i * slotWidth;
+
+        final wavePath = Path();
+        for (double dy = -8; dy <= size.height + 8; dy += 10) {
+          wavePath.moveTo(slotLeft, dy);
+          wavePath.cubicTo(
+            slotLeft + slotWidth * 0.25,
+            dy + 6,
+            slotLeft + slotWidth * 0.75,
+            dy - 6,
+            slotLeft + slotWidth,
+            dy,
+          );
+        }
+        canvas.drawPath(wavePath, wavePaint);
+      }
+
+      // Slot Boundary Dividers
       final whitePaint = Paint()
         ..color = Colors.white.withValues(alpha: 0.95)
         ..style = PaintingStyle.fill;
@@ -162,7 +212,6 @@ class _RibbonStripePainter extends CustomPainter {
         ..style = PaintingStyle.fill;
 
       const stripeWidth = 10.0;
-
       for (int i = 1; i < count; i++) {
         final x = i * slotWidth;
 
@@ -209,7 +258,7 @@ class _CircularLogoWidget extends StatelessWidget {
 
     final borderColor = variant == 6
         ? const Color(0xFFFFD700)
-        : (variant == 7
+        : (variant == 7 || variant == 8
             ? const Color(0xFF00E5FF)
             : (variant == 1
                 ? const Color(0xFF00E5FF)
@@ -238,7 +287,7 @@ class _CircularLogoWidget extends StatelessWidget {
           Icons.verified_rounded,
           color: variant == 6
               ? const Color(0xFFD97706)
-              : (variant == 7 ? const Color(0xFF0284C7) : const Color(0xFF0284C7)),
+              : (variant == 8 ? const Color(0xFF7C3AED) : const Color(0xFF0284C7)),
           size: size * 0.55,
         ),
       );
@@ -283,6 +332,7 @@ class _HorizontalRibbonContent extends StatelessWidget {
           textColor = const Color(0xFFFFD700);
           break;
         case 7:
+        case 8:
           textColor = Colors.white;
           break;
         case 5:

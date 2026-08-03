@@ -402,17 +402,24 @@ class CreateFlowController extends GetxController {
     },
     <String, dynamic>{
       'id': 6,
-      'title': 'Gold & Dark Premium',
+      'title': 'Gold & Diamond Artwork',
       'category': 'Lanyard',
       'lanyardEngine': true,
       'variant': 6,
     },
     <String, dynamic>{
       'id': 7,
-      'title': 'Cyber Cyan Mesh',
+      'title': 'Cyber Wave Artwork',
       'category': 'Lanyard',
       'lanyardEngine': true,
       'variant': 7,
+    },
+    <String, dynamic>{
+      'id': 8,
+      'title': 'Royal Purple Wave Artwork',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 8,
     },
   ];
 
