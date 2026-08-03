@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../routes/app_pages.dart';
 import '../controllers/create_flow_controller.dart';
 import '../widgets/student_form_assets.dart';
 import '../widgets/student_form_widgets.dart';
@@ -10,7 +9,7 @@ class LanyardDetailsFormView extends GetView<CreateFlowController> {
   const LanyardDetailsFormView({super.key});
 
   void _submit() {
-    Get.toNamed<void>(Routes.TEMPLATES);
+    controller.navigateAfterFormSubmit();
   }
 
   @override

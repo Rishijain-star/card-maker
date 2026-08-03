@@ -98,6 +98,7 @@ flutter:
 
   assets:
     - assets/
+    - assets/lanyard/
     - imagesss/
     - assets/original mango.png
     - assets/ChatGPT Image Jun 4, 2026, 03_15_17 PM.png
