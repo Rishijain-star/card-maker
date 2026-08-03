@@ -43,7 +43,10 @@ class LanyardTemplateWidget extends StatelessWidget {
             // Background: Asset Image (variants 0-5) or Procedural Custom Painter (variants 6-7)
             if (variant >= 6)
               CustomPaint(
-                painter: _RibbonStripePainter(variant: variant),
+                painter: _RibbonStripePainter(
+                  variant: variant,
+                  repeatCount: data.repeatCount,
+                ),
               )
             else
               Image.asset(
@@ -85,13 +88,19 @@ class LanyardTemplateWidget extends StatelessWidget {
 }
 
 class _RibbonStripePainter extends CustomPainter {
-  const _RibbonStripePainter({required this.variant});
+  const _RibbonStripePainter({
+    required this.variant,
+    this.repeatCount = 3,
+  });
 
   final int variant;
+  final int repeatCount;
 
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
+    final count = repeatCount.clamp(2, 6);
+    final slotWidth = size.width / count;
 
     if (variant == 6) {
       // Gold & Dark Premium Ribbon Gradient
@@ -103,32 +112,33 @@ class _RibbonStripePainter extends CustomPainter {
       final bgPaint = Paint()..shader = bgGradient.createShader(rect);
       canvas.drawRect(rect, bgPaint);
 
-      // Gold diagonal accent stripes
-      final stripePaint = Paint()
-        ..color = const Color(0xFFFFD700).withValues(alpha: 0.85)
+      // Gold boundary dividers between slots (at exact 33.3%, 66.6% marks)
+      final goldPaint = Paint()
+        ..color = const Color(0xFFFFD700).withValues(alpha: 0.9)
         ..style = PaintingStyle.fill;
 
       final goldDarkPaint = Paint()
-        ..color = const Color(0xFFB8860B).withValues(alpha: 0.6)
+        ..color = const Color(0xFFB8860B).withValues(alpha: 0.7)
         ..style = PaintingStyle.fill;
 
-      const stripeWidth = 14.0;
-      const spacing = 220.0;
+      const stripeWidth = 10.0;
 
-      for (double x = -size.height; x < size.width + size.height; x += spacing) {
+      for (int i = 1; i < count; i++) {
+        final x = i * slotWidth;
+
         final path1 = Path()
-          ..moveTo(x, 0)
-          ..lineTo(x + stripeWidth, 0)
-          ..lineTo(x + stripeWidth - size.height * 0.5, size.height)
-          ..lineTo(x - size.height * 0.5, size.height)
+          ..moveTo(x - 8, 0)
+          ..lineTo(x - 8 + stripeWidth, 0)
+          ..lineTo(x - 8 + stripeWidth - size.height * 0.4, size.height)
+          ..lineTo(x - 8 - size.height * 0.4, size.height)
           ..close();
-        canvas.drawPath(path1, stripePaint);
+        canvas.drawPath(path1, goldPaint);
 
         final path2 = Path()
-          ..moveTo(x + stripeWidth + 6, 0)
-          ..lineTo(x + stripeWidth * 2 + 6, 0)
-          ..lineTo(x + stripeWidth * 2 + 6 - size.height * 0.5, size.height)
-          ..lineTo(x + stripeWidth + 6 - size.height * 0.5, size.height)
+          ..moveTo(x + 6, 0)
+          ..lineTo(x + 6 + stripeWidth * 0.7, 0)
+          ..lineTo(x + 6 + stripeWidth * 0.7 - size.height * 0.4, size.height)
+          ..lineTo(x + 6 - size.height * 0.4, size.height)
           ..close();
         canvas.drawPath(path2, goldDarkPaint);
       }
@@ -142,39 +152,42 @@ class _RibbonStripePainter extends CustomPainter {
       final bgPaint = Paint()..shader = bgGradient.createShader(rect);
       canvas.drawRect(rect, bgPaint);
 
-      // White/Black diagonal cyber stripes
-      final whiteStripe = Paint()
-        ..color = Colors.white.withValues(alpha: 0.9)
+      // White/Dark boundary dividers between slots
+      final whitePaint = Paint()
+        ..color = Colors.white.withValues(alpha: 0.95)
         ..style = PaintingStyle.fill;
 
-      final darkStripe = Paint()
-        ..color = const Color(0xFF0F172A).withValues(alpha: 0.75)
+      final darkPaint = Paint()
+        ..color = const Color(0xFF0F172A).withValues(alpha: 0.8)
         ..style = PaintingStyle.fill;
 
-      const spacing = 180.0;
-      for (double x = -size.height; x < size.width + size.height; x += spacing) {
+      const stripeWidth = 10.0;
+
+      for (int i = 1; i < count; i++) {
+        final x = i * slotWidth;
+
         final path1 = Path()
-          ..moveTo(x, 0)
-          ..lineTo(x + 12, 0)
-          ..lineTo(x + 12 - size.height * 0.6, size.height)
-          ..lineTo(x - size.height * 0.6, size.height)
+          ..moveTo(x - 6, 0)
+          ..lineTo(x - 6 + stripeWidth, 0)
+          ..lineTo(x - 6 + stripeWidth - size.height * 0.4, size.height)
+          ..lineTo(x - 6 - size.height * 0.4, size.height)
           ..close();
-        canvas.drawPath(path1, whiteStripe);
+        canvas.drawPath(path1, whitePaint);
 
         final path2 = Path()
-          ..moveTo(x + 16, 0)
-          ..lineTo(x + 28, 0)
-          ..lineTo(x + 28 - size.height * 0.6, size.height)
-          ..lineTo(x + 16 - size.height * 0.6, size.height)
+          ..moveTo(x + 8, 0)
+          ..lineTo(x + 8 + stripeWidth * 0.7, 0)
+          ..lineTo(x + 8 + stripeWidth * 0.7 - size.height * 0.4, size.height)
+          ..lineTo(x + 8 - size.height * 0.4, size.height)
           ..close();
-        canvas.drawPath(path2, darkStripe);
+        canvas.drawPath(path2, darkPaint);
       }
     }
   }
 
   @override
   bool shouldRepaint(covariant _RibbonStripePainter oldDelegate) =>
-      oldDelegate.variant != variant;
+      oldDelegate.variant != variant || oldDelegate.repeatCount != repeatCount;
 }
 
 class _CircularLogoWidget extends StatelessWidget {
