@@ -130,12 +130,26 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
               ),
               const SizedBox(height: AppSpacing.sm),
             ],
-            Align(
-              alignment: Alignment.centerLeft,
-              child: _ToolChip(
-                label: 'Stylish Font',
-                active: panel == TemplateEditorPanel.fonts,
-                onTap: () => controller.togglePanel(TemplateEditorPanel.fonts),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _ToolChip(
+                    label: 'Stylish Font',
+                    icon: Icons.font_download_rounded,
+                    active: panel == TemplateEditorPanel.fonts,
+                    onTap: () => controller.togglePanel(TemplateEditorPanel.fonts),
+                  ),
+                  if (flow.isLanyardService) ...[
+                    const SizedBox(width: 10),
+                    _ToolChip(
+                      label: 'Change Logo',
+                      icon: Icons.add_photo_alternate_rounded,
+                      active: false,
+                      onTap: flow.pickFromGallery,
+                    ),
+                  ],
+                ],
               ),
             ),
           ],
@@ -149,10 +163,12 @@ class _ToolChip extends StatelessWidget {
   const _ToolChip({
     required this.label,
     required this.onTap,
+    this.icon,
     this.active = false,
   });
 
   final String label;
+  final IconData? icon;
   final VoidCallback onTap;
   final bool active;
 
@@ -164,21 +180,34 @@ class _ToolChip extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 10),
           decoration: BoxDecoration(
             gradient: active ? AppGradients.primary : AppGradients.secondary,
             borderRadius: BorderRadius.circular(20),
             border: active
                 ? Border.all(color: const Color(0xFF2563EB), width: 2)
-                : null,
+                : Border.all(color: const Color(0xFFCBD5E1)),
           ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: active ? Colors.white : const Color(0xFF0F172A),
-              fontWeight: FontWeight.w700,
-              fontSize: 14,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(
+                  icon,
+                  size: 18,
+                  color: active ? Colors.white : const Color(0xFF2563EB),
+                ),
+                const SizedBox(width: 6),
+              ],
+              Text(
+                label,
+                style: TextStyle(
+                  color: active ? Colors.white : const Color(0xFF0F172A),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
+            ],
           ),
         ),
       ),

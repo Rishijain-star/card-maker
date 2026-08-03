@@ -71,7 +71,7 @@ class _CircularLogoWidget extends StatelessWidget {
   const _CircularLogoWidget({
     required this.logoPath,
     this.variant = 0,
-    this.size = 26.0,
+    this.size = 32.0,
   });
 
   final String logoPath;
@@ -80,11 +80,42 @@ class _CircularLogoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasFile = logoPath.isNotEmpty && File(logoPath).existsSync();
+    final isFile = logoPath.isNotEmpty && File(logoPath).existsSync();
+    final isAsset = logoPath.isNotEmpty &&
+        (logoPath.startsWith('assets/') || logoPath.startsWith('imagesss/'));
 
     final borderColor = variant == 1
         ? const Color(0xFF00E5FF)
         : (variant == 3 ? const Color(0xFFFFD700) : Colors.white);
+
+    Widget content;
+    if (isFile) {
+      content = Image.file(
+        File(logoPath),
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+      );
+    } else if (isAsset) {
+      content = Image.asset(
+        logoPath,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+      );
+    } else {
+      content = Container(
+        color: Colors.white,
+        alignment: Alignment.center,
+        child: Icon(
+          Icons.verified_rounded,
+          color: variant == 3
+              ? const Color(0xFFD97706)
+              : const Color(0xFF0284C7),
+          size: size * 0.55,
+        ),
+      );
+    }
 
     return Container(
       width: size,
@@ -92,35 +123,16 @@ class _CircularLogoWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
-        border: Border.all(color: borderColor, width: 1.8),
+        border: Border.all(color: borderColor, width: 2.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
+            color: Colors.black.withValues(alpha: 0.35),
             blurRadius: 4,
             offset: const Offset(0, 1),
           ),
         ],
       ),
-      child: ClipOval(
-        child: hasFile
-            ? Image.file(
-                File(logoPath),
-                width: size,
-                height: size,
-                fit: BoxFit.cover,
-              )
-            : Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(3),
-                child: Icon(
-                  Icons.verified_rounded,
-                  color: variant == 3
-                      ? const Color(0xFFD97706)
-                      : const Color(0xFF0284C7),
-                  size: 15,
-                ),
-              ),
-      ),
+      child: ClipOval(child: content),
     );
   }
 }
@@ -187,7 +199,7 @@ class _HorizontalRibbonContent extends StatelessWidget {
               _CircularLogoWidget(
                 logoPath: data.logoPath,
                 variant: variant,
-                size: 26,
+                size: 32,
               ),
               const SizedBox(width: 8),
               Text(
@@ -204,7 +216,7 @@ class _HorizontalRibbonContent extends StatelessWidget {
               _CircularLogoWidget(
                 logoPath: data.logoPath,
                 variant: variant,
-                size: 26,
+                size: 32,
               ),
               const SizedBox(width: 8),
               Text(
@@ -221,7 +233,7 @@ class _HorizontalRibbonContent extends StatelessWidget {
               _CircularLogoWidget(
                 logoPath: data.logoPath,
                 variant: variant,
-                size: 26,
+                size: 32,
               ),
               const SizedBox(width: 8),
               Text(
