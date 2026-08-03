@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:get/get.dart' as getx;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import '../core/config/api_config.dart';
 import '../routes/app_pages.dart';
 import '../services/local_storage_services/local_storage_services.dart';
 import '../services/secure_token_service/secure_token_service.dart';
@@ -18,19 +19,11 @@ class ApiClient {
   ApiClient._internal();
 
   void _initDio() {
-    // Default targets Android emulator -> host machine Laravel server.
-    // Override at run time for web/physical device with:
-    // --dart-define=APP_API_BASE_URL=http://127.0.0.1:8000/api/v1/
-    // --dart-define=APP_API_BASE_URL=http://<LAN_IP>:8000/api/v1/
-    const configuredBase = String.fromEnvironment(
-      'APP_API_BASE_URL',
-      defaultValue: 'http://192.168.1.43:8000/api/v1/',
-    );
     _dio = Dio(
       BaseOptions(
         receiveTimeout: const Duration(seconds: 30),
         connectTimeout: const Duration(seconds: 30),
-        baseUrl: configuredBase,
+        baseUrl: ApiConfig.baseUrl,
       ),
     );
 

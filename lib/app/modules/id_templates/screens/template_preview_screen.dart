@@ -36,7 +36,13 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: Get.back<void>,
+                    onPressed: () {
+                      if (Navigator.of(context).canPop()) {
+                        Get.back<void>();
+                      } else {
+                        Get.offAllNamed<void>(Routes.TEMPLATES);
+                      }
+                    },
                     icon: const Icon(Icons.arrow_back_rounded),
                   ),
                   Expanded(
@@ -47,19 +53,17 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                   ),
                   IconButton(
                     onPressed: () {
-                      var poppedToMyDesigns = false;
-                      Get.until((route) {
-                        if (route.settings.name == Routes.MY_DESIGNS) {
-                          poppedToMyDesigns = true;
-                          return true;
-                        }
-                        return false;
-                      });
-                      if (!poppedToMyDesigns) {
+                      if (Navigator.of(context).canPop()) {
                         Get.back<void>();
+                      } else {
+                        Get.offAllNamed<void>(Routes.TEMPLATES);
                       }
                     },
-                    icon: const Icon(Icons.close_rounded, size: 26, color: Color(0xFF64748B)),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      size: 26,
+                      color: Color(0xFF64748B),
+                    ),
                     tooltip: 'Close Preview',
                   ),
                 ],
