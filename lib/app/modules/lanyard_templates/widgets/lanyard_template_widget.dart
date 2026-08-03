@@ -633,6 +633,75 @@ class _RibbonStripePainter extends CustomPainter {
       final borderPaint = Paint()..color = const Color(0xFF1E1B4B);
       canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
       canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
+    } else if (variant == 18) {
+      // 12. Black & Crimson Yellow Diamond Slash Sport (Exact User Reference Image)
+      final bgPaint = Paint()..color = const Color(0xFF141312);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), bgPaint);
+
+      final slashOffset = size.height * 0.48;
+
+      for (int i = 0; i < count; i++) {
+        final slotLeft = i * slotWidth;
+        final edgeX = slotLeft + slotWidth * 0.82;
+
+        // Parallelogram Slash 1: Dark Amber Brown (#8B3A14)
+        final p1 = Path()
+          ..moveTo(edgeX - 18, 0)
+          ..lineTo(edgeX - 12, 0)
+          ..lineTo(edgeX - 12 - slashOffset, size.height)
+          ..lineTo(edgeX - 18 - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(p1, Paint()..color = const Color(0xFF8B3A14));
+
+        // Parallelogram Slash 2: Deep Dark Red (#991B1B)
+        final p2 = Path()
+          ..moveTo(edgeX - 10, 0)
+          ..lineTo(edgeX - 4, 0)
+          ..lineTo(edgeX - 4 - slashOffset, size.height)
+          ..lineTo(edgeX - 10 - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(p2, Paint()..color = const Color(0xFF991B1B));
+
+        // Parallelogram Slash 3: Crimson Red (#B91C1C)
+        final p3 = Path()
+          ..moveTo(edgeX - 2, 0)
+          ..lineTo(edgeX + 4, 0)
+          ..lineTo(edgeX + 4 - slashOffset, size.height)
+          ..lineTo(edgeX - 2 - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(p3, Paint()..color = const Color(0xFFB91C1C));
+
+        // Parallelogram Slash 4: Bright Golden Yellow (#FACC15)
+        final p4 = Path()
+          ..moveTo(edgeX + 6, 0)
+          ..lineTo(edgeX + 13, 0)
+          ..lineTo(edgeX + 13 - slashOffset, size.height)
+          ..lineTo(edgeX + 6 - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(p4, Paint()..color = const Color(0xFFFACC15));
+
+        // Parallelogram Slash 5: Sun Amber Yellow (#F59E0B)
+        final p5 = Path()
+          ..moveTo(edgeX + 15, 0)
+          ..lineTo(edgeX + 21, 0)
+          ..lineTo(edgeX + 21 - slashOffset, size.height)
+          ..lineTo(edgeX + 15 - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(p5, Paint()..color = const Color(0xFFF59E0B));
+
+        // Parallelogram Slash 6: Crimson Red Accent (#DC2626)
+        final p6 = Path()
+          ..moveTo(edgeX + 23, 0)
+          ..lineTo(edgeX + 29, 0)
+          ..lineTo(edgeX + 29 - slashOffset, size.height)
+          ..lineTo(edgeX + 23 - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(p6, Paint()..color = const Color(0xFFDC2626));
+      }
+
+      final borderPaint = Paint()..color = const Color(0xFF332D29);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
+      canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
     }
   }
 
@@ -658,31 +727,33 @@ class _CircularLogoWidget extends StatelessWidget {
     final isAsset = logoPath.isNotEmpty &&
         (logoPath.startsWith('assets/') || logoPath.startsWith('imagesss/'));
 
-    final borderColor = variant == 17
+    final borderColor = variant == 18
         ? const Color(0xFFFACC15)
-        : (variant == 16
-            ? const Color(0xFF1D4ED8)
-            : (variant == 15
-                ? const Color(0xFF38BDF8)
-                : (variant == 14
-                    ? const Color(0xFFDC2626)
-                    : (variant == 13
-                        ? const Color(0xFFFFE4E6)
-                        : (variant == 12
-                            ? const Color(0xFFEF4444)
-                            : (variant == 6 || variant == 9
-                                ? const Color(0xFFFFD700)
-                                : (variant == 10
-                                    ? const Color(0xFFF8FAFC)
-                                    : (variant == 11
-                                        ? const Color(0xFFFECDD3)
-                                        : (variant == 7 || variant == 8
-                                            ? const Color(0xFF00E5FF)
-                                            : (variant == 1
+        : (variant == 17
+            ? const Color(0xFFFACC15)
+            : (variant == 16
+                ? const Color(0xFF1D4ED8)
+                : (variant == 15
+                    ? const Color(0xFF38BDF8)
+                    : (variant == 14
+                        ? const Color(0xFFDC2626)
+                        : (variant == 13
+                            ? const Color(0xFFFFE4E6)
+                            : (variant == 12
+                                ? const Color(0xFFEF4444)
+                                : (variant == 6 || variant == 9
+                                    ? const Color(0xFFFFD700)
+                                    : (variant == 10
+                                        ? const Color(0xFFF8FAFC)
+                                        : (variant == 11
+                                            ? const Color(0xFFFECDD3)
+                                            : (variant == 7 || variant == 8
                                                 ? const Color(0xFF00E5FF)
-                                                : (variant == 3
-                                                    ? const Color(0xFFFFD700)
-                                                    : Colors.white)))))))))));
+                                                : (variant == 1
+                                                    ? const Color(0xFF00E5FF)
+                                                    : (variant == 3
+                                                        ? const Color(0xFFFFD700)
+                                                        : Colors.white))))))))))));
 
     Widget content;
     if (isFile) {
@@ -705,27 +776,29 @@ class _CircularLogoWidget extends StatelessWidget {
         alignment: Alignment.center,
         child: Icon(
           Icons.verified_rounded,
-          color: variant == 17
-              ? const Color(0xFF7E22CE)
-              : (variant == 16
-                  ? const Color(0xFF1D4ED8)
-                  : (variant == 15
-                      ? const Color(0xFF0284C7)
-                      : (variant == 14
-                          ? const Color(0xFFDC2626)
-                          : (variant == 13
-                              ? const Color(0xFFE11D48)
-                              : (variant == 12
-                                  ? const Color(0xFFEF4444)
-                                  : (variant == 6 || variant == 9
-                                      ? const Color(0xFFD97706)
-                                      : (variant == 10
-                                          ? const Color(0xFF047857)
-                                          : (variant == 11
-                                              ? const Color(0xFFBE123C)
-                                              : (variant == 8
-                                                  ? const Color(0xFF7C3AED)
-                                                  : const Color(0xFF0284C7)))))))))),
+          color: variant == 18
+              ? const Color(0xFFDC2626)
+              : (variant == 17
+                  ? const Color(0xFF7E22CE)
+                  : (variant == 16
+                      ? const Color(0xFF1D4ED8)
+                      : (variant == 15
+                          ? const Color(0xFF0284C7)
+                          : (variant == 14
+                              ? const Color(0xFFDC2626)
+                              : (variant == 13
+                                  ? const Color(0xFFE11D48)
+                                  : (variant == 12
+                                      ? const Color(0xFFEF4444)
+                                      : (variant == 6 || variant == 9
+                                          ? const Color(0xFFD97706)
+                                          : (variant == 10
+                                              ? const Color(0xFF047857)
+                                              : (variant == 11
+                                                  ? const Color(0xFFBE123C)
+                                                  : (variant == 8
+                                                      ? const Color(0xFF7C3AED)
+                                                      : const Color(0xFF0284C7))))))))))),
           size: size * 0.55,
         ),
       );
