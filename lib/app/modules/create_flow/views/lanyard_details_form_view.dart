@@ -29,45 +29,38 @@ class LanyardDetailsFormView extends GetView<CreateFlowController> {
                 child: Column(
                   children: [
                     StudentSectionHeader(
-                      title: 'Lanyard Details',
+                      title: 'Lanyard Setup',
                       iconAsset: StudentFormAssets.basicInfoHeader,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
+                    // 1. Logo Upload Option
                     Center(
                       child: StudentPhotoPicker(
                         photoPath: controller.photoPath.value,
                         onAddPhoto: controller.pickFromGallery,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     Text(
-                      'Add logo (optional)',
+                      'Upload Lanyard Logo (Optional)',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 12,
+                        color: Colors.grey.shade700,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 28),
+                    // 2. Single Lanyard Text Field
                     StudentUnderlineField(
                       iconAsset: StudentFormAssets.university,
-                      hint: 'Organization / School name',
+                      hint: 'Enter Lanyard Text (e.g. CITY PUBLIC SCHOOL)',
                       controller: controller.instituteCtrl,
-                    ),
-                    StudentUnderlineField(
-                      iconAsset: StudentFormAssets.student,
-                      hint: 'Name on lanyard',
-                      controller: controller.fullNameCtrl,
-                    ),
-                    StudentUnderlineField(
-                      iconAsset: StudentFormAssets.book,
-                      hint: 'Role / Title (e.g. STAFF, STUDENT)',
-                      controller: controller.courseCtrl,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               StudentSubmitButton(onPressed: _submit),
             ],
           ),

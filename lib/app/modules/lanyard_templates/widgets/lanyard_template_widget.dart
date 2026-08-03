@@ -194,15 +194,14 @@ class _StrapContentOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final org = data.organization.isNotEmpty ? data.organization : 'ID-SHAYDI';
-    final name = data.name.isNotEmpty ? data.name : 'STAFF MEMBER';
-    final role = data.subtitle;
+    final textOnLanyard =
+        data.organization.isNotEmpty ? data.organization : 'ID-SHAYDI';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
       child: Column(
         children: [
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
           // Circle Logo filled neatly
           _CircularLogoWidget(
@@ -210,56 +209,25 @@ class _StrapContentOverlay extends StatelessWidget {
             size: variant == 3 ? 44.0 : 38.0,
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
 
           // Lanyard Form Text in the aasmani (sky blue) section
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: 0.15),
+              color: Colors.black.withValues(alpha: 0.18),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  org.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: _textStyle(
-                    size: 9,
-                    weight: FontWeight.w700,
-                    color: const Color(0xFF00E5FF),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  name.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: _textStyle(
-                    size: 11,
-                    weight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
-                ),
-                if (role.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    role.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: _textStyle(
-                      size: 8,
-                      weight: FontWeight.w600,
-                      color: const Color(0xFFE2E8F0),
-                    ),
-                  ),
-                ],
-              ],
+            child: Text(
+              textOnLanyard.toUpperCase(),
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: _textStyle(
+                size: 11,
+                weight: FontWeight.w800,
+                color: const Color(0xFF00E5FF),
+              ),
             ),
           ),
 
@@ -273,7 +241,7 @@ class _StrapContentOverlay extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              org.toUpperCase(),
+              textOnLanyard.toUpperCase(),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
