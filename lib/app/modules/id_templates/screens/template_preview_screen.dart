@@ -37,6 +37,7 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                 children: [
                   IconButton(
                     onPressed: () {
+                      flow.resetQuickCreate();
                       if (Navigator.of(context).canPop()) {
                         Get.back<void>();
                       } else {
@@ -69,9 +70,16 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                     ),
                   IconButton(
                     onPressed: () {
-                      if (Navigator.of(context).canPop()) {
-                        Get.back<void>();
-                      } else {
+                      flow.resetQuickCreate();
+                      var poppedToTemplates = false;
+                      Get.until((route) {
+                        if (route.settings.name == Routes.TEMPLATES) {
+                          poppedToTemplates = true;
+                          return true;
+                        }
+                        return false;
+                      });
+                      if (!poppedToTemplates) {
                         Get.offAllNamed<void>(Routes.TEMPLATES);
                       }
                     },
@@ -80,7 +88,7 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                       size: 26,
                       color: Color(0xFF64748B),
                     ),
-                    tooltip: 'Close Preview',
+                    tooltip: 'Close Preview & Pick Style',
                   ),
                 ],
               ),

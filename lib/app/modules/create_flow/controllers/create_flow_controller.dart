@@ -1173,6 +1173,10 @@ class CreateFlowController extends GetxController {
     return true;
   }
 
+  void resetQuickCreate() {
+    _quickCreateAnother = false;
+  }
+
   /// Called from details form after validation — normal or batch-create flow.
   void navigateAfterFormSubmit() {
     if (_quickCreateAnother) {

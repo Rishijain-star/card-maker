@@ -62,7 +62,7 @@ class TemplatePickerView extends GetView<CreateFlowController> {
                       return ListView.separated(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         itemCount: flow.activeTemplates.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 14),
+                        separatorBuilder: (context, index) => const SizedBox(height: 14),
                         itemBuilder: (context, index) {
                           final selected = flow.selectedTemplate.value == index;
                           if (flow.isLanyardService) {
