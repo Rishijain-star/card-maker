@@ -54,10 +54,6 @@ abstract final class _PortraitV13Layout {
   static const double detailMinFontSize = 11;
   static const double detailRowGapMin = 6.0;
   static const double detailRowGapMax = 11.0;
-
-  static const double signatureSizeRatio = 0.10;
-  static const double signatureRightRatio = 0.07;
-  static const double signatureBottomRatio = 0.15;
 }
 
 class StudentIdTemplatePortraitV13 extends StatelessWidget {
@@ -175,8 +171,9 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
               textStyle: _ts(const TextStyle(
                 color: Colors.white,
                 fontSize: 13,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w700,
                 height: 1.2,
+                letterSpacing: 0.35,
               )),
               minFontSize: 9,
             ),
@@ -197,8 +194,9 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: _PortraitV13Layout.textMuted,
                   fontSize: 15,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   height: 1.15,
+                  letterSpacing: 0.35,
                 )),
               ),
             ),
@@ -226,9 +224,9 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
               textStyle: _ts(const TextStyle(
                 color: _PortraitV13Layout.nameGreen,
                 fontSize: 28,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w900,
                 height: 1.05,
-                letterSpacing: 0.4,
+                letterSpacing: 0.45,
               )),
               minFontSize: 14,
             ),
@@ -244,8 +242,9 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
               textStyle: _ts(const TextStyle(
                 color: _PortraitV13Layout.textDark,
                 fontSize: _PortraitV13Layout.detailFontSize,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w700,
                 height: 1.22,
+                letterSpacing: 0.35,
               )),
               minFontSize: _PortraitV13Layout.detailMinFontSize,
               compact: data.useCompactFrontSpacing,

@@ -24,10 +24,6 @@ abstract final class _PortraitV7Layout {
   static const double frontContentSide = 0.10;
   static const double frontContentBottomRatio = 0.15;
 
-  static const double frontSignatureSizeRatio = 0.10;
-  static const double frontSignatureRightRatio = 0.06;
-  static const double frontSignatureBottomRatio = 0.17;
-
   static const double backInstituteTop = 0.065;
   static const double backInstituteHeight = 0.10;
   static const double backInstituteSide = 0.10;
@@ -166,22 +162,25 @@ class StudentIdTemplatePortraitV7 extends StatelessWidget {
             )),
             nameMinFontSize: IdCardPortraitTypography.nameMinFontSize,
             fatherStyle: _ts(const TextStyle(
-              color: Color(0xFF1E293B),
+              color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.bodyFontSize,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w700,
               height: 1.2,
+              letterSpacing: 0.35,
             )),
             courseStyle: _ts(const TextStyle(
               color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.bodyFontSize,
               fontWeight: FontWeight.w800,
               height: 1.15,
+              letterSpacing: 0.35,
             )),
             bodyStyle: _ts(const TextStyle(
-              color: Color(0xFF1E293B),
+              color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.bodyFontSize,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               height: 1.26,
+              letterSpacing: 0.35,
             )),
             bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
             compactSpacing: data.useCompactFrontSpacing,
@@ -261,8 +260,9 @@ class StudentIdTemplatePortraitV7 extends StatelessWidget {
               textStyle: _ts(const TextStyle(
                 color: Color(0xFF0F172A),
                 fontSize: _PortraitV7Layout.backTermsFontSize,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w700,
                 height: 1.32,
+                letterSpacing: 0.35,
               )),
               minFontSize: _PortraitV7Layout.backTermsMinFontSize,
             ),

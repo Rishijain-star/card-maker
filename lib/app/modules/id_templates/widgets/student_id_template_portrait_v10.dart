@@ -26,10 +26,10 @@ abstract final class _PortraitV10Layout {
   static const double frontGapBelowPhoto = 16.0;
   static const double frontContentSide = 0.11;
   static const double frontContentBottomRatio = 0.11;
-  static const double frontNameFontSize = 36;
-  static const double frontNameMinFontSize = 20;
-  static const double frontBodyFontSize = 22;
-  static const double frontBodyMinFontSize = 14;
+  static const double frontNameFontSize = 44;
+  static const double frontNameMinFontSize = 24;
+  static const double frontBodyFontSize = 28;
+  static const double frontBodyMinFontSize = 18;
   static const double frontLineGapMin = 9.0;
   static const double frontLineGapMax = 16.0;
   static const double frontLineGapCompactMin = 5.0;
@@ -38,10 +38,6 @@ abstract final class _PortraitV10Layout {
   static const double frontLineGapRelaxedMax = 18.0;
   static const double frontLineGapSpread = 1.05;
 
-  static const double frontSignatureSizeRatio = 0.09;
-  static const double frontSignatureRightRatio = 0.07;
-  static const double frontSignatureBottomRatio = 0.14;
-
   static const double backInstituteTop = 0.052;
   static const double backInstituteHeight = 0.085;
   static const double backInstituteSide = 0.12;
@@ -49,8 +45,8 @@ abstract final class _PortraitV10Layout {
   static const double backTermsTop = 0.17;
   static const double backTermsSide = 0.14;
   static const double backTermsBottom = 0.20;
-  static const double backTermsFontSize = 20;
-  static const double backTermsMinFontSize = 13;
+  static const double backTermsFontSize = 26;
+  static const double backTermsMinFontSize = 16;
   static const double backBulletSize = 12.0;
   static const double backBulletGap = 12.0;
 }
@@ -179,39 +175,44 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
                       nameStyle: _ts(const TextStyle(
                         color: _PortraitV10Layout.textDark,
                         fontSize: _PortraitV10Layout.frontNameFontSize,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w900,
                         height: 1.05,
+                        letterSpacing: 0.45,
                       )),
                       nameMinFontSize: _PortraitV10Layout.frontNameMinFontSize,
                       fatherStyle: _ts(const TextStyle(
                         color: _PortraitV10Layout.textDark,
                         fontSize: _PortraitV10Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w400,
-                        height: 1.2,
+                        fontWeight: FontWeight.w700,
+                        height: 1.15,
+                        letterSpacing: 0.35,
                       )),
                       courseStyle: _ts(const TextStyle(
                         color: _PortraitV10Layout.textDark,
                         fontSize: _PortraitV10Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w800,
                         height: 1.15,
+                        letterSpacing: 0.35,
                       )),
                       bodyStyle: _ts(const TextStyle(
                         color: _PortraitV10Layout.textDark,
                         fontSize: _PortraitV10Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w400,
-                        height: 1.28,
+                        fontWeight: FontWeight.w700,
+                        height: 1.20,
+                        letterSpacing: 0.35,
                       )),
                       bodyMinFontSize: _PortraitV10Layout.frontBodyMinFontSize,
                       validityLabelStyle: _ts(const TextStyle(
                         color: _PortraitV10Layout.textDark,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.2,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.35,
                       )),
                       validityValueStyle: _ts(const TextStyle(
                         color: _PortraitV10Layout.textDark,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.35,
                       )),
                       compactSpacing: data.useCompactFrontSpacing,
                       relaxedSpacing: data.useRelaxedFrontSpacing,
@@ -283,8 +284,9 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
               textStyle: _ts(const TextStyle(
                 color: _PortraitV10Layout.textDark,
                 fontSize: _PortraitV10Layout.backTermsFontSize,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w700,
                 height: 1.34,
+                letterSpacing: 0.35,
               )),
               minFontSize: _PortraitV10Layout.backTermsMinFontSize,
               compactSpacing: data.useCompactFrontSpacing,
