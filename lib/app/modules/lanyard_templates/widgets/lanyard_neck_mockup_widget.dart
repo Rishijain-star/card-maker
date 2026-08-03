@@ -6,9 +6,9 @@ import '../../../data/models/lanyard_data.dart';
 import '../../id_templates/design_system/id_card_typography.dart';
 import '../widgets/lanyard_template_widget.dart';
 
-/// Pure U-Shaped Lanyard Ribbon Neck Hang Preview.
-/// Displays how the actual ribbon loops around the neck in a U-shape,
-/// joining at a silver ring/clip at the bottom, without any card.
+/// Full Professional Lanyard Ribbon Mockup matching user reference image.
+/// Displays Top Neck Fold, V-Slanted Neck Straps with Live Logo & Text,
+/// Black Plastic Side-Release Buckle Clip, and Extension Strap with Steel Ring.
 class LanyardNeckMockupWidget extends StatelessWidget {
   const LanyardNeckMockupWidget({
     super.key,
@@ -27,59 +27,93 @@ class LanyardNeckMockupWidget extends StatelessWidget {
     return Center(
       child: Container(
         width: 320,
-        height: 380,
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        height: 480,
+        padding: const EdgeInsets.only(top: 10, bottom: 10),
         child: Stack(
           alignment: Alignment.topCenter,
           children: [
-            // Top U-Shape Neck Arc Ribbon connecting left and right straps
+            // 1. Top Neck Ribbon Fold Band
             Positioned(
-              top: 10,
-              child: SizedBox(
-                width: 220,
-                height: 90,
-                child: CustomPaint(
-                  painter: _UNeckArcPainter(
-                    variant: variant,
-                  ),
+              top: 15,
+              child: Container(
+                width: 175,
+                height: 34,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.25),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
+                child: LanyardTemplateWidget(data: data, variant: variant),
               ),
             ),
 
-            // Left Lanyard Ribbon Strap (Hanging from neck down to bottom clip)
+            // 2. Left Slanted Hanging Strap
             Positioned(
-              left: 55,
-              top: 45,
+              left: 68,
+              top: 38,
               child: Transform.rotate(
-                angle: 0.30,
-                child: _RibbonSegmentStrap(
+                angle: 0.24,
+                child: _MockupStrap(
                   data: data,
                   variant: variant,
                   textOnLanyard: textOnLanyard,
-                  index: 0,
+                  height: 290,
                 ),
               ),
             ),
 
-            // Right Lanyard Ribbon Strap (Hanging from neck down to bottom clip)
+            // 3. Right Slanted Hanging Strap
             Positioned(
-              right: 55,
-              top: 45,
+              right: 68,
+              top: 38,
               child: Transform.rotate(
-                angle: -0.30,
-                child: _RibbonSegmentStrap(
+                angle: -0.24,
+                child: _MockupStrap(
                   data: data,
                   variant: variant,
                   textOnLanyard: textOnLanyard,
-                  index: 1,
+                  height: 290,
                 ),
               ),
             ),
 
-            // Bottom Center Silver Metallic Ring & Clip joining the U-shape
+            // 4. Black Plastic Side-Release Buckle Clip at Strap Junction
             const Positioned(
-              bottom: 15,
-              child: _SilverLanyardRingClip(),
+              top: 310,
+              child: _BlackBuckleClipWidget(),
+            ),
+
+            // 5. Lower Extension Ribbon Strap Hanging Below Buckle
+            Positioned(
+              top: 358,
+              child: Container(
+                width: 36,
+                height: 65,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: LanyardTemplateWidget(data: data, variant: variant),
+              ),
+            ),
+
+            // 6. Steel D-Ring / Keyring Hook at Very Bottom
+            const Positioned(
+              top: 422,
+              child: _SteelDRingWidget(),
             ),
           ],
         ),
@@ -88,18 +122,18 @@ class LanyardNeckMockupWidget extends StatelessWidget {
   }
 }
 
-class _RibbonSegmentStrap extends StatelessWidget {
-  const _RibbonSegmentStrap({
+class _MockupStrap extends StatelessWidget {
+  const _MockupStrap({
     required this.data,
     required this.variant,
     required this.textOnLanyard,
-    required this.index,
+    required this.height,
   });
 
   final LanyardData data;
   final int variant;
   final String textOnLanyard;
-  final int index;
+  final double height;
 
   TextStyle _textStyle() {
     Color textColor;
@@ -107,6 +141,9 @@ class _RibbonSegmentStrap extends StatelessWidget {
       textColor = Color(data.textColorHex!);
     } else {
       switch (variant) {
+        case 12:
+          textColor = const Color(0xFF0F172A);
+          break;
         case 6:
         case 9:
           textColor = const Color(0xFFFFD700);
@@ -135,14 +172,14 @@ class _RibbonSegmentStrap extends StatelessWidget {
 
     return IdCardTypography.apply(
       TextStyle(
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: FontWeight.w900,
         color: textColor,
-        letterSpacing: 0.6,
+        letterSpacing: 0.8,
         height: 1.0,
         shadows: const [
           Shadow(
-            color: Colors.black87,
+            color: Colors.black54,
             blurRadius: 3,
             offset: Offset(0, 1),
           ),
@@ -160,8 +197,8 @@ class _RibbonSegmentStrap extends StatelessWidget {
         (data.logoPath.startsWith('assets/') || data.logoPath.startsWith('imagesss/'));
 
     return Container(
-      width: 44,
-      height: 270,
+      width: 38,
+      height: height,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
@@ -176,20 +213,20 @@ class _RibbonSegmentStrap extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Render Ribbon Background Pattern
+          // Background Template Ribbon Pattern
           LanyardTemplateWidget(
             data: data,
             variant: variant,
           ),
 
-          // Translucent Ribbon Fabric Texture Overlay
+          // Translucent Ribbon Weave Texture Shading
           DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.black.withValues(alpha: 0.15),
+                  Colors.black.withValues(alpha: 0.12),
                   Colors.white.withValues(alpha: 0.08),
-                  Colors.black.withValues(alpha: 0.22),
+                  Colors.black.withValues(alpha: 0.25),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -197,29 +234,31 @@ class _RibbonSegmentStrap extends StatelessWidget {
             ),
           ),
 
-          // Vertical Column displaying [Logo] [Text] along the U-Strap
+          // Printed Logo & Live Form Text along Strap Length
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: 28),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 // Circular Logo
                 Container(
-                  width: 28,
-                  height: 28,
+                  width: 26,
+                  height: 26,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: variant == 6 || variant == 9
-                          ? const Color(0xFFFFD700)
-                          : Colors.white,
+                      color: variant == 12
+                          ? const Color(0xFFEF4444)
+                          : (variant == 6 || variant == 9
+                              ? const Color(0xFFFFD700)
+                              : Colors.white),
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.25),
-                        blurRadius: 4,
+                        blurRadius: 3,
                       ),
                     ],
                   ),
@@ -228,7 +267,7 @@ class _RibbonSegmentStrap extends StatelessWidget {
                         ? Image.file(File(data.logoPath), fit: BoxFit.cover)
                         : (isAsset
                             ? Image.asset(data.logoPath, fit: BoxFit.cover)
-                            : const Icon(Icons.verified_rounded, color: Color(0xFF0284C7), size: 16)),
+                            : const Icon(Icons.verified_rounded, color: Color(0xFF0284C7), size: 15)),
                   ),
                 ),
 
@@ -249,93 +288,108 @@ class _RibbonSegmentStrap extends StatelessWidget {
   }
 }
 
-class _UNeckArcPainter extends CustomPainter {
-  const _UNeckArcPainter({required this.variant});
-
-  final int variant;
+class _BlackBuckleClipWidget extends StatelessWidget {
+  const _BlackBuckleClipWidget();
 
   @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 46,
+      height: 48,
+      child: CustomPaint(
+        painter: _BlackBucklePainter(),
+      ),
+    );
+  }
+}
+
+class _BlackBucklePainter extends CustomPainter {
+  @override
   void paint(Canvas canvas, Size size) {
-    final path = Path()
-      ..moveTo(10, 80)
-      ..cubicTo(40, 10, 180, 10, 210, 80);
+    final fillPaint = Paint()
+      ..shader = const LinearGradient(
+        colors: [Color(0xFF334155), Color(0xFF0F172A), Color(0xFF1E293B)],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(Offset.zero & size)
+      ..style = PaintingStyle.fill;
 
-    final paint = Paint()
-      ..color = variant == 6 || variant == 9
-          ? const Color(0xFF1E1B4B)
-          : (variant == 10
-              ? const Color(0xFF022C22)
-              : (variant == 11 ? const Color(0xFF4C0519) : const Color(0xFF0F172A)))
+    final borderPaint = Paint()
+      ..color = const Color(0xFF475569)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 40
-      ..strokeCap = StrokeCap.round;
+      ..strokeWidth = 1.5;
 
-    canvas.drawPath(path, paint);
+    // Top Female Buckle Housing
+    final topRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(2, 2, size.width - 4, 22),
+      const Radius.circular(6),
+    );
+    canvas.drawRRect(topRect, fillPaint);
+    canvas.drawRRect(topRect, borderPaint);
 
-    // Inner Arc Metallic Stripe
-    final stripePaint = Paint()
-      ..color = variant == 6 || variant == 9
-          ? const Color(0xFFFFD700).withValues(alpha: 0.8)
-          : Colors.white.withValues(alpha: 0.8)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+    // Inner Buckle Release Slots
+    final slotPaint = Paint()..color = const Color(0xFF020617);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(8, 8, size.width - 16, 10),
+        const Radius.circular(3),
+      ),
+      slotPaint,
+    );
 
-    canvas.drawPath(path, stripePaint);
+    // Bottom Male Buckle Lock
+    final bottomRect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(4, 24, size.width - 8, 20),
+      const Radius.circular(5),
+    );
+    canvas.drawRRect(bottomRect, fillPaint);
+    canvas.drawRRect(bottomRect, borderPaint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class _SilverLanyardRingClip extends StatelessWidget {
-  const _SilverLanyardRingClip();
+class _SteelDRingWidget extends StatelessWidget {
+  const _SteelDRingWidget();
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 48,
-      height: 48,
+      width: 40,
+      height: 28,
       child: CustomPaint(
-        painter: _SilverRingPainter(),
+        painter: _SteelDRingPainter(),
       ),
     );
   }
 }
 
-class _SilverRingPainter extends CustomPainter {
+class _SteelDRingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, 16);
-
-    // Metallic Outer Ring
     final ringPaint = Paint()
       ..shader = const LinearGradient(
-        colors: [Color(0xFFE2E8F0), Color(0xFF64748B), Color(0xFFFFFFFF), Color(0xFF475569)],
+        colors: [Color(0xFFE2E8F0), Color(0xFF64748B), Color(0xFFFFFFFF), Color(0xFF334155)],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ).createShader(Offset.zero & size)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 5.0;
+      ..strokeWidth = 4.0;
 
-    canvas.drawCircle(center, 13, ringPaint);
-
-    // Metallic Carabiner Hook Clip
-    final clipPath = Path()
-      ..moveTo(size.width / 2 - 8, 26)
-      ..lineTo(size.width / 2 + 8, 26)
-      ..lineTo(size.width / 2 + 6, 44)
-      ..lineTo(size.width / 2 - 6, 44)
+    // Steel D-Ring
+    final dPath = Path()
+      ..moveTo(6, 4)
+      ..lineTo(size.width - 6, 4)
+      ..lineTo(size.width - 6, 12)
+      ..arcToPoint(
+        Offset(6, 12),
+        radius: const Radius.circular(14),
+        clockwise: true,
+      )
       ..close();
 
-    final clipFill = Paint()
-      ..shader = const LinearGradient(
-        colors: [Color(0xFFF1F5F9), Color(0xFF94A3B8), Color(0xFF475569)],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ).createShader(Offset.zero & size);
-
-    canvas.drawPath(clipPath, clipFill);
-    canvas.drawPath(clipPath, ringPaint..strokeWidth = 1.5);
+    canvas.drawPath(dPath, ringPaint);
   }
 
   @override
