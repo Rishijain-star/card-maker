@@ -6,9 +6,9 @@ import '../../../data/models/lanyard_data.dart';
 import '../../id_templates/design_system/id_card_typography.dart';
 import '../widgets/lanyard_template_widget.dart';
 
-/// Full Professional Lanyard Ribbon Mockup matching user reference image.
-/// Displays Top Neck Fold, V-Slanted Neck Straps with Live Logo & Text,
-/// Black Plastic Side-Release Buckle Clip, and Extension Strap with Steel Ring.
+/// Full Professional Seamless Lanyard Ribbon Mockup matching user reference.
+/// Displays a continuous, seamless neck loop where Top Fold, Slanted Straps,
+/// Black Plastic Buckle Clip, Extension Strap, and Steel Ring connect with ZERO GAPS.
 class LanyardNeckMockupWidget extends StatelessWidget {
   const LanyardNeckMockupWidget({
     super.key,
@@ -27,24 +27,83 @@ class LanyardNeckMockupWidget extends StatelessWidget {
     return Center(
       child: Container(
         width: 320,
-        height: 480,
-        padding: const EdgeInsets.only(top: 10, bottom: 10),
+        height: 420,
+        alignment: Alignment.center,
         child: Stack(
           alignment: Alignment.topCenter,
+          clipBehavior: Clip.none,
           children: [
-            // 1. Top Neck Ribbon Fold Band
+            // 1. Top Neck Ribbon Fold Band (Seamlessly behind top ends)
             Positioned(
-              top: 15,
+              top: 12,
               child: Container(
-                width: 175,
-                height: 34,
+                width: 160,
+                height: 36,
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.25),
+                      color: Colors.black.withValues(alpha: 0.20),
                       blurRadius: 6,
+                    ),
+                  ],
+                ),
+                child: LanyardTemplateWidget(data: data, variant: variant),
+              ),
+            ),
+
+            // 2. Left Slanted Hanging Strap (Seamless connection to buckle)
+            Positioned(
+              left: 56,
+              top: 12,
+              child: Transform.rotate(
+                angle: 0.20,
+                alignment: Alignment.topRight,
+                child: _MockupStrap(
+                  data: data,
+                  variant: variant,
+                  textOnLanyard: textOnLanyard,
+                  height: 260,
+                ),
+              ),
+            ),
+
+            // 3. Right Slanted Hanging Strap (Seamless connection to buckle)
+            Positioned(
+              right: 56,
+              top: 12,
+              child: Transform.rotate(
+                angle: -0.20,
+                alignment: Alignment.topLeft,
+                child: _MockupStrap(
+                  data: data,
+                  variant: variant,
+                  textOnLanyard: textOnLanyard,
+                  height: 260,
+                ),
+              ),
+            ),
+
+            // 4. Black Plastic Side-Release Buckle Clip (Attached DIRECTLY to strap ends!)
+            const Positioned(
+              top: 255,
+              child: _BlackBuckleClipWidget(),
+            ),
+
+            // 5. Lower Extension Ribbon Strap (Attached DIRECTLY below buckle!)
+            Positioned(
+              top: 298,
+              child: Container(
+                width: 34,
+                height: 50,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.25),
+                      blurRadius: 4,
                       offset: const Offset(0, 2),
                     ),
                   ],
@@ -53,66 +112,9 @@ class LanyardNeckMockupWidget extends StatelessWidget {
               ),
             ),
 
-            // 2. Left Slanted Hanging Strap
-            Positioned(
-              left: 68,
-              top: 38,
-              child: Transform.rotate(
-                angle: 0.24,
-                child: _MockupStrap(
-                  data: data,
-                  variant: variant,
-                  textOnLanyard: textOnLanyard,
-                  height: 290,
-                ),
-              ),
-            ),
-
-            // 3. Right Slanted Hanging Strap
-            Positioned(
-              right: 68,
-              top: 38,
-              child: Transform.rotate(
-                angle: -0.24,
-                child: _MockupStrap(
-                  data: data,
-                  variant: variant,
-                  textOnLanyard: textOnLanyard,
-                  height: 290,
-                ),
-              ),
-            ),
-
-            // 4. Black Plastic Side-Release Buckle Clip at Strap Junction
+            // 6. Steel D-Ring / Keyring Hook (Attached DIRECTLY to bottom of extension strap!)
             const Positioned(
-              top: 310,
-              child: _BlackBuckleClipWidget(),
-            ),
-
-            // 5. Lower Extension Ribbon Strap Hanging Below Buckle
-            Positioned(
-              top: 358,
-              child: Container(
-                width: 36,
-                height: 65,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(3),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: LanyardTemplateWidget(data: data, variant: variant),
-              ),
-            ),
-
-            // 6. Steel D-Ring / Keyring Hook at Very Bottom
-            const Positioned(
-              top: 422,
+              top: 344,
               child: _SteelDRingWidget(),
             ),
           ],
@@ -172,7 +174,7 @@ class _MockupStrap extends StatelessWidget {
 
     return IdCardTypography.apply(
       TextStyle(
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: FontWeight.w900,
         color: textColor,
         letterSpacing: 0.8,
@@ -197,16 +199,16 @@ class _MockupStrap extends StatelessWidget {
         (data.logoPath.startsWith('assets/') || data.logoPath.startsWith('imagesss/'));
 
     return Container(
-      width: 38,
+      width: 36,
       height: height,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(3),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.30),
-            blurRadius: 8,
-            offset: const Offset(2, 4),
+            blurRadius: 6,
+            offset: const Offset(2, 3),
           ),
         ],
       ),
@@ -236,14 +238,14 @@ class _MockupStrap extends StatelessWidget {
 
           // Printed Logo & Live Form Text along Strap Length
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 28),
+            padding: const EdgeInsets.symmetric(vertical: 24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 // Circular Logo
                 Container(
-                  width: 26,
-                  height: 26,
+                  width: 24,
+                  height: 24,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
@@ -267,7 +269,7 @@ class _MockupStrap extends StatelessWidget {
                         ? Image.file(File(data.logoPath), fit: BoxFit.cover)
                         : (isAsset
                             ? Image.asset(data.logoPath, fit: BoxFit.cover)
-                            : const Icon(Icons.verified_rounded, color: Color(0xFF0284C7), size: 15)),
+                            : const Icon(Icons.verified_rounded, color: Color(0xFF0284C7), size: 14)),
                   ),
                 ),
 
@@ -294,7 +296,7 @@ class _BlackBuckleClipWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 46,
+      width: 44,
       height: 48,
       child: CustomPaint(
         painter: _BlackBucklePainter(),
@@ -356,8 +358,8 @@ class _SteelDRingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 40,
-      height: 28,
+      width: 38,
+      height: 26,
       child: CustomPaint(
         painter: _SteelDRingPainter(),
       ),
@@ -379,12 +381,12 @@ class _SteelDRingPainter extends CustomPainter {
 
     // Steel D-Ring
     final dPath = Path()
-      ..moveTo(6, 4)
-      ..lineTo(size.width - 6, 4)
-      ..lineTo(size.width - 6, 12)
+      ..moveTo(5, 3)
+      ..lineTo(size.width - 5, 3)
+      ..lineTo(size.width - 5, 10)
       ..arcToPoint(
-        Offset(6, 12),
-        radius: const Radius.circular(14),
+        Offset(5, 10),
+        radius: const Radius.circular(13),
         clockwise: true,
       )
       ..close();
