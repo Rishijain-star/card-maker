@@ -702,6 +702,152 @@ class _RibbonStripePainter extends CustomPainter {
       final borderPaint = Paint()..color = const Color(0xFF332D29);
       canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
       canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
+    } else if (variant == 19) {
+      // 13. Dual Blue Parallelogram Block (Ref Strip 1)
+      final darkNavyPaint = Paint()..color = const Color(0xFF1E3A8A);
+      final lightBluePaint = Paint()..color = const Color(0xFF93C5FD);
+      final slashOffset = size.height * 0.45;
+
+      for (int i = 0; i < count; i++) {
+        final slotLeft = i * slotWidth;
+        final halfWidth = slotWidth * 0.5;
+
+        // Dark Navy Parallelogram Block
+        final darkPath = Path()
+          ..moveTo(slotLeft - slashOffset, 0)
+          ..lineTo(slotLeft + halfWidth, 0)
+          ..lineTo(slotLeft + halfWidth - slashOffset, size.height)
+          ..lineTo(slotLeft - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(darkPath, darkNavyPaint);
+
+        // Light Sky Blue Parallelogram Block
+        final lightPath = Path()
+          ..moveTo(slotLeft + halfWidth, 0)
+          ..lineTo(slotLeft + slotWidth, 0)
+          ..lineTo(slotLeft + slotWidth - slashOffset, size.height)
+          ..lineTo(slotLeft + halfWidth - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(lightPath, lightBluePaint);
+      }
+
+      final borderPaint = Paint()..color = const Color(0xFF1E3A8A);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
+      canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
+    } else if (variant == 20) {
+      // 14. Orange-Yellow Horizontal Gradient Stripe (Ref Strip 2)
+      final orangeYellowGradient = const LinearGradient(
+        colors: [
+          Color(0xFFFACC15),
+          Color(0xFFF97316),
+          Color(0xFFEA580C),
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      );
+      canvas.drawRect(rect, Paint()..shader = orangeYellowGradient.createShader(rect));
+
+      final linePaint = Paint()
+        ..color = Colors.white.withValues(alpha: 0.15)
+        ..strokeWidth = 1.0;
+      for (double y = 4; y < size.height; y += 8) {
+        canvas.drawLine(Offset(0, y), Offset(size.width, y), linePaint);
+      }
+
+      final darkBorder = Paint()..color = const Color(0xFFC2410C);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), darkBorder);
+      canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), darkBorder);
+    } else if (variant == 21) {
+      // 15. Cyan Blue to Lime Green Diagonal Slash Gradient (Ref Strip 3)
+      final bgGradient = const LinearGradient(
+        colors: [
+          Color(0xFF0284C7),
+          Color(0xFF06B6D4),
+          Color(0xFF10B981),
+          Color(0xFF84CC16),
+        ],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
+      canvas.drawRect(rect, Paint()..shader = bgGradient.createShader(rect));
+
+      final limeSlashPaint = Paint()..color = const Color(0xFF84CC16).withValues(alpha: 0.6);
+      final cyanSlashPaint = Paint()..color = const Color(0xFF06B6D4).withValues(alpha: 0.6);
+      final slashOffset = size.height * 0.50;
+
+      for (int i = 0; i < count * 2; i++) {
+        final x = i * (slotWidth * 0.5);
+        final slashPath = Path()
+          ..moveTo(x, 0)
+          ..lineTo(x + 16, 0)
+          ..lineTo(x + 16 - slashOffset, size.height)
+          ..lineTo(x - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(slashPath, i % 2 == 0 ? limeSlashPaint : cyanSlashPaint);
+      }
+
+      final borderPaint = Paint()..color = const Color(0xFF0369A1);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
+      canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
+    } else if (variant == 22) {
+      // 16. Yellow Ribbon with Black Dot Matrix Grid & Double Slash (Ref Strip 4)
+      final yellowPaint = Paint()..color = const Color(0xFFFACC15);
+      canvas.drawRect(rect, yellowPaint);
+
+      final dotPaint = Paint()..color = const Color(0xFF0F172A).withValues(alpha: 0.16);
+      for (double dx = 6; dx < size.width; dx += 12) {
+        for (double dy = 6; dy < size.height; dy += 9) {
+          canvas.drawCircle(Offset(dx, dy), 1.8, dotPaint);
+        }
+      }
+
+      final blackSlashPaint = Paint()..color = const Color(0xFF0F172A);
+      final slashOffset = size.height * 0.45;
+
+      for (int i = 0; i < count; i++) {
+        final x = (i + 1) * slotWidth - 30;
+
+        final slash1 = Path()
+          ..moveTo(x, 0)
+          ..lineTo(x + 10, 0)
+          ..lineTo(x + 10 - slashOffset, size.height)
+          ..lineTo(x - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(slash1, blackSlashPaint);
+
+        final slash2 = Path()
+          ..moveTo(x + 14, 0)
+          ..lineTo(x + 24, 0)
+          ..lineTo(x + 24 - slashOffset, size.height)
+          ..lineTo(x + 14 - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(slash2, blackSlashPaint);
+      }
+
+      final borderPaint = Paint()..color = const Color(0xFF0F172A);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
+      canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
+    } else if (variant == 23) {
+      // 17. Red Ribbon with Dense Black Parallel Slashes (Ref Strip 5)
+      final redPaint = Paint()..color = const Color(0xFFDC2626);
+      canvas.drawRect(rect, redPaint);
+
+      final denseSlashPaint = Paint()..color = const Color(0xFF090A0F);
+      final slashOffset = size.height * 0.48;
+
+      for (double x = -size.height; x < size.width + size.height; x += 18) {
+        final slashPath = Path()
+          ..moveTo(x, 0)
+          ..lineTo(x + 6, 0)
+          ..lineTo(x + 6 - slashOffset, size.height)
+          ..lineTo(x - slashOffset, size.height)
+          ..close();
+        canvas.drawPath(slashPath, denseSlashPaint);
+      }
+
+      final borderPaint = Paint()..color = const Color(0xFF7F1D1D);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.width, 1.5), borderPaint);
+      canvas.drawRect(Rect.fromLTWH(0, size.height - 1.5, size.width, 1.5), borderPaint);
     }
   }
 
@@ -727,33 +873,43 @@ class _CircularLogoWidget extends StatelessWidget {
     final isAsset = logoPath.isNotEmpty &&
         (logoPath.startsWith('assets/') || logoPath.startsWith('imagesss/'));
 
-    final borderColor = variant == 18
-        ? const Color(0xFFFACC15)
-        : (variant == 17
-            ? const Color(0xFFFACC15)
-            : (variant == 16
-                ? const Color(0xFF1D4ED8)
-                : (variant == 15
-                    ? const Color(0xFF38BDF8)
-                    : (variant == 14
-                        ? const Color(0xFFDC2626)
-                        : (variant == 13
-                            ? const Color(0xFFFFE4E6)
-                            : (variant == 12
-                                ? const Color(0xFFEF4444)
-                                : (variant == 6 || variant == 9
-                                    ? const Color(0xFFFFD700)
-                                    : (variant == 10
-                                        ? const Color(0xFFF8FAFC)
-                                        : (variant == 11
-                                            ? const Color(0xFFFECDD3)
-                                            : (variant == 7 || variant == 8
-                                                ? const Color(0xFF00E5FF)
-                                                : (variant == 1
-                                                    ? const Color(0xFF00E5FF)
-                                                    : (variant == 3
+    final borderColor = variant == 23
+        ? const Color(0xFFEF4444)
+        : (variant == 22
+            ? const Color(0xFF0F172A)
+            : (variant == 21
+                ? const Color(0xFF84CC16)
+                : (variant == 20
+                    ? const Color(0xFFEA580C)
+                    : (variant == 19
+                        ? const Color(0xFF93C5FD)
+                        : (variant == 18
+                            ? const Color(0xFFFACC15)
+                            : (variant == 17
+                                ? const Color(0xFFFACC15)
+                                : (variant == 16
+                                    ? const Color(0xFF1D4ED8)
+                                    : (variant == 15
+                                        ? const Color(0xFF38BDF8)
+                                        : (variant == 14
+                                            ? const Color(0xFFDC2626)
+                                            : (variant == 13
+                                                ? const Color(0xFFFFE4E6)
+                                                : (variant == 12
+                                                    ? const Color(0xFFEF4444)
+                                                    : (variant == 6 || variant == 9
                                                         ? const Color(0xFFFFD700)
-                                                        : Colors.white))))))))))));
+                                                        : (variant == 10
+                                                            ? const Color(0xFFF8FAFC)
+                                                            : (variant == 11
+                                                                ? const Color(0xFFFECDD3)
+                                                                : (variant == 7 || variant == 8
+                                                                    ? const Color(0xFF00E5FF)
+                                                                    : (variant == 1
+                                                                        ? const Color(0xFF00E5FF)
+                                                                        : (variant == 3
+                                                                            ? const Color(0xFFFFD700)
+                                                                            : Colors.white)))))))))))))))));
 
     Widget content;
     if (isFile) {
@@ -776,29 +932,39 @@ class _CircularLogoWidget extends StatelessWidget {
         alignment: Alignment.center,
         child: Icon(
           Icons.verified_rounded,
-          color: variant == 18
+          color: variant == 23
               ? const Color(0xFFDC2626)
-              : (variant == 17
-                  ? const Color(0xFF7E22CE)
-                  : (variant == 16
-                      ? const Color(0xFF1D4ED8)
-                      : (variant == 15
-                          ? const Color(0xFF0284C7)
-                          : (variant == 14
-                              ? const Color(0xFFDC2626)
-                              : (variant == 13
-                                  ? const Color(0xFFE11D48)
-                                  : (variant == 12
-                                      ? const Color(0xFFEF4444)
-                                      : (variant == 6 || variant == 9
-                                          ? const Color(0xFFD97706)
-                                          : (variant == 10
-                                              ? const Color(0xFF047857)
-                                              : (variant == 11
-                                                  ? const Color(0xFFBE123C)
-                                                  : (variant == 8
-                                                      ? const Color(0xFF7C3AED)
-                                                      : const Color(0xFF0284C7))))))))))),
+              : (variant == 22
+                  ? const Color(0xFF0F172A)
+                  : (variant == 21
+                      ? const Color(0xFF06B6D4)
+                      : (variant == 20
+                          ? const Color(0xFFEA580C)
+                          : (variant == 19
+                              ? const Color(0xFF1E3A8A)
+                              : (variant == 18
+                                  ? const Color(0xFFDC2626)
+                                  : (variant == 17
+                                      ? const Color(0xFF7E22CE)
+                                      : (variant == 16
+                                          ? const Color(0xFF1D4ED8)
+                                          : (variant == 15
+                                              ? const Color(0xFF0284C7)
+                                              : (variant == 14
+                                                  ? const Color(0xFFDC2626)
+                                                  : (variant == 13
+                                                      ? const Color(0xFFE11D48)
+                                                      : (variant == 12
+                                                          ? const Color(0xFFEF4444)
+                                                          : (variant == 6 || variant == 9
+                                                              ? const Color(0xFFD97706)
+                                                              : (variant == 10
+                                                                  ? const Color(0xFF047857)
+                                                                  : (variant == 11
+                                                                      ? const Color(0xFFBE123C)
+                                                                      : (variant == 8
+                                                                          ? const Color(0xFF7C3AED)
+                                                                          : const Color(0xFF0284C7)))))))))))))))),
           size: size * 0.55,
         ),
       );
@@ -839,20 +1005,29 @@ class _HorizontalRibbonContent extends StatelessWidget {
       textColor = Color(data.textColorHex!);
     } else {
       switch (variant) {
+        case 22:
+        case 12:
+        case 5:
+          textColor = const Color(0xFF0F172A);
+          break;
+        case 23:
+        case 21:
+        case 20:
+        case 19:
         case 17:
         case 15:
         case 14:
         case 13:
+        case 7:
+        case 8:
           textColor = Colors.white;
           break;
         case 16:
           textColor = const Color(0xFF1D4ED8);
           break;
-        case 12:
-          textColor = const Color(0xFF0F172A);
-          break;
         case 6:
         case 9:
+        case 3:
           textColor = const Color(0xFFFFD700);
           break;
         case 10:
@@ -860,16 +1035,6 @@ class _HorizontalRibbonContent extends StatelessWidget {
           break;
         case 11:
           textColor = const Color(0xFFFECDD3);
-          break;
-        case 7:
-        case 8:
-          textColor = Colors.white;
-          break;
-        case 5:
-          textColor = const Color(0xFF0F172A);
-          break;
-        case 3:
-          textColor = const Color(0xFFFFD700);
           break;
         default:
           textColor = Colors.white;
@@ -911,6 +1076,46 @@ class _HorizontalRibbonContent extends StatelessWidget {
     final textStyle = _textStyle();
 
     final count = data.repeatCount.clamp(2, 6);
+
+    if (variant == 23) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: List.generate(
+          count,
+          (index) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0F172A),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: const Color(0xFF334155), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _CircularLogoWidget(
+                  logoPath: data.logoPath,
+                  variant: variant,
+                  size: count > 3 ? 24 : 28,
+                ),
+                SizedBox(width: data.logoTextSpacing),
+                Text(
+                  textOnLanyard.toUpperCase(),
+                  style: textStyle,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     if (variant == 15 || variant == 17) {
       final slotWidth = LanyardDimensions.designWidth / count;
