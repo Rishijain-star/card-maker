@@ -203,6 +203,20 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
                         Text('${flow.lanyardTextOffsetY.value.round()}', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11)),
                       ],
                     ),
+                    Row(
+                      children: [
+                        const Text('Gap:', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+                        Expanded(
+                          child: Slider(
+                            value: flow.lanyardLogoTextSpacing.value,
+                            min: 0.0,
+                            max: 40.0,
+                            onChanged: flow.setLanyardLogoTextSpacing,
+                          ),
+                        ),
+                        Text('${flow.lanyardLogoTextSpacing.value.round()}px', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 11)),
+                      ],
+                    ),
                   ],
                 ),
               ),

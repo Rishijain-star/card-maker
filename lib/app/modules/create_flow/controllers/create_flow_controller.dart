@@ -334,6 +334,7 @@ class CreateFlowController extends GetxController {
   final lanyardRepeatCount = 3.obs;
   final lanyardTextOffsetX = 0.0.obs;
   final lanyardTextOffsetY = 0.0.obs;
+  final lanyardLogoTextSpacing = 6.0.obs;
 
   void setLanyardRepeatCount(int count) {
     lanyardRepeatCount.value = count.clamp(2, 6);
@@ -347,6 +348,10 @@ class CreateFlowController extends GetxController {
     lanyardTextOffsetY.value = val;
   }
 
+  void setLanyardLogoTextSpacing(double val) {
+    lanyardLogoTextSpacing.value = val.clamp(0.0, 40.0);
+  }
+
   final lanyardCustomTextColorHex = RxnInt();
 
   void setLanyardTextColorHex(int? colorHex) {
@@ -356,6 +361,7 @@ class CreateFlowController extends GetxController {
   void resetLanyardTextOffset() {
     lanyardTextOffsetX.value = 0.0;
     lanyardTextOffsetY.value = 0.0;
+    lanyardLogoTextSpacing.value = 6.0;
   }
 
   final List<Map<String, dynamic>> lanyardTemplates = <Map<String, dynamic>>[

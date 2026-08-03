@@ -859,7 +859,7 @@ class _HorizontalRibbonContent extends StatelessWidget {
                         variant: variant,
                         size: count > 3 ? 26 : 30,
                       ),
-                      const SizedBox(width: 6),
+                      SizedBox(width: data.logoTextSpacing),
                       Flexible(
                         child: Text(
                           textOnLanyard.toUpperCase(),
@@ -893,7 +893,7 @@ class _HorizontalRibbonContent extends StatelessWidget {
                 variant: variant,
                 size: count > 3 ? 28 : 32,
               ),
-              const SizedBox(width: 6),
+              SizedBox(width: data.logoTextSpacing),
               Text(
                 textOnLanyard.toUpperCase(),
                 style: textStyle,

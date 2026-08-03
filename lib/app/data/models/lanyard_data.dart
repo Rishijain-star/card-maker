@@ -12,6 +12,7 @@ class LanyardData {
     this.repeatCount = 3,
     this.offsetX = 0.0,
     this.offsetY = 0.0,
+    this.logoTextSpacing = 6.0,
     this.textColorHex,
   });
 
@@ -24,6 +25,7 @@ class LanyardData {
   final int repeatCount;
   final double offsetX;
   final double offsetY;
+  final double logoTextSpacing;
   final int? textColorHex;
 
   factory LanyardData.fromCreateFlow(CreateFlowController flow) {
@@ -38,6 +40,7 @@ class LanyardData {
       repeatCount: flow.lanyardRepeatCount.value,
       offsetX: flow.lanyardTextOffsetX.value,
       offsetY: flow.lanyardTextOffsetY.value,
+      logoTextSpacing: flow.lanyardLogoTextSpacing.value,
       textColorHex: flow.lanyardCustomTextColorHex.value,
     );
   }
