@@ -40,20 +40,12 @@ class LanyardTemplateWidget extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Blue lanyard ribbon background image - full width span
+            // Ribbon background image based on variant
             Image.asset(
-              'assets/lanyard/blue.png',
+              _assetForVariant(variant),
               fit: BoxFit.fill,
               alignment: Alignment.center,
             ),
-
-            // Variant-specific tint overlay
-            if (variant == 2)
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0F172A).withValues(alpha: 0.22),
-                ),
-              ),
 
             // Horizontal repeating Logo + Lanyard Text in cyan safe areas
             _HorizontalRibbonContent(
@@ -64,6 +56,23 @@ class LanyardTemplateWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _assetForVariant(int variant) {
+    switch (variant) {
+      case 1:
+        return 'assets/lanyard/blue+red.png';
+      case 2:
+        return 'assets/lanyard/green.png';
+      case 3:
+        return 'assets/lanyard/green+black.png';
+      case 4:
+        return 'assets/lanyard/red.png';
+      case 5:
+        return 'assets/lanyard/white+blue.png';
+      default:
+        return 'assets/lanyard/blue.png';
+    }
   }
 }
 
@@ -149,8 +158,8 @@ class _HorizontalRibbonContent extends StatelessWidget {
   TextStyle _textStyle() {
     Color textColor;
     switch (variant) {
-      case 1:
-        textColor = const Color(0xFF00E5FF);
+      case 5:
+        textColor = const Color(0xFF0F172A);
         break;
       case 3:
         textColor = const Color(0xFFFFD700);

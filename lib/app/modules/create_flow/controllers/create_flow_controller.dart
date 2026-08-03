@@ -339,6 +339,41 @@ class CreateFlowController extends GetxController {
       'lanyardEngine': true,
       'variant': 0,
     },
+    <String, dynamic>{
+      'id': 1,
+      'title': 'Blue & Red Ribbon Lanyard',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 1,
+    },
+    <String, dynamic>{
+      'id': 2,
+      'title': 'Green Ribbon Lanyard',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 2,
+    },
+    <String, dynamic>{
+      'id': 3,
+      'title': 'Green & Black Ribbon Lanyard',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 3,
+    },
+    <String, dynamic>{
+      'id': 4,
+      'title': 'Red Ribbon Lanyard',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 4,
+    },
+    <String, dynamic>{
+      'id': 5,
+      'title': 'White & Blue Ribbon Lanyard',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'variant': 5,
+    },
   ];
 
   final List<Map<String, dynamic>> employeeTemplates = <Map<String, dynamic>>[
