@@ -9,6 +9,7 @@ class LanyardData {
     this.logoPath = '',
     this.fontFamily = 'Inter',
     this.accentColorHex = 0xFF2563EB,
+    this.repeatCount = 3,
   });
 
   final String organization;
@@ -17,6 +18,7 @@ class LanyardData {
   final String logoPath;
   final String fontFamily;
   final int accentColorHex;
+  final int repeatCount;
 
   factory LanyardData.fromCreateFlow(CreateFlowController flow) {
     final color = flow.palette[flow.selectedColor.value.clamp(0, flow.palette.length - 1)];
@@ -27,6 +29,7 @@ class LanyardData {
       logoPath: flow.photoPath.value,
       fontFamily: flow.selectedFontFamily,
       accentColorHex: color.toARGB32(),
+      repeatCount: flow.lanyardRepeatCount.value,
     );
   }
 

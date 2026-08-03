@@ -195,63 +195,31 @@ class _HorizontalRibbonContent extends StatelessWidget {
 
     final textStyle = _textStyle();
 
+    final count = data.repeatCount.clamp(2, 6);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 28),
+      padding: EdgeInsets.symmetric(horizontal: count > 3 ? 16 : 28),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // Unit 1
-          Row(
+        children: List.generate(
+          count,
+          (index) => Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               _CircularLogoWidget(
                 logoPath: data.logoPath,
                 variant: variant,
-                size: 32,
+                size: count > 3 ? 28 : 32,
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 6),
               Text(
                 textOnLanyard.toUpperCase(),
                 style: textStyle,
               ),
             ],
           ),
-
-          // Unit 2
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _CircularLogoWidget(
-                logoPath: data.logoPath,
-                variant: variant,
-                size: 32,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                textOnLanyard.toUpperCase(),
-                style: textStyle,
-              ),
-            ],
-          ),
-
-          // Unit 3
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _CircularLogoWidget(
-                logoPath: data.logoPath,
-                variant: variant,
-                size: 32,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                textOnLanyard.toUpperCase(),
-                style: textStyle,
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }

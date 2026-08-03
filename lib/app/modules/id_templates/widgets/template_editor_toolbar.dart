@@ -148,6 +148,19 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
                       active: false,
                       onTap: () => flow.showPhotoSourcePicker(context),
                     ),
+                    const SizedBox(width: 10),
+                    Obx(
+                      () => _ToolChip(
+                        label: 'Repeats: ${flow.lanyardRepeatCount.value}x',
+                        icon: Icons.repeat_rounded,
+                        active: false,
+                        onTap: () {
+                          final current = flow.lanyardRepeatCount.value;
+                          final next = current >= 5 ? 2 : current + 1;
+                          flow.setLanyardRepeatCount(next);
+                        },
+                      ),
+                    ),
                   ],
                 ],
               ),

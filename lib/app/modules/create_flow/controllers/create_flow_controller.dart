@@ -330,6 +330,11 @@ class CreateFlowController extends GetxController {
   }
 
   final isLanyardRotated = false.obs;
+  final lanyardRepeatCount = 3.obs;
+
+  void setLanyardRepeatCount(int count) {
+    lanyardRepeatCount.value = count.clamp(2, 6);
+  }
 
   final List<Map<String, dynamic>> lanyardTemplates = <Map<String, dynamic>>[
     <String, dynamic>{
