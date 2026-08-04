@@ -4,40 +4,38 @@ import 'package:flutter/material.dart';
 import '../../../data/models/student_data.dart';
 import '../assets/student_id_template_assets.dart';
 import '../design_system/id_card_dimensions.dart';
+import '../design_system/id_card_portrait_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
 /// Template 16 — elephant landscape card; front only; main form fields only.
 abstract final class _LandscapeV16Layout {
   static const Color schoolBlue = Color(0xFF0F2B5B);
-  static const Color bannerGreen = Color(0xFF1B6B3A);
-  static const Color textDark = Color(0xFF0F172A);
+  static const Color textGreen = Color(0xFF15803D);
   static const Color photoBorderRed = Color(0xFFE53935);
 
   static const double headerTop = 0.035;
-  static const double headerLeft = 0.48;
+  static const double headerLeft = 0.36;
   static const double headerRight = 0.03;
   static const double headerHeight = 0.22;
 
-  static const double nameBannerTop = 0.300;
-  static const double nameBannerLeft = 0.37;
-  static const double nameBannerRight = 0.41;
-  static const double nameBannerHeight = 0.075;
+  static const double nameTop = 0.25;
+  static const double nameLeft = 0.36;
+  static const double nameRight = 0.40;
 
-  static const double detailsTop = 0.370;
-  static const double detailsLeft = 0.37;
-  static const double detailsRight = 0.41;
-  static const double detailsBottom = 0.05;
-  static const double detailFontSize = 24;
-  static const double detailMinFontSize = 13;
+  static const double detailsTop = 0.36;
+  static const double detailsLeft = 0.36;
+  static const double detailsRight = 0.40;
+  static const double detailsBottom = 0.08;
 
-  static const double photoTop = 0.25;
-  static const double photoRight = 0.055;
-  static const double photoSize = 0.54;
+  static const double photoTop = 0.15;
+  static const double photoRight = 0.05;
+  static const double photoSize = 0.40;
   static const double photoBorderWidth = 3.0;
 
-  static const double classBannerBottom = 0.120;
-  static const double classBannerHeight = 0.075;
+  static const double signatureRight = 0.05;
+  static const double signatureBottom = 0.05;
+  static const double signatureSizeRatio = 0.24;
 }
 
 class StudentIdTemplateLandscapeV16 extends StatelessWidget {
@@ -56,6 +54,17 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
   static const double _h = IdCardDimensions.height;
 
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
+  TextStyle _tsPrimary(TextStyle base) =>
+      studentPortraitPrimaryTextStyle(base, fontFamily);
+
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
 
   static int _instituteMaxLines(String name) {
     if (name.contains('\n')) {
@@ -65,25 +74,18 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
     return 1;
   }
 
-  String? _classLine() {
-    final cls = data.className.trim();
-    final sec = data.section.trim();
-    if (cls.isEmpty && sec.isEmpty) return null;
-    if (cls.isNotEmpty && sec.isNotEmpty) return '$cls ($sec)';
-    return cls.isNotEmpty ? cls : sec;
-  }
-
-  List<String> _detailLines() {
+  List<String> _frontDetailLines() {
     final lines = <String>[];
     void add(String value) {
       final v = value.trim();
       if (v.isNotEmpty) lines.add(v);
     }
 
-    add(data.fatherName);
     add(data.rollNo);
+    add(data.section);
     add(data.bloodGroup);
     add(data.mobileNumber);
+    add(data.email);
     add(data.address);
     return lines;
   }
@@ -101,8 +103,7 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
   }
 
   Widget _buildFront() {
-    final detailLines = _detailLines();
-    final classLine = _classLine();
+    final detailLines = _frontDetailLines();
     final photoDiameter = _h * _LandscapeV16Layout.photoSize;
 
     return Stack(
@@ -112,65 +113,83 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
           StudentIdTemplateAssets.frontBackgroundV16,
           fit: BoxFit.fill,
         ),
-        Positioned(
-          top: _h * _LandscapeV16Layout.headerTop,
-          left: _w * _LandscapeV16Layout.headerLeft,
-          right: _w * _LandscapeV16Layout.headerRight,
-          height: _h * _LandscapeV16Layout.headerHeight,
-          child: _LandscapeV16Header(
-            instituteName: data.instituteName.trim(),
-            schoolStyle: _ts(const TextStyle(
-              color: _LandscapeV16Layout.schoolBlue,
-              fontSize: 40,
-              fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.normal,
-              height: 1.02,
-            )),
-            instituteMaxLines: _instituteMaxLines(data.instituteName),
-            minFontSize: 14,
+        if (data.instituteName.trim().isNotEmpty)
+          Positioned(
+            top: _h * _LandscapeV16Layout.headerTop,
+            left: _w * _LandscapeV16Layout.headerLeft,
+            right: _w * _LandscapeV16Layout.headerRight,
+            height: _h * _LandscapeV16Layout.headerHeight,
+            child: _LandscapeV16Header(
+              instituteName: data.instituteName.trim(),
+              schoolStyle: _ts(const TextStyle(
+                color: _LandscapeV16Layout.schoolBlue,
+                fontSize: IdCardPortraitTypography.headerFontSize,
+                fontWeight: FontWeight.w900,
+                height: 1.02,
+              )),
+              instituteMaxLines: _instituteMaxLines(data.instituteName),
+              minFontSize: IdCardPortraitTypography.headerMinFontSize,
+            ),
           ),
-        ),
         if (data.studentName.trim().isNotEmpty)
           Positioned(
-            top: _h * _LandscapeV16Layout.nameBannerTop,
-            left: _w * _LandscapeV16Layout.nameBannerLeft,
-            right: _w * _LandscapeV16Layout.nameBannerRight,
-            height: _h * _LandscapeV16Layout.nameBannerHeight,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: _LandscapeV16GreenBanner(
-                text: data.studentName.trim().toUpperCase(),
-                compact: data.useCompactFrontSpacing,
-                textStyle: _ts(const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
-                  height: 1.05,
-                  letterSpacing: 0.5,
-                )),
-                minFontSize: 14,
-              ),
-            ),
-          ),
-        if (detailLines.isNotEmpty)
-          Positioned(
-            top: _h * _LandscapeV16Layout.detailsTop,
-            left: _w * _LandscapeV16Layout.detailsLeft,
-            right: _w * _LandscapeV16Layout.detailsRight,
-            bottom: _h * _LandscapeV16Layout.detailsBottom,
-            child: _LandscapeV16DetailColumn(
-              lines: detailLines,
-              textStyle: _ts(const TextStyle(
-                color: _LandscapeV16Layout.textDark,
-                fontSize: _LandscapeV16Layout.detailFontSize,
-                fontWeight: FontWeight.w800,
-                height: 1.30,
+            top: _h * _LandscapeV16Layout.nameTop,
+            left: _w * _LandscapeV16Layout.nameLeft,
+            right: _w * _LandscapeV16Layout.nameRight,
+            child: AutoSizeText(
+              _cap(data.studentName),
+              maxLines: 2,
+              minFontSize: IdCardPortraitTypography.nameMinFontSize,
+              textAlign: TextAlign.left,
+              style: _tsPrimary(const TextStyle(
+                color: _LandscapeV16Layout.textGreen,
+                fontSize: IdCardPortraitTypography.nameFontSize,
+                fontWeight: FontWeight.w900,
+                fontStyle: FontStyle.italic,
+                height: 1.05,
+                letterSpacing: 0.35,
               )),
-              minFontSize: _LandscapeV16Layout.detailMinFontSize,
-              compact: data.useCompactFrontSpacing,
-              relaxed: data.useRelaxedFrontSpacing,
             ),
           ),
+        Positioned(
+          top: _h * _LandscapeV16Layout.detailsTop,
+          left: _w * _LandscapeV16Layout.detailsLeft,
+          right: _w * _LandscapeV16Layout.detailsRight,
+          bottom: _h * _LandscapeV16Layout.detailsBottom,
+          child: _LandscapeV16FrontContent(
+            fatherName: data.fatherName,
+            className: data.className,
+            detailLines: detailLines,
+            fatherStyle: _tsPrimary(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.05,
+              letterSpacing: 0.5,
+            )),
+            courseStyle: _tsPrimary(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.05,
+              letterSpacing: 0.5,
+            )),
+            bodyStyle: _tsPrimary(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.bodyFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.05,
+              letterSpacing: 0.5,
+            )),
+            nameMinFontSize: IdCardPortraitTypography.nameMinFontSize,
+            bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
+            compactSpacing: data.useCompactFrontSpacing,
+            relaxedSpacing: data.useRelaxedFrontSpacing,
+          ),
+        ),
         Positioned(
           top: _h * _LandscapeV16Layout.photoTop,
           right: _w * _LandscapeV16Layout.photoRight,
@@ -183,23 +202,17 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
             showShadow: false,
           ),
         ),
-        if (classLine != null)
+        if (data.hasSignature)
           Positioned(
-            right: _w * _LandscapeV16Layout.photoRight,
-            width: photoDiameter,
-            bottom: _h * _LandscapeV16Layout.classBannerBottom,
-            height: _h * _LandscapeV16Layout.classBannerHeight,
-            child: Center(
-              child: _LandscapeV16GreenBanner(
-                text: classLine.toUpperCase(),
-                textStyle: _ts(const TextStyle(
-                  color: Colors.white,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w900,
-                  height: 1.05,
-                )),
-                minFontSize: 14,
-              ),
+            right: _w * _LandscapeV16Layout.signatureRight,
+            bottom: _h * _LandscapeV16Layout.signatureBottom,
+            child: StudentPortraitSignatureCircle(
+              size: _h * _LandscapeV16Layout.signatureSizeRatio,
+              path: data.signaturePath,
+              bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
             ),
           ),
       ],
@@ -226,9 +239,9 @@ class _LandscapeV16Header extends StatelessWidget {
 
     return Center(
       child: AutoSizeText(
-        instituteName,
+        instituteName.toUpperCase(),
         maxLines: instituteMaxLines,
-        minFontSize: minFontSize + 4,
+        minFontSize: minFontSize,
         textAlign: TextAlign.center,
         style: schoolStyle,
       ),
@@ -236,121 +249,136 @@ class _LandscapeV16Header extends StatelessWidget {
   }
 }
 
-class _LandscapeV16GreenBanner extends StatelessWidget {
-  const _LandscapeV16GreenBanner({
-    required this.text,
-    required this.textStyle,
-    required this.minFontSize,
-    this.compact = false,
+class _LandscapeV16FrontContent extends StatelessWidget {
+  const _LandscapeV16FrontContent({
+    required this.fatherName,
+    required this.className,
+    required this.detailLines,
+    required this.fatherStyle,
+    required this.courseStyle,
+    required this.bodyStyle,
+    required this.nameMinFontSize,
+    required this.bodyMinFontSize,
+    required this.compactSpacing,
+    required this.relaxedSpacing,
   });
 
-  final String text;
-  final TextStyle textStyle;
-  final double minFontSize;
-  final bool compact;
+  final String fatherName;
+  final String className;
+  final List<String> detailLines;
+  final TextStyle fatherStyle;
+  final TextStyle courseStyle;
+  final TextStyle bodyStyle;
+  final double nameMinFontSize;
+  final double bodyMinFontSize;
+  final bool compactSpacing;
+  final bool relaxedSpacing;
+
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.centerLeft,
-      child: Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 4,
-        ),
-        decoration: BoxDecoration(
-          color: _LandscapeV16Layout.bannerGreen,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 3,
-              offset: const Offset(0, 1.5),
-            ),
-          ],
-        ),
-        child: AutoSizeText(
-          text,
+    final blocks = <Widget>[];
+    final estimates = <double>[];
+
+    void add(Widget w, double est) {
+      blocks.add(w);
+      estimates.add(est);
+    }
+
+    final father = _cap(fatherName);
+    if (father.isNotEmpty) {
+      add(
+        AutoSizeText(
+          father,
           maxLines: 1,
-          minFontSize: minFontSize,
+          minFontSize: nameMinFontSize,
           textAlign: TextAlign.left,
-          style: textStyle,
+          style: fatherStyle,
         ),
-      ),
-    );
-  }
-}
-
-class _LandscapeV16DetailColumn extends StatelessWidget {
-  const _LandscapeV16DetailColumn({
-    required this.lines,
-    required this.textStyle,
-    required this.minFontSize,
-    required this.compact,
-    required this.relaxed,
-  });
-
-  final List<String> lines;
-  final TextStyle textStyle;
-  final double minFontSize;
-  final bool compact;
-  final bool relaxed;
-
-  Widget _buildRow(String line) {
-    if (line.contains(':')) {
-      final parts = line.split(':');
-      final label = parts[0].trim();
-      final value = parts.sublist(1).join(':').trim();
-      return AutoSizeText.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: '$label: ',
-              style: textStyle.copyWith(
-                fontWeight: FontWeight.w900,
-                color: const Color(0xFF0F172A),
-              ),
-            ),
-            TextSpan(
-              text: value,
-              style: textStyle.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-        maxLines: 3,
-        minFontSize: minFontSize,
-        textAlign: TextAlign.left,
+        (fatherStyle.fontSize ?? 42) * 1.08,
       );
     }
-    return AutoSizeText(
-      line,
-      maxLines: 3,
-      minFontSize: minFontSize,
-      textAlign: TextAlign.left,
-      style: textStyle,
-    );
-  }
 
-  @override
-  Widget build(BuildContext context) {
+    final course = _cap(className);
+    if (course.isNotEmpty) {
+      add(
+        AutoSizeText(
+          course,
+          maxLines: 1,
+          minFontSize: nameMinFontSize,
+          textAlign: TextAlign.left,
+          style: courseStyle,
+        ),
+        (courseStyle.fontSize ?? 42) * 1.08,
+      );
+    }
+
+    for (final line in detailLines) {
+      add(
+        AutoSizeText(
+          _cap(line),
+          maxLines: 2,
+          minFontSize: bodyMinFontSize,
+          textAlign: TextAlign.left,
+          style: bodyStyle,
+        ),
+        (bodyStyle.fontSize ?? 32) * 1.25,
+      );
+    }
+
+    if (blocks.isEmpty) return const SizedBox.shrink();
+
+    final gapCount = blocks.length - 1;
+    if (gapCount <= 0) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: blocks,
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        var gap = compact ? 3.0 : (relaxed ? 7.0 : 4.5);
+        final estTotal = estimates.fold(0.0, (a, b) => a + b);
+        final free =
+            (constraints.maxHeight - estTotal).clamp(0.0, double.infinity);
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var i = 0; i < lines.length; i++) ...[
-              if (i > 0) SizedBox(height: gap),
-              _buildRow(lines[i]),
-            ],
-          ],
+        var gapMin = compactSpacing ? 3.0 : 5.0;
+        var gapMax = compactSpacing ? 8.0 : 12.0;
+        if (relaxedSpacing) {
+          gapMin = 7.0;
+          gapMax = 16.0;
+        }
+
+        var gap = (free / gapCount).clamp(gapMin, gapMax);
+        if (estTotal + gap * gapCount > constraints.maxHeight) {
+          gap =
+              ((constraints.maxHeight - estTotal) / gapCount).clamp(2.0, gapMax);
+        }
+
+        final children = <Widget>[];
+        for (var i = 0; i < blocks.length; i++) {
+          if (i > 0) children.add(SizedBox(height: gap));
+          children.add(blocks[i]);
+        }
+
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.topLeft,
+          child: SizedBox(
+            width: constraints.maxWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
+          ),
         );
       },
     );
