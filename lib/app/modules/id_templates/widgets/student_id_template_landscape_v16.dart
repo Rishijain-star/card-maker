@@ -16,25 +16,25 @@ abstract final class _LandscapeV16Layout {
 
   static const double headerTop = 0.035;
   static const double headerLeft = 0.36;
-  static const double headerRight = 0.03;
-  static const double headerHeight = 0.22;
+  static const double headerRight = 0.42;
+  static const double headerHeight = 0.20;
 
   static const double nameTop = 0.25;
   static const double nameLeft = 0.36;
-  static const double nameRight = 0.40;
+  static const double nameRight = 0.42;
 
   static const double detailsTop = 0.36;
   static const double detailsLeft = 0.36;
-  static const double detailsRight = 0.40;
+  static const double detailsRight = 0.42;
   static const double detailsBottom = 0.08;
 
-  static const double photoTop = 0.15;
+  static const double photoTop = 0.24;
   static const double photoRight = 0.05;
-  static const double photoSize = 0.40;
+  static const double photoSize = 0.38;
   static const double photoBorderWidth = 3.0;
 
   static const double signatureRight = 0.05;
-  static const double signatureBottom = 0.05;
+  static const double signatureBottom = 0.04;
   static const double signatureSizeRatio = 0.24;
 }
 
