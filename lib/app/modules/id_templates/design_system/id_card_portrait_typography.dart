@@ -4,15 +4,15 @@ abstract final class IdCardPortraitTypography {
   static const double headerMinFontSize = 22;
 
   static const double nameFontSize = 44;
-  static const double nameMinFontSize = 26;
+  static const double nameMinFontSize = 24;
 
-  static const double bodyFontSize = 36;
+  static const double bodyFontSize = 44;
   static const double bodyMinFontSize = 24;
 
   static const double validityFontSize = 22;
   static const double validityMinFontSize = 17;
 
-  static const double addressFontSize = 36;
+  static const double addressFontSize = 44;
   static const double addressMinFontSize = 24;
 
   static const double backHeaderFontSize = 36;

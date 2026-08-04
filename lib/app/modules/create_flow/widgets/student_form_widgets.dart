@@ -271,6 +271,7 @@ class StudentUnderlineField extends StatelessWidget {
     this.maxLines,
     this.minLines = 1,
     this.textInputAction,
+    this.textCapitalization = TextCapitalization.words,
   }) : assert(iconAsset != null || iconWidget != null);
 
   final String? iconAsset;
@@ -282,6 +283,7 @@ class StudentUnderlineField extends StatelessWidget {
   final int? maxLines;
   final int? minLines;
   final TextInputAction? textInputAction;
+  final TextCapitalization textCapitalization;
 
   static const InputDecoration _fieldDecoration = InputDecoration(
     border: InputBorder.none,
@@ -328,6 +330,7 @@ class StudentUnderlineField extends StatelessWidget {
               children: [
                 TextField(
                   controller: controller,
+                  textCapitalization: textCapitalization,
                   keyboardType: keyboardType ??
                       (isSpecialKey ? keyboardType : TextInputType.multiline),
                   minLines: minLines,
