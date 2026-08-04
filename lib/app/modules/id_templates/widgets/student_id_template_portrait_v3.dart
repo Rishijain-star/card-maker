@@ -23,14 +23,14 @@ abstract final class _PortraitV3Layout {
   static const double frontPhotoBorderWidth = 4.0;
 
   // ── Front — name (centered, white body) ─────────────────────────────────────
-  static const double frontNameTopRatio = 0.358;
+  static const double frontNameTopRatio = 0.385;
   static const double frontNameHeightRatio = 0.068;
   static const double frontNameSideRatio = 0.08;
 
   // ── Front — body (centered column) ──────────────────────────────────────────
-  static const double frontBodyTopRatio = 0.432;
+  static const double frontBodyTopRatio = 0.455;
   static const double frontBodySideRatio = 0.10;
-  static const double frontBodyBottomRatio = 0.22;
+  static const double frontBodyBottomRatio = 0.18;
 
   // ── Front — address / signature ─────────────────────────────────────────────
   static const double frontAddressTopRatio = 0.838;
