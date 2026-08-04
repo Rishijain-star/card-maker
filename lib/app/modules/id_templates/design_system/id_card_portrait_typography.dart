@@ -1,10 +1,10 @@
 /// Shared portrait student ID font sizes (all student PNG templates).
 abstract final class IdCardPortraitTypography {
-  static const double headerFontSize = 42;
-  static const double headerMinFontSize = 22;
+  static const double headerFontSize = 40;
+  static const double headerMinFontSize = 20;
 
-  static const double nameFontSize = 44;
-  static const double nameMinFontSize = 24;
+  static const double nameFontSize = 42;
+  static const double nameMinFontSize = 22;
 
   static const double bodyFontSize = 32;
   static const double bodyMinFontSize = 20;

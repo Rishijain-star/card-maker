@@ -248,10 +248,12 @@ class StudentIdTemplatePortraitV4 extends StatelessWidget {
             lines: _frontDetailLines(),
             footerLine: data.frontValidityHorizontalLine,
             bodyStyle: _ts(const TextStyle(
-              color: Color(0xFF1E293B),
+              color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.bodyFontSize,
-              fontWeight: FontWeight.w600,
-              height: 1.28,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.05,
+              letterSpacing: 0.5,
             )),
             bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
             footerStyle: _ts(const TextStyle(
@@ -359,12 +361,21 @@ class _PortraitV4BodyList extends StatelessWidget {
   final bool compactSpacing;
   final bool relaxedSpacing;
 
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final blocks = <Widget>[];
     for (final line in lines) {
       blocks.add(AutoSizeText(
-        line,
+        _cap(line),
         maxLines: 2,
         minFontSize: bodyMinFontSize,
         textAlign: TextAlign.center,
