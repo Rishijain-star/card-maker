@@ -16,7 +16,11 @@ class StudentPortraitEvenContent extends StatelessWidget {
     this.photoPath = '',
     this.photoSize = 0,
     this.studentName = '',
+    this.fatherName = '',
+    this.className = '',
     this.nameStyle,
+    this.fatherStyle,
+    this.courseStyle,
     this.nameMinFontSize = 20,
     this.nameAlign = TextAlign.center,
     this.bodyAlign = TextAlign.center,
@@ -47,11 +51,15 @@ class StudentPortraitEvenContent extends StatelessWidget {
   final String photoPath;
   final double photoSize;
   final String studentName;
+  final String fatherName;
+  final String className;
   final List<String> lines;
   final String fontFamily;
   final TextStyle bodyStyle;
   final double bodyMinFontSize;
   final TextStyle? nameStyle;
+  final TextStyle? fatherStyle;
+  final TextStyle? courseStyle;
   final double nameMinFontSize;
   final TextAlign nameAlign;
   final TextAlign bodyAlign;
@@ -62,6 +70,15 @@ class StudentPortraitEvenContent extends StatelessWidget {
   final double gapMax;
   final double gapSpreadFactor;
 
+  static String _capWords(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final blocks = <Widget>[];
@@ -70,13 +87,7 @@ class StudentPortraitEvenContent extends StatelessWidget {
       blocks.add(StudentPortraitPhoto(photoPath: photoPath, size: photoSize));
     }
 
-    final rawName = studentName.trim();
-    final name = rawName.isEmpty
-        ? ''
-        : rawName
-            .split(' ')
-            .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
-            .join(' ');
+    final name = _capWords(studentName);
     if (name.isNotEmpty && nameStyle != null) {
       blocks.add(
         AutoSizeText(
@@ -89,6 +100,32 @@ class StudentPortraitEvenContent extends StatelessWidget {
       );
     }
 
+    final father = _capWords(fatherName);
+    if (father.isNotEmpty && (fatherStyle != null || nameStyle != null)) {
+      blocks.add(
+        AutoSizeText(
+          father,
+          maxLines: 1,
+          minFontSize: nameMinFontSize,
+          textAlign: nameAlign,
+          style: fatherStyle ?? nameStyle,
+        ),
+      );
+    }
+
+    final course = _capWords(className);
+    if (course.isNotEmpty && (courseStyle != null || nameStyle != null)) {
+      blocks.add(
+        AutoSizeText(
+          course,
+          maxLines: 1,
+          minFontSize: nameMinFontSize,
+          textAlign: nameAlign,
+          style: courseStyle ?? nameStyle,
+        ),
+      );
+    }
+
     for (final rawLine in lines) {
       final subLines = rawLine.split('\n');
       for (final line in subLines) {
@@ -96,7 +133,7 @@ class StudentPortraitEvenContent extends StatelessWidget {
         if (v.isEmpty) continue;
         blocks.add(
           AutoSizeText(
-            v,
+            _capWords(v),
             maxLines: maxLinesPerItem,
             minFontSize: bodyMinFontSize,
             textAlign: bodyAlign,

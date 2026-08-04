@@ -191,7 +191,7 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
                       nameMinFontSize: _PortraitV11Layout.frontNameMinFontSize,
                       fatherStyle: _ts(const TextStyle(
                         color: Color(0xFF0F172A),
-                        fontSize: IdCardPortraitTypography.bodyFontSize,
+                        fontSize: IdCardPortraitTypography.nameFontSize,
                         fontWeight: FontWeight.w900,
                         fontStyle: FontStyle.italic,
                         height: 1.05,
@@ -199,7 +199,7 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
                       )),
                       courseStyle: _ts(const TextStyle(
                         color: Color(0xFF0F172A),
-                        fontSize: IdCardPortraitTypography.bodyFontSize,
+                        fontSize: IdCardPortraitTypography.nameFontSize,
                         fontWeight: FontWeight.w900,
                         fontStyle: FontStyle.italic,
                         height: 1.05,

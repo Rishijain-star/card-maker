@@ -132,7 +132,9 @@ class StudentIdTemplatePortrait extends StatelessWidget {
             photoPath: data.photoPath,
             photoSize: photoSize,
             studentName: data.studentName,
-            lines: bodyLines,
+            fatherName: data.fatherName,
+            className: data.className,
+            lines: data.frontDetailLines,
             fontFamily: fontFamily,
             footerLine: data.frontValidityHorizontalLine,
             footerStyle: _ts(
@@ -252,7 +254,11 @@ class _PortraitEvenContent extends StatelessWidget {
     this.photoPath = '',
     this.photoSize = 0,
     this.studentName = '',
+    this.fatherName = '',
+    this.className = '',
     this.nameStyle,
+    this.fatherStyle,
+    this.courseStyle,
     this.nameMinFontSize = 20,
     this.maxLinesPerItem = 2,
     this.compactSpacing = false,
@@ -268,13 +274,26 @@ class _PortraitEvenContent extends StatelessWidget {
   final String photoPath;
   final double photoSize;
   final String studentName;
+  final String fatherName;
+  final String className;
   final List<String> lines;
   final String fontFamily;
   final TextStyle bodyStyle;
   final double bodyMinFontSize;
   final TextStyle? nameStyle;
+  final TextStyle? fatherStyle;
+  final TextStyle? courseStyle;
   final double nameMinFontSize;
   final int maxLinesPerItem;
+
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -284,11 +303,11 @@ class _PortraitEvenContent extends StatelessWidget {
       blocks.add(_PortraitPhoto(photoPath: photoPath, size: photoSize));
     }
 
-    final name = studentName.trim();
+    final name = _cap(studentName);
     if (name.isNotEmpty && nameStyle != null) {
       blocks.add(
         AutoSizeText(
-          name.toUpperCase(),
+          name,
           maxLines: 2,
           minFontSize: nameMinFontSize,
           textAlign: TextAlign.left,
@@ -297,16 +316,47 @@ class _PortraitEvenContent extends StatelessWidget {
       );
     }
 
-    for (final line in lines) {
+    final father = _cap(fatherName);
+    if (father.isNotEmpty && (fatherStyle != null || nameStyle != null)) {
       blocks.add(
         AutoSizeText(
-          line,
-          maxLines: maxLinesPerItem,
-          minFontSize: bodyMinFontSize,
+          father,
+          maxLines: 1,
+          minFontSize: nameMinFontSize,
           textAlign: TextAlign.left,
-          style: bodyStyle,
+          style: fatherStyle ?? nameStyle,
         ),
       );
+    }
+
+    final course = _cap(className);
+    if (course.isNotEmpty && (courseStyle != null || nameStyle != null)) {
+      blocks.add(
+        AutoSizeText(
+          course,
+          maxLines: 1,
+          minFontSize: nameMinFontSize,
+          textAlign: TextAlign.left,
+          style: courseStyle ?? nameStyle,
+        ),
+      );
+    }
+
+    for (final rawLine in lines) {
+      final subLines = rawLine.split('\n');
+      for (final line in subLines) {
+        final v = line.trim();
+        if (v.isEmpty) continue;
+        blocks.add(
+          AutoSizeText(
+            _cap(v),
+            maxLines: maxLinesPerItem,
+            minFontSize: bodyMinFontSize,
+            textAlign: TextAlign.left,
+            style: bodyStyle,
+          ),
+        );
+      }
     }
 
     final footer = footerLine?.trim() ?? '';

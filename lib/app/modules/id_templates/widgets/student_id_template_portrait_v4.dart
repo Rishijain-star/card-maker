@@ -200,13 +200,13 @@ class StudentIdTemplatePortraitV4 extends StatelessWidget {
             child: Align(
               alignment: Alignment.center,
               child: AutoSizeText(
-                data.fatherName.trim(),
+                data.formattedFatherName,
                 maxLines: 1,
-                minFontSize: IdCardPortraitTypography.bodyMinFontSize,
+                minFontSize: IdCardPortraitTypography.nameMinFontSize,
                 textAlign: TextAlign.center,
                 style: _ts(const TextStyle(
                   color: Color(0xFF0F172A),
-                  fontSize: IdCardPortraitTypography.bodyFontSize,
+                  fontSize: IdCardPortraitTypography.nameFontSize,
                   fontWeight: FontWeight.w900,
                   fontStyle: FontStyle.italic,
                   height: 1.05,
@@ -224,15 +224,17 @@ class StudentIdTemplatePortraitV4 extends StatelessWidget {
             child: Align(
               alignment: Alignment.center,
               child: AutoSizeText(
-                data.className.trim().toUpperCase(),
+                data.formattedClassName,
                 maxLines: 1,
-                minFontSize: IdCardPortraitTypography.bodyMinFontSize,
+                minFontSize: IdCardPortraitTypography.nameMinFontSize,
                 textAlign: TextAlign.center,
                 style: _ts(const TextStyle(
                   color: Color(0xFF0F172A),
-                  fontSize: IdCardPortraitTypography.bodyFontSize,
-                  fontWeight: FontWeight.w800,
-                  height: 1.15,
+                  fontSize: IdCardPortraitTypography.nameFontSize,
+                  fontWeight: FontWeight.w900,
+                  fontStyle: FontStyle.italic,
+                  height: 1.05,
+                  letterSpacing: 0.5,
                 )),
               ),
             ),

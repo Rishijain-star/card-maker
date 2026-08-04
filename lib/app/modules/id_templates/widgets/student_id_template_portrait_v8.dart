@@ -527,44 +527,55 @@ class _PortraitV8FrontColumn extends StatelessWidget {
       );
     }
 
-    final father = fatherName.trim();
+    String capWords(String raw) {
+      final s = raw.trim();
+      if (s.isEmpty) return '';
+      return s
+          .split(' ')
+          .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+          .join(' ');
+    }
+
+    final father = capWords(fatherName);
     if (father.isNotEmpty) {
       add(
         AutoSizeText(
-          father.toUpperCase(),
+          father,
           maxLines: 1,
-          minFontSize: bodyMinFontSize,
+          minFontSize: nameMinFontSize,
           textAlign: TextAlign.center,
-          style: bodyStyle,
+          style: nameFirstStyle,
         ),
-        (bodyStyle.fontSize ?? 22) * 1.2,
+        (nameFirstStyle.fontSize ?? 44) * 1.1,
       );
     }
 
-    final course = className.trim();
+    final course = capWords(className);
     if (course.isNotEmpty) {
       add(
         AutoSizeText(
-          course.toUpperCase(),
+          course,
           maxLines: 1,
-          minFontSize: bodyMinFontSize,
+          minFontSize: nameMinFontSize,
           textAlign: TextAlign.center,
-          style: bodyStyle.copyWith(fontWeight: FontWeight.w600),
+          style: nameFirstStyle,
         ),
-        (bodyStyle.fontSize ?? 22) * 1.15,
+        (nameFirstStyle.fontSize ?? 44) * 1.1,
       );
     }
 
     for (final line in detailLines) {
+      final v = line.trim();
+      if (v.isEmpty) continue;
       add(
         AutoSizeText(
-          line,
+          capWords(v),
           maxLines: 2,
           minFontSize: bodyMinFontSize,
           textAlign: TextAlign.center,
           style: bodyStyle,
         ),
-        (bodyStyle.fontSize ?? 22) * 1.26,
+        (bodyStyle.fontSize ?? 32) * 1.25,
       );
     }
 

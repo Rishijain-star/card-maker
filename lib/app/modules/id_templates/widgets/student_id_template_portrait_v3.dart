@@ -161,7 +161,25 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
           right: _w * _PortraitV3Layout.frontBodySideRatio,
           bottom: _h * _PortraitV3Layout.frontBodyBottomRatio,
           child: _PortraitV3BodyList(
-            lines: data.frontBodyLines,
+            fatherName: data.fatherName,
+            className: data.className,
+            fatherStyle: _ts(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.08,
+              letterSpacing: 0.5,
+            )),
+            courseStyle: _ts(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.08,
+              letterSpacing: 0.5,
+            )),
+            lines: data.frontDetailLines,
             footerLine: data.frontValidityHorizontalLine,
             bodyStyle: _ts(const TextStyle(
               color: Color(0xFF0F172A),
@@ -265,8 +283,12 @@ class _PortraitV3BodyList extends StatelessWidget {
     required this.lines,
     required this.bodyStyle,
     required this.bodyMinFontSize,
-    required this.compactSpacing,
-    required this.relaxedSpacing,
+    this.fatherName = '',
+    this.className = '',
+    this.fatherStyle,
+    this.courseStyle,
+    this.compactSpacing = false,
+    this.relaxedSpacing = false,
     this.footerLine,
     this.footerStyle,
     this.footerMinFontSize = 13,
@@ -275,18 +297,54 @@ class _PortraitV3BodyList extends StatelessWidget {
   final List<String> lines;
   final TextStyle bodyStyle;
   final double bodyMinFontSize;
+  final String fatherName;
+  final String className;
+  final TextStyle? fatherStyle;
+  final TextStyle? courseStyle;
   final String? footerLine;
   final TextStyle? footerStyle;
   final double footerMinFontSize;
   final bool compactSpacing;
   final bool relaxedSpacing;
 
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final blocks = <Widget>[];
+
+    final father = _cap(fatherName);
+    if (father.isNotEmpty && fatherStyle != null) {
+      blocks.add(AutoSizeText(
+        father,
+        maxLines: 1,
+        minFontSize: bodyMinFontSize,
+        textAlign: TextAlign.center,
+        style: fatherStyle,
+      ));
+    }
+
+    final course = _cap(className);
+    if (course.isNotEmpty && courseStyle != null) {
+      blocks.add(AutoSizeText(
+        course,
+        maxLines: 1,
+        minFontSize: bodyMinFontSize,
+        textAlign: TextAlign.center,
+        style: courseStyle,
+      ));
+    }
+
     for (final line in lines) {
       blocks.add(AutoSizeText(
-        line,
+        _cap(line),
         maxLines: 2,
         minFontSize: bodyMinFontSize,
         textAlign: TextAlign.center,

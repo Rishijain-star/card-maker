@@ -104,7 +104,30 @@ class StudentData {
   /// Student name with first letter of each word capitalized.
   String get formattedStudentName => _capitalizeWords(studentName);
 
-  /// Front body lines — exact user input from form fields (validity excluded; rendered on back).
+  /// Father name with first letter of each word capitalized.
+  String get formattedFatherName => _capitalizeWords(fatherName);
+
+  /// Class/course name with first letter of each word capitalized.
+  String get formattedClassName => _capitalizeWords(className);
+
+  /// Front detail lines (Section, Roll No, Blood Group, Mobile, Address) — rendered at uniform bodyFontSize (32px).
+  List<String> get frontDetailLines {
+    final lines = <String>[];
+    void add(String value) {
+      final v = value.trim();
+      if (v.isNotEmpty) lines.add(_capitalizeWords(v));
+    }
+
+    add(rollNo);
+    add(section);
+    add(bloodGroup);
+    add(mobileNumber);
+    add(email);
+    add(address);
+    return lines;
+  }
+
+  /// Front body lines (legacy all-in-one).
   List<String> get frontBodyLines {
     final lines = <String>[];
     void add(String value) {

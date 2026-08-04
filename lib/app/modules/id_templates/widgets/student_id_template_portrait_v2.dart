@@ -213,7 +213,25 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
           right:  _w * _PortraitV2Layout.frontBodyRightRatio,
           bottom: _h * _PortraitV2Layout.frontBodyBottomRatio,
           child: _LabeledBodyList(
-            lines: bodyLines,
+            fatherName: data.fatherName,
+            className: data.className,
+            fatherStyle: _ts(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: _PortraitV2Layout.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.1,
+              letterSpacing: 0.5,
+            )),
+            courseStyle: _ts(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: _PortraitV2Layout.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.1,
+              letterSpacing: 0.5,
+            )),
+            lines: data.frontDetailLines,
             footerLine: data.frontValidityHorizontalLine,
             fontFamily: fontFamily,
             bodyStyle: _ts(const TextStyle(
@@ -328,15 +346,19 @@ class _LabeledBodyList extends StatelessWidget {
     required this.fontFamily,
     required this.bodyStyle,
     required this.bodyMinFontSize,
-    required this.gapMin,
-    required this.gapMax,
-    required this.gapSpread,
+    this.fatherName = '',
+    this.className = '',
+    this.fatherStyle,
+    this.courseStyle,
+    this.footerLine,
+    this.footerStyle,
+    this.footerMinFontSize = 13,
+    this.gapMin = 14.0,
+    this.gapMax = 24.0,
+    this.gapSpread = 0.96,
     this.gapRelaxedMin = 22.0,
     this.gapRelaxedMax = 34.0,
     this.gapRelaxedSpread = 1.05,
-    this.footerLine,
-    this.footerStyle,
-    this.footerMinFontSize = 12.0,
     this.compactSpacing = false,
     this.relaxedSpacing = false,
   });
@@ -345,6 +367,10 @@ class _LabeledBodyList extends StatelessWidget {
   final String fontFamily;
   final TextStyle bodyStyle;
   final double bodyMinFontSize;
+  final String fatherName;
+  final String className;
+  final TextStyle? fatherStyle;
+  final TextStyle? courseStyle;
   final String? footerLine;
   final TextStyle? footerStyle;
   final double footerMinFontSize;
