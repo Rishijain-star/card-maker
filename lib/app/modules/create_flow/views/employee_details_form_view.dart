@@ -72,11 +72,6 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                       controller: controller.idNumberCtrl,
                     ),
                     EmployeeJoinDateField(controller: controller.expiryDateCtrl),
-                    StudentUnderlineField(
-                      iconAsset: EmployeeFormAssets.idNumber,
-                      hint: 'Write Expire date',
-                      controller: controller.validToCtrl,
-                    ),
                   ],
                 ),
               ),
