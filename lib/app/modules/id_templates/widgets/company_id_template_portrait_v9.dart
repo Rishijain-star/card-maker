@@ -70,9 +70,8 @@ class CompanyIdTemplatePortraitV9 extends StatelessWidget {
 
     add(data.employeeId);
     add(data.joinDate);
-    add(data.expireDate);
-    add(data.phone);
     add(data.email);
+    add(data.phone);
     add(data.bloodGroup);
     return lines;
   }
@@ -348,11 +347,20 @@ class _CompanyV9FrontBody extends StatelessWidget {
       estimates.add(est);
     }
 
-    final name = employeeName.trim();
+    String cap(String raw) {
+      final s = raw.trim();
+      if (s.isEmpty) return '';
+      return s
+          .split(' ')
+          .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+          .join(' ');
+    }
+
+    final name = cap(employeeName);
     if (name.isNotEmpty) {
       add(
         AutoSizeText(
-          name.toUpperCase(),
+          name,
           maxLines: 2,
           minFontSize: bodyMinFontSize + 4,
           textAlign: TextAlign.center,
@@ -371,17 +379,17 @@ class _CompanyV9FrontBody extends StatelessWidget {
       );
     }
 
-    final title = position.trim();
+    final title = cap(position);
     if (title.isNotEmpty) {
       add(
         AutoSizeText(
-          title.toUpperCase(),
+          title,
           maxLines: 1,
           minFontSize: bodyMinFontSize,
           textAlign: TextAlign.center,
           style: titleStyle,
         ),
-        (titleStyle.fontSize ?? 20) * 1.15,
+        (titleStyle.fontSize ?? 22) * 1.15,
       );
     }
 
@@ -389,7 +397,7 @@ class _CompanyV9FrontBody extends StatelessWidget {
       final isEmail = line.contains('@');
       add(
         AutoSizeText(
-          line,
+          cap(line),
           maxLines: isEmail ? 2 : 1,
           minFontSize: bodyMinFontSize,
           textAlign: TextAlign.center,

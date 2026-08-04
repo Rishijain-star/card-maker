@@ -83,9 +83,8 @@ class CompanyIdTemplatePortraitV11 extends StatelessWidget {
 
     add(data.employeeId);
     add(data.joinDate);
-    add(data.expireDate);
-    add(data.phone);
     add(data.email);
+    add(data.phone);
     add(data.bloodGroup);
     return lines;
   }
@@ -403,7 +402,16 @@ class _CompanyV11FrontBody extends StatelessWidget {
       estimates.add(est);
     }
 
-    final name = employeeName.trim();
+    String cap(String raw) {
+      final s = raw.trim();
+      if (s.isEmpty) return '';
+      return s
+          .split(' ')
+          .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+          .join(' ');
+    }
+
+    final name = cap(employeeName);
     if (name.isNotEmpty) {
       add(
         AutoSizeText(
@@ -417,7 +425,7 @@ class _CompanyV11FrontBody extends StatelessWidget {
       );
     }
 
-    final title = position.trim();
+    final title = cap(position);
     if (title.isNotEmpty) {
       add(
         Padding(
@@ -438,7 +446,7 @@ class _CompanyV11FrontBody extends StatelessWidget {
       final isEmail = line.contains('@');
       add(
         AutoSizeText(
-          line,
+          cap(line),
           maxLines: isEmail ? 2 : 1,
           minFontSize: bodyMinFontSize,
           textAlign: TextAlign.center,

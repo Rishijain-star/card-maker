@@ -297,8 +297,17 @@ class _CompanyV8GreetingBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = employeeName.trim();
-    final title = position.trim();
+    String cap(String raw) {
+      final s = raw.trim();
+      if (s.isEmpty) return '';
+      return s
+          .split(' ')
+          .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+          .join(' ');
+    }
+
+    final name = cap(employeeName);
+    final title = cap(position);
     if (name.isEmpty && title.isEmpty) return const SizedBox.shrink();
 
     return Column(

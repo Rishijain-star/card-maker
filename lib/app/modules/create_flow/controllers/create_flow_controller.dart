@@ -136,7 +136,7 @@ class CreateFlowController extends GetxController {
   static const String kDefaultPosition = 'Software Developer';
   static const String kDefaultEmployeeId = '510484454';
   static const String kDefaultEmployeeJoin = '03-08-2016';
-  static const String kDefaultEmployeeExpire = '03-08-2020';
+  static const String kDefaultEmployeeExpire = '';
   static const String kDefaultEmployeeNote1 =
       'Lorem ipsum is simply dummy text of the printing industry.';
   static const String kDefaultEmployeeNote2 =

@@ -210,7 +210,6 @@ class CompanyIdTemplatePortraitV7 extends StatelessWidget {
     }
 
     addDate(data.joinDate);
-    addDate(data.expireDate);
 
     return Stack(
       fit: StackFit.expand,

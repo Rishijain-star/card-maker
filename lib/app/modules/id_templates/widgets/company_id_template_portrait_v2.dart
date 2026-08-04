@@ -381,7 +381,16 @@ class _CompanyV2FrontBody extends StatelessWidget {
       );
     }
 
-    final title = data.position.trim();
+    String cap(String raw) {
+      final s = raw.trim();
+      if (s.isEmpty) return '';
+      return s
+          .split(' ')
+          .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+          .join(' ');
+    }
+
+    final title = cap(data.position);
     if (title.isNotEmpty) {
       add(
         AutoSizeText(
@@ -399,7 +408,7 @@ class _CompanyV2FrontBody extends StatelessWidget {
       final isEmail = line.contains('@');
       add(
         AutoSizeText(
-          line,
+          cap(line),
           maxLines: isEmail ? 2 : 1,
           minFontSize: bodyMinFontSize,
           textAlign: TextAlign.center,
@@ -459,12 +468,21 @@ class _CompanyV2SplitName extends StatelessWidget {
   final TextStyle accentStyle;
   final double minFontSize;
 
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final parts = fullName.trim().split(RegExp(r'\s+'));
     if (parts.length < 2) {
       return AutoSizeText(
-        fullName.toUpperCase(),
+        _cap(fullName),
         maxLines: 2,
         minFontSize: minFontSize,
         textAlign: TextAlign.center,
@@ -472,8 +490,8 @@ class _CompanyV2SplitName extends StatelessWidget {
       );
     }
 
-    final lead = parts.sublist(0, parts.length - 1).join(' ').toUpperCase();
-    final last = parts.last.toUpperCase();
+    final lead = _cap(parts.sublist(0, parts.length - 1).join(' '));
+    final last = _cap(parts.last);
 
     return AutoSizeText.rich(
       TextSpan(

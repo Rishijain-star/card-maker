@@ -264,7 +264,6 @@ class _CompanyV5BackLines {
     }
 
     addDate(data.joinDate);
-    addDate(data.expireDate);
 
     if (lines.isNotEmpty && (contact.isNotEmpty || dates.isNotEmpty)) {
       lines.add('');

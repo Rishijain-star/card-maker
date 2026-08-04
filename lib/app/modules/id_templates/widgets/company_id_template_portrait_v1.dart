@@ -332,11 +332,20 @@ class _CompanyV1FrontBody extends StatelessWidget {
       estimates.add(est);
     }
 
-    final name = data.employeeName.trim();
+    String cap(String raw) {
+      final s = raw.trim();
+      if (s.isEmpty) return '';
+      return s
+          .split(' ')
+          .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+          .join(' ');
+    }
+
+    final name = cap(data.employeeName);
     if (name.isNotEmpty) {
       add(
         AutoSizeText(
-          name.toUpperCase(),
+          name,
           maxLines: 1,
           minFontSize: bodyMinFontSize + 4,
           textAlign: TextAlign.center,
@@ -346,11 +355,11 @@ class _CompanyV1FrontBody extends StatelessWidget {
       );
     }
 
-    final title = data.position.trim();
+    final title = cap(data.position);
     if (title.isNotEmpty) {
       add(
         AutoSizeText(
-          title.toUpperCase(),
+          title,
           maxLines: 1,
           minFontSize: bodyMinFontSize,
           textAlign: TextAlign.center,
@@ -364,7 +373,7 @@ class _CompanyV1FrontBody extends StatelessWidget {
       final isEmail = line.contains('@');
       add(
         AutoSizeText(
-          line,
+          cap(line),
           maxLines: isEmail ? 2 : 1,
           minFontSize: bodyMinFontSize,
           textAlign: TextAlign.center,
