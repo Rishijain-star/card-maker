@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../data/models/student_data.dart';
 import '../assets/student_id_template_assets.dart';
 import '../design_system/id_card_dimensions.dart';
+import '../design_system/id_card_portrait_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
@@ -14,37 +14,27 @@ import 'student_id_portrait_widgets.dart';
 abstract final class _LandscapeV15Layout {
   static const Color instituteRed = Color(0xFFC62828);
   static const Color nameRed = Color(0xFFB71C1C);
-  static const Color textDark = Color(0xFF0F172A);
 
-  static const double headerTop = 0.040;
+  static const double headerTop = 0.035;
   static const double headerLeft = 0.28;
   static const double headerRight = 0.32;
   static const double headerHeight = 0.22;
 
-  static const double photoTop = 0.12;
-  static const double photoRight = 0.065;
-  static const double photoWidth = 0.205;
+  static const double photoTop = 0.10;
+  static const double photoRight = 0.05;
+  static const double photoWidth = 0.22;
   static const double photoHeight = 0.58;
   static const double photoRadius = 6.0;
   static const double photoBorderWidth = 2.5;
 
-  static const double nameTop = 0.710;
-  static const double nameRight = 0.05;
-  static const double nameWidth = 0.245;
+  static const double nameTop = 0.70;
+  static const double nameRight = 0.03;
+  static const double nameWidth = 0.26;
 
-  static const double detailsTop = 0.28;
+  static const double detailsTop = 0.26;
   static const double detailsLeft = 0.28;
-  static const double detailsRight = 0.32;
-  static const double detailsBottom = 0.15;
-  static const double detailFontSize = 22;
-  static const double detailMinFontSize = 11;
-  static const double detailGapMin = 3.0;
-  static const double detailGapMax = 7.0;
-
-  static const double signatureLeft = 0.05;
-  static const double signatureBottom = 0.06;
-  static const double signatureWidth = 0.22;
-  static const double signatureHeight = 0.11;
+  static const double detailsRight = 0.30;
+  static const double detailsBottom = 0.10;
 }
 
 class StudentIdTemplateLandscapeV15 extends StatelessWidget {
@@ -63,6 +53,17 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
   static const double _h = IdCardDimensions.height;
 
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
+  TextStyle _tsPrimary(TextStyle base) =>
+      studentPortraitPrimaryTextStyle(base, fontFamily);
+
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
 
   static int _instituteMaxLines(String name) {
     if (name.contains('\n')) {
@@ -72,31 +73,20 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
     return 1;
   }
 
-  String? _classLine() {
-    final cls = data.className.trim();
-    final sec = data.section.trim();
-    if (cls.isEmpty && sec.isEmpty) return null;
-    if (cls.isNotEmpty && sec.isNotEmpty) return '$cls · $sec';
-    return cls.isNotEmpty ? cls : sec;
-  }
-
-  List<String> _detailLines() {
+  List<String> _frontDetailLines() {
     final lines = <String>[];
     void add(String value) {
       final v = value.trim();
       if (v.isNotEmpty) lines.add(v);
     }
 
-    add(data.fatherName);
-    final cls = _classLine();
-    if (cls != null) add(cls);
     add(data.rollNo);
+    add(data.section);
     add(data.bloodGroup);
     add(data.mobileNumber);
+    add(data.email);
     add(data.address);
-    for (final term in data.backDetailLines) {
-      add(term);
-    }
+    // Optional terms removed completely for Template 15 (Single-sided card)
     return lines;
   }
 
@@ -113,7 +103,7 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
   }
 
   Widget _buildFront() {
-    final detailLines = _detailLines();
+    final detailLines = _frontDetailLines();
 
     return Stack(
       fit: StackFit.expand,
@@ -122,24 +112,25 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
           StudentIdTemplateAssets.frontBackgroundV15,
           fit: BoxFit.fill,
         ),
-        Positioned(
-          top: _h * _LandscapeV15Layout.headerTop,
-          left: _w * _LandscapeV15Layout.headerLeft,
-          right: _w * _LandscapeV15Layout.headerRight,
-          height: _h * _LandscapeV15Layout.headerHeight,
-          child: _LandscapeV15Header(
-            instituteName: data.instituteName.trim(),
-            instituteStyle: _ts(const TextStyle(
-              color: _LandscapeV15Layout.instituteRed,
-              fontSize: 36,
-              fontWeight: FontWeight.w900,
-              height: 1.02,
-              letterSpacing: 0.3,
-            )),
-            instituteMaxLines: _instituteMaxLines(data.instituteName),
-            minFontSize: 12,
+        if (data.instituteName.trim().isNotEmpty)
+          Positioned(
+            top: _h * _LandscapeV15Layout.headerTop,
+            left: _w * _LandscapeV15Layout.headerLeft,
+            right: _w * _LandscapeV15Layout.headerRight,
+            height: _h * _LandscapeV15Layout.headerHeight,
+            child: _LandscapeV15Header(
+              instituteName: data.instituteName.trim(),
+              instituteStyle: _ts(const TextStyle(
+                color: _LandscapeV15Layout.instituteRed,
+                fontSize: IdCardPortraitTypography.headerFontSize,
+                fontWeight: FontWeight.w900,
+                height: 1.02,
+                letterSpacing: 0.3,
+              )),
+              instituteMaxLines: _instituteMaxLines(data.instituteName),
+              minFontSize: IdCardPortraitTypography.headerMinFontSize,
+            ),
           ),
-        ),
         Positioned(
           top: _h * _LandscapeV15Layout.photoTop,
           right: _w * _LandscapeV15Layout.photoRight,
@@ -157,38 +148,59 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
             right: _w * _LandscapeV15Layout.nameRight,
             width: _w * _LandscapeV15Layout.nameWidth,
             child: AutoSizeText(
-              data.studentName.trim().toUpperCase(),
+              _cap(data.studentName),
               maxLines: 2,
-              minFontSize: 12,
+              minFontSize: IdCardPortraitTypography.nameMinFontSize,
               textAlign: TextAlign.center,
-              style: _ts(const TextStyle(
+              style: _tsPrimary(const TextStyle(
                 color: _LandscapeV15Layout.nameRed,
-                fontSize: 28,
+                fontSize: IdCardPortraitTypography.nameFontSize,
                 fontWeight: FontWeight.w900,
+                fontStyle: FontStyle.italic,
                 height: 1.05,
                 letterSpacing: 0.35,
               )),
             ),
           ),
-        if (detailLines.isNotEmpty)
-          Positioned(
-            top: _h * _LandscapeV15Layout.detailsTop,
-            left: _w * _LandscapeV15Layout.detailsLeft,
-            right: _w * _LandscapeV15Layout.detailsRight,
-            bottom: _h * _LandscapeV15Layout.detailsBottom,
-            child: _LandscapeV15DetailColumn(
-              lines: detailLines,
-              textStyle: _ts(const TextStyle(
-                color: _LandscapeV15Layout.textDark,
-                fontSize: _LandscapeV15Layout.detailFontSize,
-                fontWeight: FontWeight.w700,
-                height: 1.22,
-              )),
-              minFontSize: _LandscapeV15Layout.detailMinFontSize,
-              compact: data.useCompactFrontSpacing,
-              relaxed: data.useRelaxedFrontSpacing,
-            ),
+        Positioned(
+          top: _h * _LandscapeV15Layout.detailsTop,
+          left: _w * _LandscapeV15Layout.detailsLeft,
+          right: _w * _LandscapeV15Layout.detailsRight,
+          bottom: _h * _LandscapeV15Layout.detailsBottom,
+          child: _LandscapeV15FrontContent(
+            fatherName: data.fatherName,
+            className: data.className,
+            detailLines: detailLines,
+            fatherStyle: _tsPrimary(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.05,
+              letterSpacing: 0.5,
+            )),
+            courseStyle: _tsPrimary(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.05,
+              letterSpacing: 0.5,
+            )),
+            bodyStyle: _tsPrimary(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.bodyFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.05,
+              letterSpacing: 0.5,
+            )),
+            nameMinFontSize: IdCardPortraitTypography.nameMinFontSize,
+            bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
+            compactSpacing: data.useCompactFrontSpacing,
+            relaxedSpacing: data.useRelaxedFrontSpacing,
           ),
+        ),
         if (data.hasSignature)
           Positioned(
             right: _w * 0.035,
@@ -228,7 +240,7 @@ class _LandscapeV15Header extends StatelessWidget {
       child: AutoSizeText(
         instituteName.toUpperCase(),
         maxLines: instituteMaxLines,
-        minFontSize: minFontSize + 2,
+        minFontSize: minFontSize,
         textAlign: TextAlign.center,
         style: instituteStyle,
       ),
@@ -284,75 +296,123 @@ class _LandscapeV15RectPhoto extends StatelessWidget {
   }
 }
 
-class _LandscapeV15DetailColumn extends StatelessWidget {
-  const _LandscapeV15DetailColumn({
-    required this.lines,
-    required this.textStyle,
-    required this.minFontSize,
-    required this.compact,
-    required this.relaxed,
+class _LandscapeV15FrontContent extends StatelessWidget {
+  const _LandscapeV15FrontContent({
+    required this.fatherName,
+    required this.className,
+    required this.detailLines,
+    required this.fatherStyle,
+    required this.courseStyle,
+    required this.bodyStyle,
+    required this.nameMinFontSize,
+    required this.bodyMinFontSize,
+    required this.compactSpacing,
+    required this.relaxedSpacing,
   });
 
-  final List<String> lines;
-  final TextStyle textStyle;
-  final double minFontSize;
-  final bool compact;
-  final bool relaxed;
+  final String fatherName;
+  final String className;
+  final List<String> detailLines;
+  final TextStyle fatherStyle;
+  final TextStyle courseStyle;
+  final TextStyle bodyStyle;
+  final double nameMinFontSize;
+  final double bodyMinFontSize;
+  final bool compactSpacing;
+  final bool relaxedSpacing;
 
-  Widget _buildRow(String line) {
-    if (line.contains(':')) {
-      final parts = line.split(':');
-      final label = parts[0].trim();
-      final value = parts.sublist(1).join(':').trim();
-      return AutoSizeText.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: '$label: ',
-              style: textStyle.copyWith(
-                fontWeight: FontWeight.w900,
-                color: const Color(0xFF0F172A),
-              ),
-            ),
-            TextSpan(
-              text: value,
-              style: textStyle.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-        maxLines: 2,
-        minFontSize: minFontSize,
-        textAlign: TextAlign.center,
-      );
-    }
-    return AutoSizeText(
-      line,
-      maxLines: 2,
-      minFontSize: minFontSize,
-      textAlign: TextAlign.center,
-      style: textStyle,
-    );
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
   }
 
   @override
   Widget build(BuildContext context) {
+    final blocks = <Widget>[];
+    final estimates = <double>[];
+
+    void add(Widget w, double est) {
+      blocks.add(w);
+      estimates.add(est);
+    }
+
+    final father = _cap(fatherName);
+    if (father.isNotEmpty) {
+      add(
+        AutoSizeText(
+          father,
+          maxLines: 1,
+          minFontSize: nameMinFontSize,
+          textAlign: TextAlign.center,
+          style: fatherStyle,
+        ),
+        (fatherStyle.fontSize ?? 42) * 1.08,
+      );
+    }
+
+    final course = _cap(className);
+    if (course.isNotEmpty) {
+      add(
+        AutoSizeText(
+          course,
+          maxLines: 1,
+          minFontSize: nameMinFontSize,
+          textAlign: TextAlign.center,
+          style: courseStyle,
+        ),
+        (courseStyle.fontSize ?? 42) * 1.08,
+      );
+    }
+
+    for (final line in detailLines) {
+      add(
+        AutoSizeText(
+          _cap(line),
+          maxLines: 2,
+          minFontSize: bodyMinFontSize,
+          textAlign: TextAlign.center,
+          style: bodyStyle,
+        ),
+        (bodyStyle.fontSize ?? 32) * 1.25,
+      );
+    }
+
+    if (blocks.isEmpty) return const SizedBox.shrink();
+
+    final gapCount = blocks.length - 1;
+    if (gapCount <= 0) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: blocks,
+      );
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
-        var gapMin = compact ? 2.0 : _LandscapeV15Layout.detailGapMin;
-        var gapMax = compact ? 5.0 : _LandscapeV15Layout.detailGapMax;
-        if (relaxed) {
-          gapMin = 5;
-          gapMax = 9;
+        final estTotal = estimates.fold(0.0, (a, b) => a + b);
+        final free = (constraints.maxHeight - estTotal).clamp(0.0, double.infinity);
+
+        var gapMin = compactSpacing ? 3.0 : 6.0;
+        var gapMax = compactSpacing ? 8.0 : 14.0;
+        if (relaxedSpacing) {
+          gapMin = 8.0;
+          gapMax = 18.0;
         }
 
-        final est = lines.length * (textStyle.fontSize ?? 17) * 1.2;
-        final free =
-            (constraints.maxHeight - est).clamp(0.0, double.infinity);
-        final gap = lines.length <= 1
-            ? 0.0
-            : (free / (lines.length - 1)).clamp(gapMin, gapMax);
+        var gap = (free / gapCount).clamp(gapMin, gapMax);
+        if (estTotal + gap * gapCount > constraints.maxHeight) {
+          gap = ((constraints.maxHeight - estTotal) / gapCount).clamp(2.0, gapMax);
+        }
+
+        final children = <Widget>[];
+        for (var i = 0; i < blocks.length; i++) {
+          if (i > 0) children.add(SizedBox(height: gap));
+          children.add(blocks[i]);
+        }
 
         return FittedBox(
           fit: BoxFit.scaleDown,
@@ -361,45 +421,11 @@ class _LandscapeV15DetailColumn extends StatelessWidget {
             width: constraints.maxWidth,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                for (var i = 0; i < lines.length; i++) ...[
-                  if (i > 0) SizedBox(height: gap),
-                  _buildRow(lines[i]),
-                ],
-              ],
+              children: children,
             ),
           ),
         );
       },
-    );
-  }
-}
-
-class _LandscapeV15Signature extends StatelessWidget {
-  const _LandscapeV15Signature({
-    required this.path,
-    this.bytes,
-  });
-
-  final String path;
-  final Uint8List? bytes;
-
-  @override
-  Widget build(BuildContext context) {
-    Widget? image;
-    if (bytes != null && bytes!.isNotEmpty) {
-      image = Image.memory(bytes!, fit: BoxFit.contain);
-    } else if (path.trim().isNotEmpty) {
-      final file = File(path);
-      if (file.existsSync()) {
-        image = Image.file(file, fit: BoxFit.contain);
-      }
-    }
-    if (image == null) return const SizedBox.shrink();
-
-    return Align(
-      alignment: Alignment.bottomLeft,
-      child: SizedBox(height: 52, child: image),
     );
   }
 }
