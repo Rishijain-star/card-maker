@@ -46,7 +46,7 @@ class StudentDetailsFormView extends GetView<CreateFlowController> {
                     Center(
                       child: StudentPhotoPicker(
                         photoPath: controller.photoPath.value,
-                        onAddPhoto: controller.pickFromCamera,
+                        onAddPhoto: () => controller.showPhotoSourcePicker(context),
                       ),
                     ),
                     const SizedBox(height: 20),

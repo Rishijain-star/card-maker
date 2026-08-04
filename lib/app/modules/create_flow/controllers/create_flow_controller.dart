@@ -1063,21 +1063,6 @@ class CreateFlowController extends GetxController {
                 const SizedBox(height: 16),
                 ListTile(
                   leading: const CircleAvatar(
-                    backgroundColor: Color(0xFFEFF6FF),
-                    child: Icon(Icons.camera_alt_rounded, color: Color(0xFF2563EB)),
-                  ),
-                  title: const Text(
-                    'Take Photo with Camera',
-                    style: TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    pickFromCamera();
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const CircleAvatar(
                     backgroundColor: Color(0xFFF0FDF4),
                     child: Icon(Icons.photo_library_rounded, color: Color(0xFF16A34A)),
                   ),
@@ -1088,6 +1073,21 @@ class CreateFlowController extends GetxController {
                   onTap: () {
                     Navigator.pop(ctx);
                     pickFromGallery();
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const CircleAvatar(
+                    backgroundColor: Color(0xFFEFF6FF),
+                    child: Icon(Icons.camera_alt_rounded, color: Color(0xFF2563EB)),
+                  ),
+                  title: const Text(
+                    'Take Photo with Camera',
+                    style: TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    pickFromCamera();
                   },
                 ),
               ],
