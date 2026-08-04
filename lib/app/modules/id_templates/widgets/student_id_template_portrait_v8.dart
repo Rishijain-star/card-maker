@@ -374,10 +374,19 @@ class _PortraitV8SplitName extends StatelessWidget {
   final TextStyle restStyle;
   final double minFontSize;
 
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
-    final f = first.trim().toUpperCase();
-    final r = rest.trim().toUpperCase();
+    final f = _cap(first);
+    final r = _cap(rest);
     if (f.isEmpty && r.isEmpty) return const SizedBox.shrink();
 
     return LayoutBuilder(
