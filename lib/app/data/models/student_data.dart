@@ -101,6 +101,9 @@ class StudentData {
     }).join(' ');
   }
 
+  /// Student name with first letter of each word capitalized.
+  String get formattedStudentName => _capitalizeWords(studentName);
+
   /// Front body lines — exact user input from form fields (validity excluded; rendered on back).
   List<String> get frontBodyLines {
     final lines = <String>[];

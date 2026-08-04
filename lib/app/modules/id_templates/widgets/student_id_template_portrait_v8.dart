@@ -122,7 +122,7 @@ class StudentIdTemplatePortraitV8 extends StatelessWidget {
     final photoLeft = (_w - photoSize) / 2;
     final contentTop =
         photoTop + photoSize + _PortraitV8Layout.frontGapBelowPhoto;
-    final nameParts = _splitStudentName(data.studentName);
+    final nameParts = _splitStudentName(data.formattedStudentName);
 
     return Stack(
       fit: StackFit.expand,

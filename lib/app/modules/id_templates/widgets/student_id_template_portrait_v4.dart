@@ -177,7 +177,7 @@ class StudentIdTemplatePortraitV4 extends StatelessWidget {
             child: Align(
               alignment: Alignment.center,
               child: AutoSizeText(
-                data.studentName.trim(),
+                data.formattedStudentName,
                 maxLines: 1,
                 minFontSize: IdCardPortraitTypography.nameMinFontSize,
                 textAlign: TextAlign.center,
