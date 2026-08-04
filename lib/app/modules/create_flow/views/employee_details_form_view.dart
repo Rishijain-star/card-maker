@@ -10,12 +10,7 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
   const EmployeeDetailsFormView({super.key});
 
   void _submit() {
-    final emailError = controller.validateEmail(controller.emailCtrl.text.trim());
     final phoneError = controller.validatePhone(controller.phoneCtrl.text.trim());
-    if (emailError != null) {
-      Get.snackbar('Invalid Email', emailError);
-      return;
-    }
     if (phoneError != null) {
       Get.snackbar('Invalid Phone', phoneError);
       return;
@@ -72,6 +67,11 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                       controller: controller.idNumberCtrl,
                     ),
                     EmployeeJoinDateField(controller: controller.expiryDateCtrl),
+                    StudentUnderlineField(
+                      iconAsset: EmployeeFormAssets.email,
+                      hint: 'Write your email',
+                      controller: controller.emailCtrl,
+                    ),
                   ],
                 ),
               ),

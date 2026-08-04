@@ -347,10 +347,10 @@ class _CompanyV8ContactRows extends StatelessWidget {
     }
 
     add(Icons.badge_outlined, data.employeeId);
-    add(Icons.phone_outlined, data.phone);
-    add(Icons.email_outlined, data.email);
-    add(Icons.bloodtype_outlined, data.bloodGroup);
     add(Icons.event_outlined, data.joinDate);
+    add(Icons.email_outlined, data.email);
+    add(Icons.phone_outlined, data.phone);
+    add(Icons.bloodtype_outlined, data.bloodGroup);
 
     if (rows.isEmpty) return const SizedBox.shrink();
 

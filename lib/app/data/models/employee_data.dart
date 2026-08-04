@@ -84,8 +84,8 @@ class EmployeeData {
 
     add(employeeId);
     add(joinDate);
-    add(phone);
     add(email);
+    add(phone);
     add(bloodGroup);
     return lines;
   }
