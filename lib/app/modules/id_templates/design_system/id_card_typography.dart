@@ -6,10 +6,13 @@ import '../../create_flow/controllers/create_flow_controller.dart';
 
 /// Applies the selected card font to any [TextStyle] (all template text uses this).
 abstract final class IdCardTypography {
+  /// Global default font family across all ID card templates.
+  static const String defaultFontFamily = 'Lobster';
+
   /// Stylish fonts curated for ID cards, lanyards & badges.
   static const List<String> fontOptions = <String>[
-    'Merienda',
     'Lobster',
+    'Merienda',
     'Poppins',
     'Montserrat',
     'Rubik',
@@ -47,17 +50,20 @@ abstract final class IdCardTypography {
       final newSize = (style.fontSize! * activeScale).clamp(6.0, 120.0);
       style = style.copyWith(fontSize: newSize);
     }
-    final applier = _appliers[fontFamily];
+    final fontToUse = (fontFamily.isEmpty || fontFamily == 'Poppins')
+        ? defaultFontFamily
+        : fontFamily;
+
+    final applier = _appliers[fontToUse];
     if (applier != null) {
       return applier(textStyle: style);
     }
-    return GoogleFonts.poppins(textStyle: style);
+    return GoogleFonts.lobster(textStyle: style);
   }
 
-  /// Default font for Student Name, Father Name, Course/Subject is Lobster when no custom font is selected.
+  /// Dynamic font applier for primary fields (uses defaultFontFamily by default).
   static TextStyle applyPrimary(TextStyle base, String fontFamily, {double? scale}) {
-    final effectiveFont = (fontFamily.isEmpty || fontFamily == 'Poppins') ? 'Lobster' : fontFamily;
-    return apply(base, effectiveFont, scale: scale);
+    return apply(base, fontFamily, scale: scale);
   }
 
   static final Map<String, TextStyle Function({TextStyle? textStyle})> _appliers =
