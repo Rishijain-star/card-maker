@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -229,6 +228,9 @@ class CompanyIdTemplatePortraitV11 extends StatelessWidget {
             child: _CompanyV11SignaturePreview(
               path: data.signaturePath,
               bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
             ),
           ),
       ],
@@ -536,34 +538,26 @@ class _CompanyV11SignaturePreview extends StatelessWidget {
   const _CompanyV11SignaturePreview({
     required this.path,
     this.bytes,
+    this.hasBorder = false,
+    this.borderColor = const Color(0xFF0F172A),
+    this.borderWidth = 1.0,
   });
 
   final String path;
   final Uint8List? bytes;
+  final bool hasBorder;
+  final Color borderColor;
+  final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
-    Widget? image;
-    if (bytes != null && bytes!.isNotEmpty) {
-      image = Image.memory(bytes!, fit: BoxFit.contain);
-    } else if (path.trim().isNotEmpty) {
-      final file = File(path);
-      if (file.existsSync()) {
-        image = Image.file(file, fit: BoxFit.contain);
-      }
-    }
-    if (image == null) return const SizedBox.shrink();
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Expanded(child: Center(child: image)),
-        Container(
-          height: 1.5,
-          width: double.infinity,
-          color: _CompanyV11Layout.textDark,
-        ),
-      ],
+    return StudentPortraitSignatureCircle(
+      size: 80,
+      path: path,
+      bytes: bytes,
+      hasBorder: hasBorder,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
     );
   }
 }

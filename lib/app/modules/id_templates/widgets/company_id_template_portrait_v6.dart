@@ -170,6 +170,19 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
             },
           ),
         ),
+        if (data.hasSignature)
+          Positioned(
+            right: _w * 0.035,
+            bottom: _h * 0.035,
+            child: StudentPortraitSignatureCircle(
+              size: _w * 0.125,
+              path: data.signaturePath,
+              bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
+            ),
+          ),
       ],
     );
   }
@@ -222,9 +235,9 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
               lines: terms,
               textStyle: _ts(const TextStyle(
                 color: _CompanyV6Layout.textDark,
-                fontSize: 18,
+                fontSize: 19,
                 fontWeight: FontWeight.w400,
-                height: 1.36,
+                height: 1.38,
               )),
               minFontSize: 13,
             ),
@@ -256,6 +269,9 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
               child: _CompanyV6SignaturePreview(
                 path: data.signaturePath,
                 bytes: data.signatureBytes,
+                hasBorder: data.signatureHasBorder,
+                borderColor: data.signatureBorderColor,
+                borderWidth: data.signatureBorderWidth,
               ),
             ),
           ),
@@ -568,35 +584,26 @@ class _CompanyV6SignaturePreview extends StatelessWidget {
   const _CompanyV6SignaturePreview({
     required this.path,
     this.bytes,
+    this.hasBorder = false,
+    this.borderColor = const Color(0xFF0F172A),
+    this.borderWidth = 1.0,
   });
 
   final String path;
   final Uint8List? bytes;
+  final bool hasBorder;
+  final Color borderColor;
+  final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
-    Widget? image;
-    if (bytes != null && bytes!.isNotEmpty) {
-      image = Image.memory(bytes!, fit: BoxFit.contain);
-    } else if (path.trim().isNotEmpty) {
-      final file = File(path);
-      if (file.existsSync()) {
-        image = Image.file(file, fit: BoxFit.contain);
-      }
-    }
-    if (image == null) return const SizedBox.shrink();
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(height: 52, child: image),
-        const SizedBox(height: 4),
-        Container(
-          width: 150,
-          height: 1.2,
-          color: _CompanyV6Layout.textDark.withValues(alpha: 0.55),
-        ),
-      ],
+    return StudentPortraitSignatureCircle(
+      size: 80,
+      path: path,
+      bytes: bytes,
+      hasBorder: hasBorder,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
     );
   }
 }

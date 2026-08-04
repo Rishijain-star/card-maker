@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -149,6 +148,19 @@ class CompanyIdTemplatePortraitV5 extends StatelessWidget {
             minFontSize: 15,
           ),
         ),
+        if (data.hasSignature)
+          Positioned(
+            right: _w * 0.035,
+            bottom: _h * 0.035,
+            child: StudentPortraitSignatureCircle(
+              size: _w * 0.125,
+              path: data.signaturePath,
+              bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
+            ),
+          ),
       ],
     );
   }
@@ -190,6 +202,9 @@ class CompanyIdTemplatePortraitV5 extends StatelessWidget {
               child: _CompanyV5SignaturePreview(
                 path: data.signaturePath,
                 bytes: data.signatureBytes,
+                hasBorder: data.signatureHasBorder,
+                borderColor: data.signatureBorderColor,
+                borderWidth: data.signatureBorderWidth,
               ),
             ),
           ),
@@ -416,22 +431,26 @@ class _CompanyV5SignaturePreview extends StatelessWidget {
   const _CompanyV5SignaturePreview({
     required this.path,
     this.bytes,
+    this.hasBorder = false,
+    this.borderColor = const Color(0xFF0F172A),
+    this.borderWidth = 1.0,
   });
 
   final String path;
   final Uint8List? bytes;
+  final bool hasBorder;
+  final Color borderColor;
+  final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
-    if (bytes != null && bytes!.isNotEmpty) {
-      return Image.memory(bytes!, fit: BoxFit.contain);
-    }
-    if (path.trim().isNotEmpty) {
-      final file = File(path);
-      if (file.existsSync()) {
-        return Image.file(file, fit: BoxFit.contain);
-      }
-    }
-    return const SizedBox.shrink();
+    return StudentPortraitSignatureCircle(
+      size: 80,
+      path: path,
+      bytes: bytes,
+      hasBorder: hasBorder,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+    );
   }
 }

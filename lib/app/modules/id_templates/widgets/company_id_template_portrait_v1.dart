@@ -168,6 +168,19 @@ class CompanyIdTemplatePortraitV1 extends StatelessWidget {
             },
           ),
         ),
+        if (data.hasSignature)
+          Positioned(
+            right: _w * 0.035,
+            bottom: _h * 0.035,
+            child: StudentPortraitSignatureCircle(
+              size: _w * 0.125,
+              path: data.signaturePath,
+              bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
+            ),
+          ),
       ],
     );
   }
@@ -212,6 +225,9 @@ class CompanyIdTemplatePortraitV1 extends StatelessWidget {
               child: _CompanyV1SignaturePreview(
                 path: data.signaturePath,
                 bytes: data.signatureBytes,
+                hasBorder: data.signatureHasBorder,
+                borderColor: data.signatureBorderColor,
+                borderWidth: data.signatureBorderWidth,
               ),
             ),
           ),
@@ -449,10 +465,16 @@ class _CompanyV1SignaturePreview extends StatelessWidget {
   const _CompanyV1SignaturePreview({
     required this.path,
     this.bytes,
+    this.hasBorder = false,
+    this.borderColor = const Color(0xFF0F172A),
+    this.borderWidth = 1.0,
   });
 
   final String path;
   final Uint8List? bytes;
+  final bool hasBorder;
+  final Color borderColor;
+  final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -460,6 +482,9 @@ class _CompanyV1SignaturePreview extends StatelessWidget {
       size: 80,
       path: path,
       bytes: bytes,
+      hasBorder: hasBorder,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
     );
   }
 }

@@ -183,6 +183,19 @@ class CompanyIdTemplatePortraitV9 extends StatelessWidget {
             },
           ),
         ),
+        if (data.hasSignature)
+          Positioned(
+            right: _w * 0.035,
+            bottom: _h * 0.035,
+            child: StudentPortraitSignatureCircle(
+              size: _w * 0.125,
+              path: data.signaturePath,
+              bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
+            ),
+          ),
       ],
     );
   }
@@ -234,6 +247,19 @@ class CompanyIdTemplatePortraitV9 extends StatelessWidget {
             ),
           ),
         ),
+        if (data.hasSignature)
+          Positioned(
+            right: _w * 0.035,
+            bottom: _h * 0.16,
+            child: StudentPortraitSignatureCircle(
+              size: _w * 0.125,
+              path: data.signaturePath,
+              bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
+            ),
+          ),
       ],
     );
   }

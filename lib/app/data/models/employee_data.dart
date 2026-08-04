@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:flutter/material.dart';
 
 import '../../modules/create_flow/controllers/create_flow_controller.dart';
 
@@ -18,6 +19,9 @@ class EmployeeData {
     this.photoPath = '',
     this.signaturePath = '',
     this.signatureBytes,
+    this.signatureHasBorder = false,
+    this.signatureBorderColor = const Color(0xFF0F172A),
+    this.signatureBorderWidth = 1.0,
     this.note1 = '',
     this.note2 = '',
     this.note3 = '',
@@ -36,6 +40,9 @@ class EmployeeData {
   final String photoPath;
   final String signaturePath;
   final Uint8List? signatureBytes;
+  final bool signatureHasBorder;
+  final Color signatureBorderColor;
+  final double signatureBorderWidth;
   final String note1;
   final String note2;
   final String note3;
@@ -102,6 +109,9 @@ class EmployeeData {
       photoPath: flow.photoPath.value,
       signaturePath: flow.signaturePath.value,
       signatureBytes: flow.signatureImageBytes.value,
+      signatureHasBorder: flow.signatureHasBorder.value,
+      signatureBorderColor: flow.currentSignatureBorderColor,
+      signatureBorderWidth: flow.signatureBorderWidth.value,
       note1: flow.term1Ctrl.text,
       note2: flow.term2Ctrl.text,
       note3: flow.term3Ctrl.text,

@@ -124,6 +124,8 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                   ],
                 ),
               ),
+              const SizedBox(height: 12),
+              const StudentSignatureSection(),
               const SizedBox(height: 20),
               StudentSubmitButton(onPressed: _submit),
             ],
