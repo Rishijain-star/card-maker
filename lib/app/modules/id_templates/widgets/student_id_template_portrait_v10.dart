@@ -67,6 +67,7 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
   static const double _h = IdCardPortraitDimensions.height;
 
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
+  TextStyle _tsPrimary(TextStyle base) => studentPortraitPrimaryTextStyle(base, fontFamily);
 
   static int _instituteMaxLines(String name) {
     if (name.contains('\n')) {
@@ -172,7 +173,7 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
                       detailLines: _frontDetailLines(),
                       validFrom: '',
                       validTo: '',
-                      nameStyle: _ts(const TextStyle(
+                      nameStyle: _tsPrimary(const TextStyle(
                         color: _PortraitV10Layout.textDark,
                         fontSize: _PortraitV10Layout.frontNameFontSize,
                         fontWeight: FontWeight.w900,
@@ -181,7 +182,7 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
                         letterSpacing: 0.45,
                       )),
                       nameMinFontSize: _PortraitV10Layout.frontNameMinFontSize,
-                      fatherStyle: _ts(const TextStyle(
+                      fatherStyle: _tsPrimary(const TextStyle(
                         color: Color(0xFF0F172A),
                         fontSize: IdCardPortraitTypography.nameFontSize,
                         fontWeight: FontWeight.w900,
@@ -189,7 +190,7 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
                         height: 1.05,
                         letterSpacing: 0.5,
                       )),
-                      courseStyle: _ts(const TextStyle(
+                      courseStyle: _tsPrimary(const TextStyle(
                         color: Color(0xFF0F172A),
                         fontSize: IdCardPortraitTypography.nameFontSize,
                         fontWeight: FontWeight.w900,

@@ -78,6 +78,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
   static const double _h = IdCardPortraitDimensions.height;
 
   TextStyle _ts(TextStyle base) => IdCardTypography.apply(base, fontFamily);
+  TextStyle _tsPrimary(TextStyle base) => IdCardTypography.applyPrimary(base, fontFamily);
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +147,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
               ),
             ),
             footerMinFontSize: _PortraitFrontLayout.validityMinFontSize,
-            nameStyle: _ts(
+            nameStyle: _tsPrimary(
               const TextStyle(
                 color: Color(0xFF0F172A),
                 fontSize: _PortraitFrontLayout.nameFontSize,

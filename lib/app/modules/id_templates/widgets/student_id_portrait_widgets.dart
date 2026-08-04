@@ -486,3 +486,6 @@ class _HexagonPhotoContent extends StatelessWidget {
 
 TextStyle studentPortraitTextStyle(TextStyle base, String fontFamily) =>
     IdCardTypography.apply(base, fontFamily);
+
+TextStyle studentPortraitPrimaryTextStyle(TextStyle base, String fontFamily) =>
+    IdCardTypography.applyPrimary(base, fontFamily);

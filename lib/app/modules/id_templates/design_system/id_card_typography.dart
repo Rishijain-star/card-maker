@@ -9,6 +9,7 @@ abstract final class IdCardTypography {
   /// Stylish fonts curated for ID cards, lanyards & badges.
   static const List<String> fontOptions = <String>[
     'Merienda',
+    'Lobster',
     'Poppins',
     'Montserrat',
     'Rubik',
@@ -53,9 +54,16 @@ abstract final class IdCardTypography {
     return GoogleFonts.poppins(textStyle: style);
   }
 
+  /// Default font for Student Name, Father Name, Course/Subject is Lobster when no custom font is selected.
+  static TextStyle applyPrimary(TextStyle base, String fontFamily, {double? scale}) {
+    final effectiveFont = (fontFamily.isEmpty || fontFamily == 'Poppins') ? 'Lobster' : fontFamily;
+    return apply(base, effectiveFont, scale: scale);
+  }
+
   static final Map<String, TextStyle Function({TextStyle? textStyle})> _appliers =
       <String, TextStyle Function({TextStyle? textStyle})>{
         'Merienda': GoogleFonts.merienda,
+        'Lobster': GoogleFonts.lobster,
         'Bebas Neue': GoogleFonts.bebasNeue,
         'Oswald': GoogleFonts.oswald,
         'Anton': GoogleFonts.anton,
