@@ -74,7 +74,7 @@ class StudentPortraitEvenContent extends StatelessWidget {
     if (name.isNotEmpty && nameStyle != null) {
       blocks.add(
         AutoSizeText(
-          name.toUpperCase(),
+          name,
           maxLines: 2,
           minFontSize: nameMinFontSize,
           textAlign: nameAlign,

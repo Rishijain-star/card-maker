@@ -92,7 +92,7 @@ class StudentData {
     return from.isNotEmpty ? from : to;
   }
 
-  /// Front body (below name) — values only; no field labels on card.
+  /// Front body (below name) — formatted with labels matching form order & reference layout.
   List<String> get frontBodyLines {
     final lines = <String>[];
     void add(String value) {
@@ -100,13 +100,70 @@ class StudentData {
       if (v.isNotEmpty) lines.add(v);
     }
 
-    add(fatherName);
-    add(rollNo);
-    add(className);
-    add(section);
-    add(bloodGroup);
-    add(mobileNumber);
-    add(email);
+    if (fatherName.trim().isNotEmpty) {
+      final fn = fatherName.trim();
+      if (fn.toLowerCase().startsWith('s/o') ||
+          fn.toLowerCase().startsWith('d/o') ||
+          fn.toLowerCase().startsWith('w/o') ||
+          fn.toLowerCase().startsWith('father')) {
+        add(fn);
+      } else {
+        add('S/o: $fn');
+      }
+    }
+
+    if (className.trim().isNotEmpty) {
+      final cn = className.trim();
+      if (cn.toLowerCase().startsWith('class')) {
+        add(cn);
+      } else {
+        add('Class: $cn');
+      }
+    }
+
+    if (rollNo.trim().isNotEmpty) {
+      final rn = rollNo.trim();
+      if (rn.toLowerCase().startsWith('roll')) {
+        add(rn);
+      } else {
+        add('Roll No : $rn');
+      }
+    }
+
+    final valText = validityText;
+    if (valText.isNotEmpty) {
+      if (valText.toLowerCase().startsWith('session') ||
+          valText.toLowerCase().startsWith('valid')) {
+        add(valText);
+      } else {
+        add('Session: $valText');
+      }
+    } else if (section.trim().isNotEmpty) {
+      add('Section: ${section.trim()}');
+    }
+
+    if (bloodGroup.trim().isNotEmpty) {
+      add('Blood Group: ${bloodGroup.trim()}');
+    }
+
+    if (mobileNumber.trim().isNotEmpty) {
+      final mn = mobileNumber.trim();
+      if (mn.toLowerCase().startsWith('mob') ||
+          mn.toLowerCase().startsWith('phone')) {
+        add(mn);
+      } else {
+        add('Mobile: $mn');
+      }
+    }
+
+    if (email.trim().isNotEmpty) {
+      add(email.trim());
+    }
+
+    if (address.trim().isNotEmpty) {
+      add(address.trim());
+    }
+
     return lines;
   }
 

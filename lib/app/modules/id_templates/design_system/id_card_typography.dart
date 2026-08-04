@@ -8,6 +8,7 @@ import '../../create_flow/controllers/create_flow_controller.dart';
 abstract final class IdCardTypography {
   /// Stylish fonts curated for ID cards, lanyards & badges.
   static const List<String> fontOptions = <String>[
+    'Merienda',
     'Poppins',
     'Montserrat',
     'Rubik',
@@ -54,6 +55,7 @@ abstract final class IdCardTypography {
 
   static final Map<String, TextStyle Function({TextStyle? textStyle})> _appliers =
       <String, TextStyle Function({TextStyle? textStyle})>{
+        'Merienda': GoogleFonts.merienda,
         'Bebas Neue': GoogleFonts.bebasNeue,
         'Oswald': GoogleFonts.oswald,
         'Anton': GoogleFonts.anton,

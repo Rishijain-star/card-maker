@@ -191,7 +191,7 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: AutoSizeText(
-                data.studentName.trim().toUpperCase(),
+                data.studentName.trim(),
                 maxLines: 1,
                 minFontSize: _PortraitV2Layout.nameMinFontSize,
                 textAlign: TextAlign.left,
@@ -199,6 +199,7 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
                   color: Color(0xFF0F172A),
                   fontSize: _PortraitV2Layout.nameFontSize,
                   fontWeight: FontWeight.w900,
+                  fontStyle: FontStyle.italic,
                   height: 1.1,
                 )),
               ),
@@ -219,6 +220,7 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
               color: Color(0xFF1E293B),
               fontSize: _PortraitV2Layout.bodyFontSize,
               fontWeight: FontWeight.w800,
+              fontStyle: FontStyle.italic,
               height: 1.35,
             )),
             bodyMinFontSize: _PortraitV2Layout.bodyMinFontSize,

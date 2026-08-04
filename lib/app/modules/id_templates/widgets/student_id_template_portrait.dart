@@ -149,6 +149,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
                 color: Color(0xFF0F172A),
                 fontSize: _PortraitFrontLayout.nameFontSize,
                 fontWeight: FontWeight.w900,
+                fontStyle: FontStyle.italic,
                 height: 1.08,
                 letterSpacing: 0.5,
               ),
@@ -158,7 +159,8 @@ class StudentIdTemplatePortrait extends StatelessWidget {
                 color: Color(0xFF1E293B),
                 fontSize: _PortraitFrontLayout.bodyFontSize,
                 fontWeight: FontWeight.w800,
-                height: 1.28,
+                fontStyle: FontStyle.italic,
+                height: 1.35,
               ),
             ),
             nameMinFontSize: _PortraitFrontLayout.nameMinFontSize,
@@ -166,32 +168,6 @@ class StudentIdTemplatePortrait extends StatelessWidget {
             compactSpacing: data.useCompactFrontSpacing,
           ),
         ),
-        if (data.address.trim().isNotEmpty)
-          Positioned(
-            left: _w * _PortraitFrontLayout.addressLeftRatio,
-            right: _w * _PortraitFrontLayout.addressRightRatio,
-            top: _h *
-                (_PortraitFrontLayout.addressTopRatio +
-                    _PortraitFrontLayout.contentShiftDownRatio * 0.65),
-            bottom: _h * 0.012,
-            child: Align(
-              alignment: Alignment.center,
-              child: AutoSizeText(
-                data.address.trim(),
-                maxLines: 2,
-                minFontSize: _PortraitFrontLayout.addressMinFontSize,
-                textAlign: TextAlign.center,
-                style: _ts(
-                  const TextStyle(
-                    color: Color(0xFF0F172A),
-                    fontSize: _PortraitFrontLayout.addressFontSize,
-                    fontWeight: FontWeight.w800,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-            ),
-          ),
         if (data.hasSignature)
           Positioned(
             right: _w * _PortraitFrontLayout.frontSignatureRightRatio,
