@@ -15,9 +15,9 @@ abstract final class _LandscapeV16Layout {
   static const Color photoBorderRed = Color(0xFFE53935);
 
   static const double headerTop = 0.035;
-  static const double headerLeft = 0.36;
-  static const double headerRight = 0.42;
-  static const double headerHeight = 0.20;
+  static const double headerLeft = 0.48;
+  static const double headerRight = 0.03;
+  static const double headerHeight = 0.22;
 
   static const double nameTop = 0.25;
   static const double nameLeft = 0.36;
@@ -123,12 +123,13 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
               instituteName: data.instituteName.trim(),
               schoolStyle: _ts(const TextStyle(
                 color: _LandscapeV16Layout.schoolBlue,
-                fontSize: IdCardPortraitTypography.headerFontSize,
+                fontSize: 40,
                 fontWeight: FontWeight.w900,
+                fontStyle: FontStyle.normal,
                 height: 1.02,
               )),
               instituteMaxLines: _instituteMaxLines(data.instituteName),
-              minFontSize: IdCardPortraitTypography.headerMinFontSize,
+              minFontSize: 14,
             ),
           ),
         if (data.studentName.trim().isNotEmpty)
