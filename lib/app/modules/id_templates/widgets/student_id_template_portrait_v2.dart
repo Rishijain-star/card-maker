@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../data/models/student_data.dart';
 import '../assets/student_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
+import '../design_system/id_card_portrait_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
@@ -17,12 +18,12 @@ import 'student_id_portrait_widgets.dart';
 /// Circle bottom:           y=599 image → 395px flutter (ratio 0.390)
 abstract final class _PortraitV2Layout {
   // ── Typography (same as Template 2 / student_id_template_portrait.dart) ─────
-  static const double headerFontSize = 42;
-  static const double headerMinFontSize = 20;
-  static const double nameFontSize = 44;
-  static const double nameMinFontSize = 24;
-  static const double bodyFontSize = 44;
-  static const double bodyMinFontSize = 24;
+  static const double headerFontSize = IdCardPortraitTypography.headerFontSize;
+  static const double headerMinFontSize = IdCardPortraitTypography.headerMinFontSize;
+  static const double nameFontSize = IdCardPortraitTypography.nameFontSize;
+  static const double nameMinFontSize = IdCardPortraitTypography.nameMinFontSize;
+  static const double bodyFontSize = IdCardPortraitTypography.bodyFontSize;
+  static const double bodyMinFontSize = IdCardPortraitTypography.bodyMinFontSize;
   static const double validityFontSize = 17;
   static const double validityMinFontSize = 13;
   static const double addressFontSize = 20;
@@ -383,9 +384,40 @@ class _LabeledBodyList extends StatelessWidget {
   final bool compactSpacing;
   final bool relaxedSpacing;
 
+  static String _cap(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    return s
+        .split(' ')
+        .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+        .join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final blocks = <Widget>[];
+
+    final father = _cap(fatherName);
+    if (father.isNotEmpty) {
+      blocks.add(AutoSizeText(
+        father,
+        maxLines: 1,
+        minFontSize: bodyMinFontSize,
+        textAlign: TextAlign.left,
+        style: fatherStyle ?? bodyStyle,
+      ));
+    }
+
+    final course = _cap(className);
+    if (course.isNotEmpty) {
+      blocks.add(AutoSizeText(
+        course,
+        maxLines: 1,
+        minFontSize: bodyMinFontSize,
+        textAlign: TextAlign.left,
+        style: courseStyle ?? bodyStyle,
+      ));
+    }
 
     for (final rawLine in lines) {
       final subLines = rawLine.split('\n');
@@ -393,7 +425,7 @@ class _LabeledBodyList extends StatelessWidget {
         final v = line.trim();
         if (v.isEmpty) continue;
         blocks.add(AutoSizeText(
-          v,
+          _cap(v),
           maxLines: 2,
           minFontSize: bodyMinFontSize,
           textAlign: TextAlign.left,
