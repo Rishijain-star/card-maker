@@ -70,7 +70,13 @@ class StudentPortraitEvenContent extends StatelessWidget {
       blocks.add(StudentPortraitPhoto(photoPath: photoPath, size: photoSize));
     }
 
-    final name = studentName.trim();
+    final rawName = studentName.trim();
+    final name = rawName.isEmpty
+        ? ''
+        : rawName
+            .split(' ')
+            .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+            .join(' ');
     if (name.isNotEmpty && nameStyle != null) {
       blocks.add(
         AutoSizeText(

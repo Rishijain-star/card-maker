@@ -92,19 +92,27 @@ class StudentData {
     return from.isNotEmpty ? from : to;
   }
 
-  /// Front body lines — exact raw user input from form fields (no automatic labels added).
+  static String _capitalizeWords(String input) {
+    final str = input.trim();
+    if (str.isEmpty) return str;
+    return str.split(' ').map((word) {
+      if (word.isEmpty) return word;
+      return word[0].toUpperCase() + word.substring(1);
+    }).join(' ');
+  }
+
+  /// Front body lines — exact user input from form fields (validity excluded; rendered on back).
   List<String> get frontBodyLines {
     final lines = <String>[];
     void add(String value) {
       final v = value.trim();
-      if (v.isNotEmpty) lines.add(v);
+      if (v.isNotEmpty) lines.add(_capitalizeWords(v));
     }
 
     add(fatherName);
     add(rollNo);
     add(className);
     add(section);
-    add(validityText);
     add(bloodGroup);
     add(mobileNumber);
     add(email);

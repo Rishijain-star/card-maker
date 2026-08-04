@@ -256,30 +256,6 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
               borderWidth: data.signatureBorderWidth,
             ),
           ),
-
-        // Address — bottom
-        if (data.address.trim().isNotEmpty)
-          Positioned(
-            left:   _w * _PortraitV2Layout.frontAddressLeftRatio,
-            right:  _w * _PortraitV2Layout.frontAddressRightRatio,
-            bottom: _h * _PortraitV2Layout.frontAddressBottomRatio,
-            height: _h * _PortraitV2Layout.frontAddressHeightRatio,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: AutoSizeText(
-                data.address.trim(),
-                maxLines: 2,
-                minFontSize: _PortraitV2Layout.addressMinFontSize,
-                textAlign: TextAlign.left,
-                style: _ts(const TextStyle(
-                  color: Color(0xFF0F172A),
-                  fontSize: _PortraitV2Layout.addressFontSize,
-                  fontWeight: FontWeight.w800,
-                  height: 1.25,
-                )),
-              ),
-            ),
-          ),
       ],
     );
   }

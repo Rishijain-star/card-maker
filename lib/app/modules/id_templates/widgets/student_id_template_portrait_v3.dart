@@ -195,28 +195,6 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
               borderWidth: data.signatureBorderWidth,
             ),
           ),
-        if (data.address.trim().isNotEmpty)
-          Positioned(
-            top: _h * _PortraitV3Layout.frontAddressTopRatio,
-            height: _h * _PortraitV3Layout.frontAddressHeightRatio,
-            left: _w * _PortraitV3Layout.frontAddressSideRatio,
-            right: _w * _PortraitV3Layout.frontAddressSideRatio,
-            child: Align(
-              alignment: Alignment.center,
-              child: AutoSizeText(
-                data.address.trim(),
-                maxLines: 2,
-                minFontSize: IdCardPortraitTypography.addressMinFontSize,
-                textAlign: TextAlign.center,
-                style: _ts(const TextStyle(
-                  color: Color(0xFF0F172A),
-                  fontSize: IdCardPortraitTypography.addressFontSize,
-                  fontWeight: FontWeight.w800,
-                  height: 1.25,
-                )),
-              ),
-            ),
-          ),
       ],
     );
   }
