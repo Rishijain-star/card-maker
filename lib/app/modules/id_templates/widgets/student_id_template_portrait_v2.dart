@@ -17,12 +17,12 @@ import 'student_id_portrait_widgets.dart';
 /// Circle bottom:           y=599 image → 395px flutter (ratio 0.390)
 abstract final class _PortraitV2Layout {
   // ── Typography (same as Template 2 / student_id_template_portrait.dart) ─────
-  static const double headerFontSize = 44;
+  static const double headerFontSize = 42;
   static const double headerMinFontSize = 20;
-  static const double nameFontSize = 40;
-  static const double nameMinFontSize = 22;
-  static const double bodyFontSize = 27;
-  static const double bodyMinFontSize = 18;
+  static const double nameFontSize = 44;
+  static const double nameMinFontSize = 24;
+  static const double bodyFontSize = 44;
+  static const double bodyMinFontSize = 24;
   static const double validityFontSize = 17;
   static const double validityMinFontSize = 13;
   static const double addressFontSize = 20;
@@ -217,11 +217,12 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
             footerLine: data.frontValidityHorizontalLine,
             fontFamily: fontFamily,
             bodyStyle: _ts(const TextStyle(
-              color: Color(0xFF1E293B),
+              color: Color(0xFF0F172A),
               fontSize: _PortraitV2Layout.bodyFontSize,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w900,
               fontStyle: FontStyle.italic,
-              height: 1.35,
+              height: 1.1,
+              letterSpacing: 0.5,
             )),
             bodyMinFontSize: _PortraitV2Layout.bodyMinFontSize,
             footerStyle: _ts(const TextStyle(

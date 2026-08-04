@@ -156,11 +156,12 @@ class StudentIdTemplatePortrait extends StatelessWidget {
             ),
             bodyStyle: _ts(
               const TextStyle(
-                color: Color(0xFF1E293B),
+                color: Color(0xFF0F172A),
                 fontSize: _PortraitFrontLayout.bodyFontSize,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w900,
                 fontStyle: FontStyle.italic,
-                height: 1.35,
+                height: 1.2,
+                letterSpacing: 0.5,
               ),
             ),
             nameMinFontSize: _PortraitFrontLayout.nameMinFontSize,

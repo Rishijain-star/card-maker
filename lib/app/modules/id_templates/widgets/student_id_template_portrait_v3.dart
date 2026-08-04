@@ -164,11 +164,12 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
             lines: data.frontBodyLines,
             footerLine: data.frontValidityHorizontalLine,
             bodyStyle: _ts(const TextStyle(
-              color: Color(0xFF1E293B),
+              color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.bodyFontSize,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w900,
               fontStyle: FontStyle.italic,
-              height: 1.35,
+              height: 1.08,
+              letterSpacing: 0.5,
             )),
             bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
             footerStyle: _ts(const TextStyle(
