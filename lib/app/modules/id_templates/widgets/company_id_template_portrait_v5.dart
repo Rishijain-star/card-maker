@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../data/models/employee_data.dart';
 import '../assets/company_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
+import '../design_system/id_card_portrait_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
@@ -63,6 +64,8 @@ class CompanyIdTemplatePortraitV5 extends StatelessWidget {
   static const double _h = IdCardPortraitDimensions.height;
 
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
+  TextStyle _tsPrimary(TextStyle base) =>
+      studentPortraitPrimaryTextStyle(base, fontFamily);
 
   @override
   Widget build(BuildContext context) {
@@ -133,19 +136,29 @@ class CompanyIdTemplatePortraitV5 extends StatelessWidget {
           bottom: _h * _CompanyV5Layout.frontContentBottomRatio,
           child: _CompanyV5FrontBody(
             data: data,
-            nameStyle: _ts(const TextStyle(
-              color: _CompanyV5Layout.textDark,
-              fontSize: _CompanyV5Layout.frontNameFontSize,
-              fontWeight: FontWeight.w800,
+            nameStyle: _tsPrimary(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
               height: 1.05,
             )),
-            titleStyle: _ts(const TextStyle(
-              color: _CompanyV5Layout.textMuted,
-              fontSize: _CompanyV5Layout.frontTitleFontSize,
-              fontWeight: FontWeight.w500,
-              height: 1.15,
+            titleStyle: _tsPrimary(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.05,
             )),
-            minFontSize: 15,
+            bodyStyle: _tsPrimary(const TextStyle(
+              color: Color(0xFF0F172A),
+              fontSize: IdCardPortraitTypography.bodyFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
+              height: 1.05,
+              letterSpacing: 0.5,
+            )),
+            minFontSize: IdCardPortraitTypography.bodyMinFontSize,
           ),
         ),
         if (data.hasSignature)
@@ -338,34 +351,52 @@ class _CompanyV5FrontBody extends StatelessWidget {
     required this.data,
     required this.nameStyle,
     required this.titleStyle,
+    required this.bodyStyle,
     required this.minFontSize,
   });
 
   final EmployeeData data;
   final TextStyle nameStyle;
   final TextStyle titleStyle;
+  final TextStyle bodyStyle;
   final double minFontSize;
 
   @override
   Widget build(BuildContext context) {
+    String cap(String raw) {
+      final s = raw.trim();
+      if (s.isEmpty) return '';
+      return s
+          .split(' ')
+          .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+          .join(' ');
+    }
+
     final blocks = <Widget>[];
-    final name = data.employeeName.trim();
+    final estimates = <double>[];
+
+    void add(Widget w, double est) {
+      blocks.add(w);
+      estimates.add(est);
+    }
+
+    final name = cap(data.employeeName);
     if (name.isNotEmpty) {
-      blocks.add(
+      add(
         AutoSizeText(
-          name.toUpperCase(),
+          name,
           maxLines: 2,
           minFontSize: minFontSize + 4,
           textAlign: TextAlign.center,
           style: nameStyle,
         ),
+        (nameStyle.fontSize ?? 42) * 1.08,
       );
     }
 
-    final title = data.position.trim();
+    final title = cap(data.position);
     if (title.isNotEmpty) {
-      if (blocks.isNotEmpty) blocks.add(const SizedBox(height: 8));
-      blocks.add(
+      add(
         AutoSizeText(
           title,
           maxLines: 1,
@@ -373,15 +404,60 @@ class _CompanyV5FrontBody extends StatelessWidget {
           textAlign: TextAlign.center,
           style: titleStyle,
         ),
+        (titleStyle.fontSize ?? 42) * 1.08,
+      );
+    }
+
+    for (final line in data.frontDetailLines) {
+      final isEmail = line.contains('@');
+      add(
+        AutoSizeText(
+          cap(line),
+          maxLines: isEmail ? 2 : 1,
+          minFontSize: minFontSize,
+          textAlign: TextAlign.center,
+          style: bodyStyle,
+        ),
+        (bodyStyle.fontSize ?? 32) * (isEmail ? 1.45 : 1.22),
       );
     }
 
     if (blocks.isEmpty) return const SizedBox.shrink();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: blocks,
+    final gapCount = blocks.length - 1;
+    if (gapCount <= 0) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: blocks,
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final estTotal = estimates.fold(0.0, (a, b) => a + b);
+        final free =
+            (constraints.maxHeight - estTotal).clamp(0.0, double.infinity);
+        final gap = (free / gapCount).clamp(3.0, 10.0);
+
+        final children = <Widget>[];
+        for (var i = 0; i < blocks.length; i++) {
+          if (i > 0) children.add(SizedBox(height: gap));
+          children.add(blocks[i]);
+        }
+
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: constraints.maxWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: children,
+            ),
+          ),
+        );
+      },
     );
   }
 }
