@@ -82,11 +82,11 @@ class CreateFlowController extends GetxController {
   final RxBool isPremium = false.obs;
   final RxBool isSavingCard = false.obs;
   final RxBool isExportingPdf = false.obs;
-  final RxBool isTemplatesLoading = true.obs;
+  final RxBool isTemplatesLoading = false.obs;
 
   void startTemplatesLoading() {
     isTemplatesLoading.value = true;
-    Future.delayed(const Duration(milliseconds: 1300), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       isTemplatesLoading.value = false;
     });
   }
@@ -677,6 +677,7 @@ class CreateFlowController extends GetxController {
     term3Ctrl.text = kDefaultEmployeeNote3;
     selectedCompanyLogo.value = 0;
     selectedTemplate.value = 0;
+    isTemplatesLoading.value = false;
     update(<Object>['template_screen', 'employee_preview', 'live_preview']);
   }
 
@@ -702,6 +703,7 @@ class CreateFlowController extends GetxController {
     photoPath.value = '';
     selectedTemplate.value = 0;
     selectedColor.value = 2;
+    isTemplatesLoading.value = false;
     update(<Object>['template_screen', 'lanyard_preview', 'live_preview']);
   }
 
@@ -951,6 +953,7 @@ class CreateFlowController extends GetxController {
     term2Ctrl.text = kDefaultTerm2;
     term3Ctrl.text = kDefaultTerm3;
     selectedTemplate.value = 0;
+    isTemplatesLoading.value = false;
     loadFontSizeScaleForCurrentTemplate();
     update(<Object>['template_screen', 'student_preview', 'live_preview']);
   }
