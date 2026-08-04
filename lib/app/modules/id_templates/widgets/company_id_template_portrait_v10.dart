@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../data/models/employee_data.dart';
 import '../assets/company_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
+import '../design_system/id_card_portrait_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
@@ -63,6 +64,8 @@ class CompanyIdTemplatePortraitV10 extends StatelessWidget {
   static const double _h = IdCardPortraitDimensions.height;
 
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
+  TextStyle _tsPrimary(TextStyle base) =>
+      studentPortraitPrimaryTextStyle(base, fontFamily);
 
   List<String> _frontLines(EmployeeData data) {
     final lines = <String>[];
@@ -138,27 +141,28 @@ class CompanyIdTemplatePortraitV10 extends StatelessWidget {
                       employeeName: data.employeeName,
                       position: data.position,
                       detailLines: _frontLines(data),
-                      nameStyle: _ts(const TextStyle(
+                      nameStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV10Layout.textDark,
-                        fontSize: _CompanyV10Layout.frontNameFontSize,
-                        fontWeight: FontWeight.w800,
+                        fontSize: IdCardPortraitTypography.nameFontSize,
+                        fontWeight: FontWeight.w900,
                         height: 1.05,
                         letterSpacing: 0.3,
                       )),
-                      titleStyle: _ts(const TextStyle(
+                      titleStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV10Layout.textMuted,
-                        fontSize: _CompanyV10Layout.frontTitleFontSize,
-                        fontWeight: FontWeight.w600,
-                        height: 1.15,
+                        fontSize: IdCardPortraitTypography.nameFontSize,
+                        fontWeight: FontWeight.w900,
+                        height: 1.05,
                         letterSpacing: 1.2,
                       )),
-                      bodyStyle: _ts(const TextStyle(
+                      bodyStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV10Layout.textDark,
-                        fontSize: _CompanyV10Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w500,
+                        fontSize: IdCardPortraitTypography.bodyFontSize,
+                        fontWeight: FontWeight.w900,
+                        fontStyle: FontStyle.italic,
                         height: 1.28,
                       )),
-                      bodyMinFontSize: _CompanyV10Layout.frontBodyMinFontSize,
+                      bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
                     ),
                   ),
                 ),

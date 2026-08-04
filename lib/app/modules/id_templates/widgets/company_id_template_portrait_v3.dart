@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../data/models/employee_data.dart';
 import '../assets/company_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
+import '../design_system/id_card_portrait_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
@@ -70,6 +71,8 @@ class CompanyIdTemplatePortraitV3 extends StatelessWidget {
   static const double _h = IdCardPortraitDimensions.height;
 
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
+  TextStyle _tsPrimary(TextStyle base) =>
+      studentPortraitPrimaryTextStyle(base, fontFamily);
 
   @override
   Widget build(BuildContext context) {
@@ -149,31 +152,32 @@ class CompanyIdTemplatePortraitV3 extends StatelessWidget {
                     constraints: BoxConstraints(maxWidth: constraints.maxWidth),
                     child: _CompanyV3FrontBody(
                       data: data,
-                      bodyStyle: _ts(const TextStyle(
+                      bodyStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV3Layout.textDark,
-                        fontSize: _CompanyV3Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w500,
+                        fontSize: IdCardPortraitTypography.bodyFontSize,
+                        fontWeight: FontWeight.w900,
+                        fontStyle: FontStyle.italic,
                         height: 1.28,
                       )),
-                      titleStyle: _ts(const TextStyle(
+                      titleStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV3Layout.textMuted,
-                        fontSize: _CompanyV3Layout.frontTitleFontSize,
-                        fontWeight: FontWeight.w500,
+                        fontSize: IdCardPortraitTypography.nameFontSize,
+                        fontWeight: FontWeight.w900,
                         height: 1.15,
                       )),
-                      nameDarkStyle: _ts(const TextStyle(
+                      nameDarkStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV3Layout.textDark,
-                        fontSize: _CompanyV3Layout.frontNameFontSize,
-                        fontWeight: FontWeight.w800,
+                        fontSize: IdCardPortraitTypography.nameFontSize,
+                        fontWeight: FontWeight.w900,
                         height: 1.05,
                       )),
-                      nameAccentStyle: _ts(const TextStyle(
+                      nameAccentStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV3Layout.accentBlueLight,
-                        fontSize: _CompanyV3Layout.frontNameFontSize,
-                        fontWeight: FontWeight.w800,
+                        fontSize: IdCardPortraitTypography.nameFontSize,
+                        fontWeight: FontWeight.w900,
                         height: 1.05,
                       )),
-                      bodyMinFontSize: _CompanyV3Layout.frontBodyMinFontSize,
+                      bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
                     ),
                   ),
                 ),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../data/models/employee_data.dart';
 import '../assets/company_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
+import '../design_system/id_card_portrait_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
@@ -68,6 +69,8 @@ class CompanyIdTemplatePortraitV11 extends StatelessWidget {
   static const double _h = IdCardPortraitDimensions.height;
 
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
+  TextStyle _tsPrimary(TextStyle base) =>
+      studentPortraitPrimaryTextStyle(base, fontFamily);
 
   double get _contentLeft => _w * _CompanyV11Layout.sidebarWidthRatio;
 
@@ -130,10 +133,10 @@ class CompanyIdTemplatePortraitV11 extends StatelessWidget {
                   maxLines: 1,
                   minFontSize: 10,
                   textAlign: TextAlign.center,
-                  style: _ts(const TextStyle(
+                  style: _tsPrimary(const TextStyle(
                     color: _CompanyV11Layout.sidebarText,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w800,
+                    fontSize: IdCardPortraitTypography.headerFontSize,
+                    fontWeight: FontWeight.w900,
                     letterSpacing: 2.5,
                     height: 1.0,
                   )),
@@ -149,13 +152,13 @@ class CompanyIdTemplatePortraitV11 extends StatelessWidget {
           child: _CompanyV11BrandRow(
             companyName: data.companyName,
             logoAsset: data.logoAsset,
-            nameStyle: _ts(const TextStyle(
+            nameStyle: _tsPrimary(const TextStyle(
               color: _CompanyV11Layout.accentGreen,
-              fontSize: _CompanyV11Layout.companyNameFontSize,
-              fontWeight: FontWeight.w800,
+              fontSize: IdCardPortraitTypography.headerFontSize,
+              fontWeight: FontWeight.w900,
               height: 1.05,
             )),
-            minNameSize: 12,
+            minNameSize: IdCardPortraitTypography.headerMinFontSize,
           ),
         ),
         Positioned(
@@ -192,25 +195,26 @@ class CompanyIdTemplatePortraitV11 extends StatelessWidget {
                       employeeName: data.employeeName,
                       position: data.position,
                       detailLines: _frontLines(data),
-                      nameStyle: _ts(const TextStyle(
+                      nameStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV11Layout.textDark,
-                        fontSize: _CompanyV11Layout.frontNameFontSize,
-                        fontWeight: FontWeight.w800,
+                        fontSize: IdCardPortraitTypography.nameFontSize,
+                        fontWeight: FontWeight.w900,
                         height: 1.05,
                       )),
-                      titleStyle: _ts(const TextStyle(
+                      titleStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV11Layout.textMuted,
-                        fontSize: _CompanyV11Layout.frontTitleFontSize,
-                        fontWeight: FontWeight.w500,
-                        height: 1.15,
+                        fontSize: IdCardPortraitTypography.nameFontSize,
+                        fontWeight: FontWeight.w900,
+                        height: 1.05,
                       )),
-                      bodyStyle: _ts(const TextStyle(
+                      bodyStyle: _tsPrimary(const TextStyle(
                         color: _CompanyV11Layout.textDark,
-                        fontSize: _CompanyV11Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w500,
+                        fontSize: IdCardPortraitTypography.bodyFontSize,
+                        fontWeight: FontWeight.w900,
+                        fontStyle: FontStyle.italic,
                         height: 1.28,
                       )),
-                      bodyMinFontSize: _CompanyV11Layout.frontBodyMinFontSize,
+                      bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
                     ),
                   ),
                 ),

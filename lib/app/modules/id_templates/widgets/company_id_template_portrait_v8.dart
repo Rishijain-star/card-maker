@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../../../data/models/employee_data.dart';
 import '../assets/company_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
+import '../design_system/id_card_portrait_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
@@ -66,6 +67,8 @@ class CompanyIdTemplatePortraitV8 extends StatelessWidget {
   static const double _h = IdCardPortraitDimensions.height;
 
   TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
+  TextStyle _tsPrimary(TextStyle base) =>
+      studentPortraitPrimaryTextStyle(base, fontFamily);
 
   @override
   Widget build(BuildContext context) {
@@ -111,19 +114,19 @@ class CompanyIdTemplatePortraitV8 extends StatelessWidget {
           child: _CompanyV8GreetingBlock(
             employeeName: data.employeeName,
             position: data.position,
-            nameStyle: _ts(const TextStyle(
+            nameStyle: _tsPrimary(const TextStyle(
               color: _CompanyV8Layout.accentGreen,
-              fontSize: _CompanyV8Layout.frontNameFontSize,
-              fontWeight: FontWeight.w700,
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
               height: 1.05,
             )),
-            titleStyle: _ts(const TextStyle(
+            titleStyle: _tsPrimary(const TextStyle(
               color: _CompanyV8Layout.lightGreen,
-              fontSize: _CompanyV8Layout.frontTitleFontSize,
-              fontWeight: FontWeight.w500,
-              height: 1.15,
+              fontSize: IdCardPortraitTypography.nameFontSize,
+              fontWeight: FontWeight.w900,
+              height: 1.05,
             )),
-            minFontSize: 14,
+            minFontSize: IdCardPortraitTypography.nameMinFontSize,
           ),
         ),
         Positioned(
@@ -133,13 +136,14 @@ class CompanyIdTemplatePortraitV8 extends StatelessWidget {
           bottom: _h * _CompanyV8Layout.frontContactBottom,
           child: _CompanyV8ContactRows(
             data: data,
-            valueStyle: _ts(const TextStyle(
+            valueStyle: _tsPrimary(const TextStyle(
               color: _CompanyV8Layout.accentGreen,
-              fontSize: _CompanyV8Layout.frontContactFontSize,
-              fontWeight: FontWeight.w500,
+              fontSize: IdCardPortraitTypography.bodyFontSize,
+              fontWeight: FontWeight.w900,
+              fontStyle: FontStyle.italic,
               height: 1.2,
             )),
-            minFontSize: _CompanyV8Layout.frontContactMinFontSize,
+            minFontSize: IdCardPortraitTypography.bodyMinFontSize,
           ),
         ),
         if (data.hasSignature)
