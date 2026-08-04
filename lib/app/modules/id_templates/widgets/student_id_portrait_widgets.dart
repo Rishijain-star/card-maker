@@ -18,7 +18,8 @@ class StudentPortraitEvenContent extends StatelessWidget {
     this.studentName = '',
     this.nameStyle,
     this.nameMinFontSize = 20,
-    this.nameAlign = TextAlign.left,
+    this.nameAlign = TextAlign.center,
+    this.bodyAlign = TextAlign.center,
     this.maxLinesPerItem = 2,
     this.compactSpacing = false,
     this.footerLine,
@@ -53,6 +54,7 @@ class StudentPortraitEvenContent extends StatelessWidget {
   final TextStyle? nameStyle;
   final double nameMinFontSize;
   final TextAlign nameAlign;
+  final TextAlign bodyAlign;
   final int maxLinesPerItem;
   final double referenceNameFontSize;
   final double referenceBodyFontSize;
@@ -91,7 +93,7 @@ class StudentPortraitEvenContent extends StatelessWidget {
             v,
             maxLines: maxLinesPerItem,
             minFontSize: bodyMinFontSize,
-            textAlign: TextAlign.left,
+            textAlign: bodyAlign,
             style: bodyStyle,
           ),
         );

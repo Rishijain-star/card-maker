@@ -8,8 +8,12 @@ import '../../create_flow/controllers/create_flow_controller.dart';
 abstract final class IdCardTypography {
   /// Stylish fonts curated for ID cards, lanyards & badges.
   static const List<String> fontOptions = <String>[
-    'Bebas Neue',
+    'Poppins',
+    'Montserrat',
+    'Rubik',
+    'Raleway',
     'Oswald',
+    'Bebas Neue',
     'Anton',
     'Cinzel',
     'Playfair Display',
@@ -21,10 +25,6 @@ abstract final class IdCardTypography {
     'Dancing Script',
     'Sacramento',
     'Orbitron',
-    'Montserrat',
-    'Raleway',
-    'Rubik',
-    'Poppins',
     'Times New Roman',
     'Arial Black',
     'Berlin Sans',

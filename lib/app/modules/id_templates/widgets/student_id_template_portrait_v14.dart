@@ -247,8 +247,9 @@ class StudentIdTemplatePortraitV14 extends StatelessWidget {
               textStyle: _ts(const TextStyle(
                 color: _PortraitV14Layout.textBrown,
                 fontSize: _PortraitV14Layout.detailFontSize,
-                fontWeight: FontWeight.w700,
-                height: 1.22,
+                fontWeight: FontWeight.w800,
+                fontStyle: FontStyle.italic,
+                height: 1.35,
               )),
               minFontSize: _PortraitV14Layout.detailMinFontSize,
               compact: data.useCompactFrontSpacing,
