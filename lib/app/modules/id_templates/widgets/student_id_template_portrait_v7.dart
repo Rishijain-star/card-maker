@@ -360,58 +360,67 @@ class _PortraitV7FrontContent extends StatelessWidget {
       estimates.add(estH);
     }
 
-    final name = studentName.trim();
+    String capWords(String raw) {
+      final s = raw.trim();
+      if (s.isEmpty) return '';
+      return s
+          .split(' ')
+          .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
+          .join(' ');
+    }
+
+    final name = capWords(studentName);
     if (name.isNotEmpty) {
       addBlock(
         AutoSizeText(
-          name.toUpperCase(),
+          name,
           maxLines: 1,
           minFontSize: nameMinFontSize,
           textAlign: TextAlign.center,
           style: nameStyle,
         ),
-        (nameStyle.fontSize ?? 40) * 1.08,
+        (nameStyle.fontSize ?? 42) * 1.08,
       );
     }
 
-    final father = fatherName.trim();
+    final father = capWords(fatherName);
     if (father.isNotEmpty) {
       addBlock(
         AutoSizeText(
-          father.toUpperCase(),
+          father,
           maxLines: 1,
-          minFontSize: bodyMinFontSize,
+          minFontSize: nameMinFontSize,
           textAlign: TextAlign.center,
           style: fatherStyle,
         ),
-        (fatherStyle.fontSize ?? 27) * 1.2,
+        (fatherStyle.fontSize ?? 42) * 1.08,
       );
     }
 
-    final course = className.trim();
+    final course = capWords(className);
     if (course.isNotEmpty) {
       addBlock(
         AutoSizeText(
-          course.toUpperCase(),
+          course,
           maxLines: 1,
-          minFontSize: bodyMinFontSize,
+          minFontSize: nameMinFontSize,
           textAlign: TextAlign.center,
           style: courseStyle,
         ),
-        (courseStyle.fontSize ?? 27) * 1.15,
+        (courseStyle.fontSize ?? 42) * 1.08,
       );
     }
 
     for (final line in detailLines) {
       addBlock(
         AutoSizeText(
-          line,
+          capWords(line),
           maxLines: 2,
           minFontSize: bodyMinFontSize,
           textAlign: TextAlign.center,
           style: bodyStyle,
         ),
-        (bodyStyle.fontSize ?? 27) * 1.26,
+        (bodyStyle.fontSize ?? 32) * 1.25,
       );
     }
 

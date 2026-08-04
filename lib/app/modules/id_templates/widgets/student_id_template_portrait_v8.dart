@@ -523,7 +523,7 @@ class _PortraitV8FrontColumn extends StatelessWidget {
           restStyle: nameRestStyle,
           minFontSize: nameMinFontSize,
         ),
-        (nameFirstStyle.fontSize ?? 40) * 1.1,
+        (nameFirstStyle.fontSize ?? 42) * 1.1,
       );
     }
 
