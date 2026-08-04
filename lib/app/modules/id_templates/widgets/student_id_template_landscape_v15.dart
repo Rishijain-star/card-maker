@@ -23,11 +23,11 @@ abstract final class _LandscapeV15Layout {
   static const double photoTop = 0.10;
   static const double photoRight = 0.05;
   static const double photoWidth = 0.22;
-  static const double photoHeight = 0.58;
+  static const double photoHeight = 0.45;
   static const double photoRadius = 6.0;
   static const double photoBorderWidth = 2.5;
 
-  static const double nameTop = 0.70;
+  static const double nameTop = 0.57;
   static const double nameRight = 0.03;
   static const double nameWidth = 0.26;
 
@@ -203,8 +203,8 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
         ),
         if (data.hasSignature)
           Positioned(
-            right: _w * 0.035,
-            bottom: _h * 0.035,
+            right: _w * 0.04,
+            bottom: _h * 0.03,
             child: StudentPortraitSignatureCircle(
               size: _h * 0.22,
               path: data.signaturePath,
