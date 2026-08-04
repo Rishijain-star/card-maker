@@ -17,11 +17,11 @@ abstract final class _PortraitV6Layout {
   static const double frontInstituteSide = 0.06;
 
   static const double frontPhotoSizeRatio = 0.37;
-  static const double frontPhotoCenterYRatio = 0.320;
+  static const double frontPhotoCenterYRatio = 0.265;
   static const double frontPhotoBorderWidth = 4.0;
-  static const double frontGapBelowPhoto = 24.0;
+  static const double frontGapBelowPhoto = 18.0;
   static const double frontContentSide = 0.10;
-  static const double frontContentBottomRatio = 0.16;
+  static const double frontContentBottomRatio = 0.08;
 
   static const double frontSignatureSizeRatio = 0.10;
   static const double frontSignatureRightRatio = 0.06;
