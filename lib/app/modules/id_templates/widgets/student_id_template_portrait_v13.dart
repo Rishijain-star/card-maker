@@ -131,7 +131,6 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
     final photoH = _h * _PortraitV13Layout.photoHeightRatio;
     final photoTop = _h * _PortraitV13Layout.photoTopRatio;
     final photoLeft = (_w - photoW) / 2;
-    final session = data.validityText.trim();
     final detailRows = _detailRows();
 
     return Stack(
@@ -158,48 +157,6 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
                 letterSpacing: 0.5,
               )),
               minFontSize: IdCardPortraitTypography.headerMinFontSize,
-            ),
-          ),
-        if (data.address.trim().isNotEmpty || data.mobileNumber.trim().isNotEmpty)
-          Positioned(
-            top: _h * _PortraitV13Layout.headerContactTop,
-            height: _h * _PortraitV13Layout.headerContactHeight,
-            left: _w * _PortraitV13Layout.headerContactSide,
-            right: _w * _PortraitV13Layout.headerContactSide,
-            child: _PortraitV13HeaderContacts(
-              address: data.address.trim(),
-              phone: data.mobileNumber.trim(),
-              textStyle: _ts(const TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                height: 1.2,
-                letterSpacing: 0.35,
-              )),
-              minFontSize: 9,
-            ),
-          ),
-        if (session.isNotEmpty)
-          Positioned(
-            left: _w * _PortraitV13Layout.sessionLeftRatio,
-            width: _w * _PortraitV13Layout.sessionWidthRatio,
-            top: photoTop,
-            height: photoH,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: AutoSizeText(
-                session,
-                maxLines: 3,
-                minFontSize: 10,
-                textAlign: TextAlign.left,
-                style: _ts(const TextStyle(
-                  color: _PortraitV13Layout.textMuted,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  height: 1.15,
-                  letterSpacing: 0.35,
-                )),
-              ),
             ),
           ),
         Positioned(
@@ -254,10 +211,10 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
           ),
         if (data.hasSignature)
           Positioned(
-            right: _w * 0.035,
-            bottom: _h * 0.035,
+            right: _w * 0.05,
+            bottom: _h * 0.05,
             child: StudentPortraitSignatureCircle(
-              size: _w * 0.125,
+              size: _w * 0.16,
               path: data.signaturePath,
               bytes: data.signatureBytes,
               hasBorder: data.signatureHasBorder,
