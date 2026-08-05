@@ -24,14 +24,14 @@ abstract final class _CompanyV11Layout {
   static const double sidebarTextTop = 0.22;
   static const double sidebarTextBottom = 0.22;
 
-  static const double headerTop = 0.07;
-  static const double headerHeight = 0.10;
+  static const double headerTop = 0.04;
+  static const double headerHeight = 0.135;
   static const double logoSize = 34.0;
   static const double logoGap = 8.0;
   static const double companyNameFontSize = 22;
 
   static const double frontPhotoSizeRatio = 0.30;
-  static const double frontPhotoCenterYRatio = 0.335;
+  static const double frontPhotoCenterYRatio = 0.355;
   static const double frontPhotoBorderWidth = 5.0;
   static const double frontGapBelowPhoto = 14.0;
   static const double frontContentMinTopRatio = 0.47;
@@ -359,14 +359,14 @@ class _CompanyV11BrandRow extends StatelessWidget {
                         ),
                       ],
                     ),
-                    maxLines: 2,
-                    minFontSize: minNameSize,
+                    maxLines: 3,
+                    minFontSize: 9,
                     textAlign: TextAlign.center,
                   )
                 : AutoSizeText(
                     name.toUpperCase(),
-                    maxLines: 2,
-                    minFontSize: minNameSize,
+                    maxLines: 3,
+                    minFontSize: 9,
                     textAlign: TextAlign.center,
                     style: nameStyle,
                   ),

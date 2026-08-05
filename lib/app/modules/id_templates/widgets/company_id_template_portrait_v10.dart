@@ -19,7 +19,7 @@ abstract final class _CompanyV10Layout {
   static const Color lineAccent = Color(0xFFB8A4CE);
 
   static const double frontPhotoSizeRatio = 0.33;
-  static const double frontPhotoCenterYRatio = 0.145;
+  static const double frontPhotoCenterYRatio = 0.20;
   static const double frontPhotoBorderWidth = 4.0;
   static const double frontGapBelowPhoto = 16.0;
   static const double frontContentMinTopRatio = 0.30;
@@ -108,6 +108,27 @@ class CompanyIdTemplatePortraitV10 extends StatelessWidget {
           CompanyIdTemplateAssets.frontBackgroundV10,
           fit: BoxFit.fill,
         ),
+        if (data.companyName.trim().isNotEmpty)
+          Positioned(
+            top: _h * 0.03,
+            height: _h * 0.075,
+            left: _w * 0.08,
+            right: _w * 0.08,
+            child: Center(
+              child: AutoSizeText(
+                data.companyName,
+                maxLines: 2,
+                minFontSize: 12,
+                textAlign: TextAlign.center,
+                style: _tsPrimary(const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  height: 1.1,
+                )),
+              ),
+            ),
+          ),
         Positioned(
           top: photoTop,
           left: photoLeft,

@@ -262,14 +262,11 @@ class StudentData {
       if (v.isNotEmpty) detailLines.add(v);
     }
 
-    // Student Form Order: Father Name -> Roll No -> Validity -> Phone -> Email -> Blood Group -> Address
+    // Student Form Order: Father Name -> Roll No -> Phone -> Email -> Blood Group -> Address
     if (fatherName.trim().isNotEmpty) {
-      add('F/N: ${_capitalizeWords(fatherName)}');
+      add(_capitalizeWords(fatherName));
     }
     add(rollNo);
-    if (validityText.isNotEmpty) {
-      add(validityText);
-    }
     add(mobileNumber);
     add(email);
     if (bloodGroup.trim().isNotEmpty) {

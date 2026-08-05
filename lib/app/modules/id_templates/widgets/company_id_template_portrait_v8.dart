@@ -96,6 +96,27 @@ class CompanyIdTemplatePortraitV8 extends StatelessWidget {
           CompanyIdTemplateAssets.frontBackgroundV8,
           fit: BoxFit.fill,
         ),
+        if (data.companyName.trim().isNotEmpty)
+          Positioned(
+            top: _h * 0.035,
+            height: _h * 0.075,
+            left: _w * 0.08,
+            right: _w * 0.08,
+            child: Center(
+              child: AutoSizeText(
+                data.companyName,
+                maxLines: 2,
+                minFontSize: 12,
+                textAlign: TextAlign.center,
+                style: _tsPrimary(const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  height: 1.1,
+                )),
+              ),
+            ),
+          ),
         Positioned(
           top: photoTop,
           left: photoLeft,
