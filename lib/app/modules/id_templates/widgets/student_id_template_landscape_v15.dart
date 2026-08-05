@@ -16,8 +16,8 @@ abstract final class _LandscapeV15Layout {
   static const Color nameRed = Color(0xFFB71C1C);
 
   static const double headerTop = 0.035;
-  static const double headerLeft = 0.28;
-  static const double headerRight = 0.32;
+  static const double headerLeft = 0.21;
+  static const double headerRight = 0.28;
   static const double headerHeight = 0.22;
 
   static const double photoTop = 0.10;

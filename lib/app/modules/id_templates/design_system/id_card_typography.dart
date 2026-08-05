@@ -78,7 +78,7 @@ abstract final class IdCardTypography {
     } else if (words.length == 5) {
       return '${words.sublist(0, 3).join(' ')}\n${words.sublist(3).join(' ')}';
     } else if (words.length == 3) {
-      if (s.length > 18) {
+      if (s.length > 22) {
         return '${words.sublist(0, 2).join(' ')}\n${words.last}';
       }
       return s;
