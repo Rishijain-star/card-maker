@@ -25,6 +25,7 @@ class EmployeeData {
     this.note1 = '',
     this.note2 = '',
     this.note3 = '',
+    this.customFrontDetailLines,
   });
 
   final String companyName;
@@ -46,6 +47,7 @@ class EmployeeData {
   final String note1;
   final String note2;
   final String note3;
+  final List<String>? customFrontDetailLines;
 
   static const EmployeeData empty = EmployeeData();
 
@@ -76,6 +78,9 @@ class EmployeeData {
 
   /// Front white zone — values only (no field labels).
   List<String> get frontDetailLines {
+    if (customFrontDetailLines != null && customFrontDetailLines!.isNotEmpty) {
+      return customFrontDetailLines!;
+    }
     final lines = <String>[];
     void add(String value) {
       final v = value.trim();

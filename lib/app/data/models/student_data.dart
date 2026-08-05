@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../modules/create_flow/controllers/create_flow_controller.dart';
 
+import 'employee_data.dart';
+
 /// All dynamic fields rendered on student ID card templates.
 class StudentData {
   const StudentData({
@@ -247,6 +249,55 @@ class StudentData {
       term1: term1 ?? this.term1,
       term2: term2 ?? this.term2,
       term3: term3 ?? this.term3,
+    );
+  }
+
+  EmployeeData toEmployeeData() {
+    final detailLines = <String>[];
+    void add(String val) {
+      final v = val.trim();
+      if (v.isNotEmpty) detailLines.add(v);
+    }
+
+    // Student Form Order: Father Name -> Roll No -> Validity -> Phone -> Email -> Blood Group -> Address
+    if (fatherName.trim().isNotEmpty) {
+      add('F/N: ${_capitalizeWords(fatherName)}');
+    }
+    add(rollNo);
+    if (validityText.isNotEmpty) {
+      add(validityText);
+    }
+    add(mobileNumber);
+    add(email);
+    if (bloodGroup.trim().isNotEmpty) {
+      add(bloodGroup.toUpperCase());
+    }
+    add(address);
+
+    final courseClass = formattedClassName.isNotEmpty && section.trim().isNotEmpty
+        ? '$formattedClassName - ${section.trim().toUpperCase()}'
+        : (formattedClassName.isNotEmpty ? formattedClassName : section.trim().toUpperCase());
+
+    return EmployeeData(
+      companyName: formattedInstituteName,
+      employeeName: formattedStudentName,
+      position: courseClass,
+      employeeId: rollNo,
+      joinDate: validFrom,
+      expireDate: validTo,
+      phone: mobileNumber,
+      email: email,
+      bloodGroup: bloodGroup,
+      photoPath: photoPath,
+      signaturePath: signaturePath,
+      signatureBytes: signatureBytes,
+      signatureHasBorder: signatureHasBorder,
+      signatureBorderColor: signatureBorderColor,
+      signatureBorderWidth: signatureBorderWidth,
+      note1: term1,
+      note2: term2,
+      note3: term3,
+      customFrontDetailLines: detailLines,
     );
   }
 }

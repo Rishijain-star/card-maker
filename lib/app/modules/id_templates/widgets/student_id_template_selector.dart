@@ -17,9 +17,20 @@ import 'student_id_template_portrait_v13.dart';
 import 'student_id_template_portrait_v14.dart';
 import 'student_id_template_landscape_v15.dart';
 import 'student_id_template_landscape_v16.dart';
+import 'company_id_template_selector.dart';
+import 'package:get/get.dart';
+import '../../create_flow/controllers/create_flow_controller.dart';
 
 /// Picker index matches layout variant (0 → v1, 1 → v2, 2 → v3, …).
-int studentTemplateVariantFor(int globalIndex) => globalIndex;
+int studentTemplateVariantFor(int globalIndex) {
+  if (Get.isRegistered<CreateFlowController>()) {
+    final flow = Get.find<CreateFlowController>();
+    if (globalIndex >= 0 && globalIndex < flow.studentTemplates.length) {
+      return (flow.studentTemplates[globalIndex]['variant'] as int?) ?? globalIndex;
+    }
+  }
+  return globalIndex;
+}
 
 /// Builds the correct portrait student template without changing template 1 code.
 Widget buildStudentPortraitTemplate({
@@ -29,6 +40,14 @@ Widget buildStudentPortraitTemplate({
   required String fontFamily,
 }) {
   final variant = studentTemplateVariantFor(globalIndex);
+  if (variant >= 100 && variant <= 110) {
+    return buildCompanyPortraitTemplate(
+      globalIndex: variant - 100,
+      data: data.toEmployeeData(),
+      side: side,
+      fontFamily: fontFamily,
+    );
+  }
   switch (variant) {
     case 1:
       return StudentIdTemplatePortraitV2(
