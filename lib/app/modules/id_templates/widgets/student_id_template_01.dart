@@ -80,7 +80,8 @@ class _Front extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(28, 22, 28, 36),
                     child: Center(
                       child: AutoSizeText(
-                        data.instituteName.trim().toUpperCase(),
+                        formatInstituteName(
+                            data.instituteName.trim().toUpperCase()),
                         maxLines: 2,
                         minFontSize: 14,
                         textAlign: TextAlign.center,
@@ -228,7 +229,8 @@ class _Back extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(28, 12, 28, 0),
                     child: Center(
                       child: AutoSizeText(
-                        data.instituteName.trim().toUpperCase(),
+                        formatInstituteName(
+                            data.instituteName.trim().toUpperCase()),
                         maxLines: 2,
                         minFontSize: 12,
                         textAlign: TextAlign.center,

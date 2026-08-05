@@ -104,7 +104,8 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
             right: _w * _PortraitV3Layout.frontInstituteRightRatio,
             child: Center(
               child: AutoSizeText(
-                data.instituteName.trim().toUpperCase(),
+                formatInstituteName(
+                    data.instituteName.trim().toUpperCase()),
                 maxLines: _instituteMaxLines(data.instituteName),
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
                 textAlign: TextAlign.center,
@@ -149,7 +150,6 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
                   color: Color(0xFF0F172A),
                   fontSize: IdCardPortraitTypography.nameFontSize,
                   fontWeight: FontWeight.w900,
-                  fontStyle: FontStyle.italic,
                   height: 1.08,
                   letterSpacing: 0.5,
                 )),
@@ -168,7 +168,6 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
               color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.nameFontSize,
               fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
               height: 1.08,
               letterSpacing: 0.5,
             )),
@@ -176,7 +175,6 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
               color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.nameFontSize,
               fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
               height: 1.08,
               letterSpacing: 0.5,
             )),
@@ -186,7 +184,6 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
               color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.bodyFontSize,
               fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
               height: 1.08,
               letterSpacing: 0.5,
             )),
@@ -259,7 +256,8 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
             right: _w * _PortraitV3Layout.backInstituteSideRatio,
             child: Center(
               child: AutoSizeText(
-                data.instituteName.trim().toUpperCase(),
+                formatInstituteName(
+                    data.instituteName.trim().toUpperCase()),
                 maxLines: 2,
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
                 textAlign: TextAlign.center,

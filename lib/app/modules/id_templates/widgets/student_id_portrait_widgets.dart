@@ -489,3 +489,6 @@ TextStyle studentPortraitTextStyle(TextStyle base, String fontFamily) =>
 
 TextStyle studentPortraitPrimaryTextStyle(TextStyle base, String fontFamily) =>
     IdCardTypography.applyPrimary(base, fontFamily);
+
+String formatInstituteName(String name) =>
+    IdCardTypography.formatInstituteName(name);

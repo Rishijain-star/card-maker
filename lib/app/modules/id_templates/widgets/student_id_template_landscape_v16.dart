@@ -146,7 +146,6 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
                 color: _LandscapeV16Layout.textGreen,
                 fontSize: IdCardPortraitTypography.nameFontSize,
                 fontWeight: FontWeight.w900,
-                fontStyle: FontStyle.italic,
                 height: 1.05,
                 letterSpacing: 0.35,
               )),
@@ -165,7 +164,6 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
               color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.nameFontSize,
               fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
               height: 1.05,
               letterSpacing: 0.5,
             )),
@@ -173,7 +171,6 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
               color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.nameFontSize,
               fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
               height: 1.05,
               letterSpacing: 0.5,
             )),
@@ -181,7 +178,6 @@ class StudentIdTemplateLandscapeV16 extends StatelessWidget {
               color: Color(0xFF0F172A),
               fontSize: IdCardPortraitTypography.bodyFontSize,
               fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
               height: 1.05,
               letterSpacing: 0.5,
             )),
@@ -240,7 +236,7 @@ class _LandscapeV16Header extends StatelessWidget {
 
     return Center(
       child: AutoSizeText(
-        instituteName.toUpperCase(),
+        formatInstituteName(instituteName.toUpperCase()),
         maxLines: instituteMaxLines,
         minFontSize: minFontSize,
         textAlign: TextAlign.center,

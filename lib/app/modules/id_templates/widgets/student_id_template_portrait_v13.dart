@@ -148,7 +148,8 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
             left: _w * _PortraitV13Layout.headerInstituteSide,
             right: _w * _PortraitV13Layout.headerInstituteSide,
             child: _PortraitV13GradientTitle(
-              text: data.instituteName.trim().toUpperCase(),
+              text: formatInstituteName(
+                  data.instituteName.trim().toUpperCase()),
               maxLines: _instituteMaxLines(data.instituteName),
               style: _ts(const TextStyle(
                 fontSize: IdCardPortraitTypography.headerFontSize,
@@ -225,7 +226,6 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
                 color: _PortraitV13Layout.nameGreen,
                 fontSize: 28,
                 fontWeight: FontWeight.w900,
-                fontStyle: FontStyle.italic,
                 height: 1.05,
                 letterSpacing: 0.45,
               )),
@@ -244,7 +244,6 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
                 color: _PortraitV13Layout.textDark,
                 fontSize: _PortraitV13Layout.detailFontSize,
                 fontWeight: FontWeight.w800,
-                fontStyle: FontStyle.italic,
                 height: 1.35,
                 letterSpacing: 0.35,
               )),

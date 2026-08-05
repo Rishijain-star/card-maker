@@ -115,7 +115,8 @@ class StudentIdTemplatePortraitV5 extends StatelessWidget {
             right: _w * _PortraitV5Layout.frontInstituteSide,
             child: Center(
               child: AutoSizeText(
-                data.instituteName.trim().toUpperCase(),
+                formatInstituteName(
+                    data.instituteName.trim().toUpperCase()),
                 maxLines: _instituteMaxLines(data.instituteName),
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
                 textAlign: TextAlign.center,
@@ -233,7 +234,8 @@ class StudentIdTemplatePortraitV5 extends StatelessWidget {
             right: _w * _PortraitV5Layout.backInstituteRight,
             child: Center(
               child: AutoSizeText(
-                data.instituteName.trim().toUpperCase(),
+                formatInstituteName(
+                    data.instituteName.trim().toUpperCase()),
                 maxLines: 2,
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
                 textAlign: TextAlign.center,

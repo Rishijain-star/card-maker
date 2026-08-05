@@ -152,7 +152,8 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
             right:  _w * _PortraitV2Layout.frontInstituteRightRatio,
             child: Center(
               child: AutoSizeText(
-                data.instituteName.trim().toUpperCase(),
+                formatInstituteName(
+                    data.instituteName.trim().toUpperCase()),
                 maxLines: _instituteMaxLines(data.instituteName),
                 minFontSize: _PortraitV2Layout.headerMinFontSize,
                 textAlign: TextAlign.center,
@@ -201,7 +202,6 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
                   color: Color(0xFF0F172A),
                   fontSize: _PortraitV2Layout.nameFontSize,
                   fontWeight: FontWeight.w900,
-                  fontStyle: FontStyle.italic,
                   height: 1.1,
                 )),
               ),
@@ -221,7 +221,6 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
               color: Color(0xFF0F172A),
               fontSize: _PortraitV2Layout.nameFontSize,
               fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
               height: 1.1,
               letterSpacing: 0.5,
             )),
@@ -322,7 +321,8 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
             height: _h * 0.08,
             child: Center(
               child: AutoSizeText(
-                data.instituteName.trim().toUpperCase(),
+                formatInstituteName(
+                    data.instituteName.trim().toUpperCase()),
                 maxLines: 2,
                 minFontSize: _PortraitV2Layout.headerMinFontSize,
                 textAlign: TextAlign.center,

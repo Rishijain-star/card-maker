@@ -128,7 +128,8 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
             right: _w * _PortraitV11Layout.frontInstituteRight,
             child: Center(
               child: AutoSizeText(
-                data.instituteName.trim().toUpperCase(),
+                formatInstituteName(
+                    data.instituteName.trim().toUpperCase()),
                 maxLines: _instituteMaxLines(data.instituteName),
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
                 textAlign: TextAlign.center,
@@ -184,7 +185,6 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
                         color: _PortraitV11Layout.textDark,
                         fontSize: _PortraitV11Layout.frontNameFontSize,
                         fontWeight: FontWeight.w900,
-                        fontStyle: FontStyle.italic,
                         height: 1.05,
                         letterSpacing: 0.45,
                       )),
@@ -193,7 +193,6 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
                         color: Color(0xFF0F172A),
                         fontSize: IdCardPortraitTypography.nameFontSize,
                         fontWeight: FontWeight.w900,
-                        fontStyle: FontStyle.italic,
                         height: 1.05,
                         letterSpacing: 0.5,
                       )),
@@ -201,7 +200,6 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
                         color: Color(0xFF0F172A),
                         fontSize: IdCardPortraitTypography.nameFontSize,
                         fontWeight: FontWeight.w900,
-                        fontStyle: FontStyle.italic,
                         height: 1.05,
                         letterSpacing: 0.5,
                       )),
@@ -209,7 +207,6 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
                         color: Color(0xFF0F172A),
                         fontSize: IdCardPortraitTypography.bodyFontSize,
                         fontWeight: FontWeight.w900,
-                        fontStyle: FontStyle.italic,
                         height: 1.05,
                         letterSpacing: 0.5,
                       )),
@@ -271,7 +268,8 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
             right: _w * _PortraitV11Layout.backInstituteRight,
             child: Center(
               child: AutoSizeText(
-                data.instituteName.trim().toUpperCase(),
+                formatInstituteName(
+                    data.instituteName.trim().toUpperCase()),
                 maxLines: _instituteMaxLines(data.instituteName),
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
                 textAlign: TextAlign.center,
