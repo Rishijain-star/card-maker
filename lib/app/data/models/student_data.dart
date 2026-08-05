@@ -103,6 +103,9 @@ class StudentData {
     }).join(' ');
   }
 
+  /// Institute name with first letter of each word capitalized.
+  String get formattedInstituteName => _capitalizeWords(instituteName);
+
   /// Student name with first letter of each word capitalized.
   String get formattedStudentName => _capitalizeWords(studentName);
 
