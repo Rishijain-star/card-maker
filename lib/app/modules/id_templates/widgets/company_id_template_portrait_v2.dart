@@ -42,9 +42,9 @@ abstract final class _CompanyV2Layout {
   static const double backBrandHeight = 0.095;
   static const double backBrandSide = 0.10;
 
-  static const double backTermsHeadingTop = 0.21;
+  static const double backTermsHeadingTop = 0.265;
   static const double backTermsHeadingHeight = 0.045;
-  static const double backTermsTop = 0.27;
+  static const double backTermsTop = 0.32;
   static const double backTermsSide = 0.12;
   static const double backTermsBottom = 0.36;
 
