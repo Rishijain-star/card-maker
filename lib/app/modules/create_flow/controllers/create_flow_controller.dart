@@ -286,15 +286,16 @@ class CreateFlowController extends GetxController {
       'variant': 11,
       'frontOnly': true,
     },
-    <String, dynamic>{
-      'id': 12,
-      'title': 'Template 14',
-      'category': 'Student',
-      'premium': false,
-      'studentEngine': true,
-      'variant': 12,
-      'frontOnly': true,
-    },
+    // Hidden for now:
+    // <String, dynamic>{
+    //   'id': 12,
+    //   'title': 'Template 14',
+    //   'category': 'Student',
+    //   'premium': false,
+    //   'studentEngine': true,
+    //   'variant': 12,
+    //   'frontOnly': true,
+    // },
     <String, dynamic>{
       'id': 13,
       'title': 'Template 15',
