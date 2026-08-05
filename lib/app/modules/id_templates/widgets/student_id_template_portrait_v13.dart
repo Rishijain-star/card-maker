@@ -34,8 +34,8 @@ abstract final class _PortraitV13Layout {
   static const double headerContactHeight = 0.052;
   static const double headerContactSide = 0.12;
 
-  static const double photoWidthRatio = 0.40;
-  static const double photoHeightRatio = 0.22;
+  static const double photoWidthRatio = 0.33;
+  static const double photoHeightRatio = 0.24;
   static const double photoTopRatio = 0.195;
   static const double photoRadius = 10.0;
   static const double photoBorderWidth = 4.0;
@@ -292,20 +292,12 @@ class _PortraitV13GradientTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ShaderMask(
-      blendMode: BlendMode.srcIn,
-      shaderCallback: (bounds) => const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: _PortraitV13Layout.titleGradient,
-      ).createShader(bounds),
-      child: AutoSizeText(
-        text,
-        maxLines: maxLines,
-        minFontSize: minFontSize,
-        textAlign: TextAlign.center,
-        style: style.copyWith(color: Colors.white),
-      ),
+    return AutoSizeText(
+      text,
+      maxLines: maxLines,
+      minFontSize: minFontSize,
+      textAlign: TextAlign.center,
+      style: style.copyWith(color: const Color(0xFF0F172A)),
     );
   }
 }
