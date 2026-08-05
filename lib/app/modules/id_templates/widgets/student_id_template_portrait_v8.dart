@@ -81,7 +81,7 @@ class StudentIdTemplatePortraitV8 extends StatelessWidget {
       final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
       return lines.clamp(2, 4);
     }
-    return 1;
+    return 2;
   }
 
   static (String first, String rest) _splitStudentName(String raw) {
@@ -147,7 +147,7 @@ class StudentIdTemplatePortraitV8 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: _PortraitV8Layout.accentCyan,
                   fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.4,
                 )),
@@ -252,7 +252,7 @@ class StudentIdTemplatePortraitV8 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: _PortraitV8Layout.accentCyan,
                   fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w900,
                   height: 1.08,
                   letterSpacing: 0.3,
                 )),

@@ -103,20 +103,22 @@ class StudentIdTemplatePortrait extends StatelessWidget {
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
             top: _h * _PortraitFrontLayout.instituteTopRatio,
-            left: _w * _PortraitFrontLayout.instituteLeftRatio,
+            left: _w * 0.05,
             right: _w * 0.05,
-            child: AutoSizeText(
-              data.instituteName.trim().toUpperCase(),
-              maxLines: 2,
-              minFontSize: _PortraitFrontLayout.headerMinFontSize,
-              textAlign: TextAlign.left,
-              style: _ts(
-                const TextStyle(
-                  color: Colors.white,
-                  fontSize: _PortraitFrontLayout.headerFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: 1.05,
-                  letterSpacing: 0.5,
+            child: Center(
+              child: AutoSizeText(
+                data.instituteName.trim().toUpperCase(),
+                maxLines: 2,
+                minFontSize: _PortraitFrontLayout.headerMinFontSize,
+                textAlign: TextAlign.center,
+                style: _ts(
+                  const TextStyle(
+                    color: Colors.white,
+                    fontSize: _PortraitFrontLayout.headerFontSize,
+                    fontWeight: FontWeight.w900,
+                    height: 1.05,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
             ),
@@ -222,8 +224,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
             right: _w * _PortraitFrontLayout.backFooterStripRightRatio,
             top: _h * _PortraitFrontLayout.backFooterStripTopRatio,
             bottom: _h * 0.012,
-            child: Align(
-              alignment: Alignment.center,
+            child: Center(
               child: AutoSizeText(
                 data.instituteName.trim().toUpperCase(),
                 maxLines: 2,
@@ -233,7 +234,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
                   const TextStyle(
                     color: Color(0xFF0F172A),
                     fontSize: _PortraitFrontLayout.backHeaderFontSize,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w900,
                     height: 1.2,
                   ),
                 ),

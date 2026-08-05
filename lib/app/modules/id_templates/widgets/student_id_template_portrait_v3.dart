@@ -72,7 +72,7 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
       final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
       return lines.clamp(2, 4);
     }
-    return 1;
+    return 2;
   }
 
   @override
@@ -111,7 +111,7 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.4,
                 )),
@@ -257,8 +257,7 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
             height: _h * _PortraitV3Layout.backInstituteHeightRatio,
             left: _w * _PortraitV3Layout.backInstituteSideRatio,
             right: _w * _PortraitV3Layout.backInstituteSideRatio,
-            child: Align(
-              alignment: Alignment.center,
+            child: Center(
               child: AutoSizeText(
                 data.instituteName.trim().toUpperCase(),
                 maxLines: 2,
@@ -267,7 +266,7 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: IdCardPortraitTypography.backHeaderFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.15,
                 )),
               ),

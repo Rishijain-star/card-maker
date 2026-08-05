@@ -75,7 +75,7 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
       final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
       return lines.clamp(2, 4);
     }
-    return 1;
+    return 2;
   }
 
   List<String> _frontDetailLines() {
@@ -126,17 +126,16 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
             height: _h * _PortraitV11Layout.frontInstituteHeight,
             left: _w * _PortraitV11Layout.frontInstituteLeft,
             right: _w * _PortraitV11Layout.frontInstituteRight,
-            child: Align(
-              alignment: Alignment.centerLeft,
+            child: Center(
               child: AutoSizeText(
                 data.instituteName.trim().toUpperCase(),
                 maxLines: _instituteMaxLines(data.instituteName),
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.3,
                 )),
@@ -270,17 +269,16 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
             height: _h * _PortraitV11Layout.backInstituteHeight,
             left: _w * _PortraitV11Layout.backInstituteLeft,
             right: _w * _PortraitV11Layout.backInstituteRight,
-            child: Align(
-              alignment: Alignment.centerLeft,
+            child: Center(
               child: AutoSizeText(
                 data.instituteName.trim().toUpperCase(),
                 maxLines: _instituteMaxLines(data.instituteName),
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.35,
                 )),

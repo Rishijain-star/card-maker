@@ -80,7 +80,7 @@ class _Front extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(28, 22, 28, 36),
                     child: Center(
                       child: AutoSizeText(
-                        data.instituteName.trim(),
+                        data.instituteName.trim().toUpperCase(),
                         maxLines: 2,
                         minFontSize: 14,
                         textAlign: TextAlign.center,
@@ -88,7 +88,7 @@ class _Front extends StatelessWidget {
                           TextStyle(
                             color: theme.onPrimary,
                             fontSize: 34,
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w900,
                             height: 1.15,
                             letterSpacing: 0.2,
                           ),
@@ -225,18 +225,19 @@ class _Back extends StatelessWidget {
                   theme: theme,
                   height: 96,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 20, 28, 0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.fromLTRB(28, 12, 28, 0),
+                    child: Center(
                       child: AutoSizeText(
-                        data.instituteName.trim(),
-                        maxLines: 1,
+                        data.instituteName.trim().toUpperCase(),
+                        maxLines: 2,
                         minFontSize: 12,
+                        textAlign: TextAlign.center,
                         style: _ts(
                           TextStyle(
                             color: theme.onPrimary,
                             fontSize: 22,
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w900,
+                            height: 1.1,
                           ),
                         ),
                       ),

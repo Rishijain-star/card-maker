@@ -114,7 +114,7 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
       final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
       return lines.clamp(2, 4);
     }
-    return 1;
+    return 2;
   }
 
   @override
@@ -320,17 +320,16 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
             right:  _w * _PortraitV2Layout.backInstituteRightRatio,
             bottom: _h * _PortraitV2Layout.backInstituteBottomRatio,
             height: _h * 0.08,
-            child: Align(
-              alignment: Alignment.centerLeft,
+            child: Center(
               child: AutoSizeText(
                 data.instituteName.trim().toUpperCase(),
                 maxLines: 2,
                 minFontSize: _PortraitV2Layout.headerMinFontSize,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 style: _ts(const TextStyle(
                   color: Color(0xFF0F172A),
                   fontSize: _PortraitV2Layout.backHeaderFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.15,
                 )),
               ),

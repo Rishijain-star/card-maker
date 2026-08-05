@@ -70,7 +70,7 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
       final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
       return lines.clamp(2, 4);
     }
-    return 1;
+    return 2;
   }
 
   List<String> _frontDetailLines() {

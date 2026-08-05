@@ -72,7 +72,7 @@ class StudentIdTemplatePortraitV9 extends StatelessWidget {
       final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
       return lines.clamp(2, 4);
     }
-    return 1;
+    return 2;
   }
 
   /// Main form fields on front (optional terms stay on back).
@@ -293,7 +293,7 @@ class StudentIdTemplatePortraitV9 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: IdCardPortraitTypography.backHeaderFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.08,
                   letterSpacing: 0.35,
                 )),

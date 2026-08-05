@@ -74,7 +74,7 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
       final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
       return lines.clamp(2, 4);
     }
-    return 1;
+    return 2;
   }
 
   List<String> _frontDetailLines() {
@@ -131,7 +131,7 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: _PortraitV10Layout.textDark,
                   fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.35,
                 )),
@@ -271,7 +271,7 @@ class StudentIdTemplatePortraitV10 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: _PortraitV10Layout.instituteNavy,
                   fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.35,
                 )),

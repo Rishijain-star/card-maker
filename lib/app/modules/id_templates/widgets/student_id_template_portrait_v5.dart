@@ -64,7 +64,7 @@ class StudentIdTemplatePortraitV5 extends StatelessWidget {
       final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
       return lines.clamp(2, 4);
     }
-    return 1;
+    return 2;
   }
 
   List<String> _frontDetailLines() {
@@ -122,7 +122,7 @@ class StudentIdTemplatePortraitV5 extends StatelessWidget {
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.4,
                 )),
@@ -231,17 +231,16 @@ class StudentIdTemplatePortraitV5 extends StatelessWidget {
             height: _h * _PortraitV5Layout.backInstituteHeight,
             left: _w * _PortraitV5Layout.backInstituteLeft,
             right: _w * _PortraitV5Layout.backInstituteRight,
-            child: Align(
-              alignment: Alignment.centerLeft,
+            child: Center(
               child: AutoSizeText(
                 data.instituteName.trim().toUpperCase(),
                 maxLines: 2,
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 style: _ts(const TextStyle(
                   color: Colors.white,
                   fontSize: IdCardPortraitTypography.backHeaderFontSize,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   height: 1.1,
                 )),
               ),
