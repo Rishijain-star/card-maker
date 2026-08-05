@@ -232,20 +232,7 @@ class CompanyIdTemplatePortraitV10 extends StatelessWidget {
               minFontSize: 12,
             ),
           ),
-        if (data.hasSignature)
-          Positioned(
-            left: _w * _CompanyV10Layout.backSignatureLeft,
-            bottom: _h * _CompanyV10Layout.backSignatureBottom,
-            width: _w * _CompanyV10Layout.backSignatureWidth,
-            height: _h * _CompanyV10Layout.backSignatureHeight,
-            child: _CompanyV10SignaturePreview(
-              path: data.signaturePath,
-              bytes: data.signatureBytes,
-              hasBorder: data.signatureHasBorder,
-              borderColor: data.signatureBorderColor,
-              borderWidth: data.signatureBorderWidth,
-            ),
-          ),
+
       ],
     );
   }

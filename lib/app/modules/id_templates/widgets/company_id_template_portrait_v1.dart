@@ -219,22 +219,7 @@ class CompanyIdTemplatePortraitV1 extends StatelessWidget {
             ),
           ),
         ),
-        if (data.hasSignature)
-          Positioned(
-            top: _h * _CompanyV1Layout.backSignatureTop,
-            left: _w * _CompanyV1Layout.backSignatureSide,
-            right: _w * _CompanyV1Layout.backSignatureSide,
-            height: _h * _CompanyV1Layout.backSignatureHeight,
-            child: Center(
-              child: _CompanyV1SignaturePreview(
-                path: data.signaturePath,
-                bytes: data.signatureBytes,
-                hasBorder: data.signatureHasBorder,
-                borderColor: data.signatureBorderColor,
-                borderWidth: data.signatureBorderWidth,
-              ),
-            ),
-          ),
+
         if (terms.isNotEmpty)
           Positioned(
             top: _h * _CompanyV1Layout.backTermsTop,

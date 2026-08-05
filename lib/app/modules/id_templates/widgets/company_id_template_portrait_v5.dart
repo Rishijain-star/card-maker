@@ -205,22 +205,7 @@ class CompanyIdTemplatePortraitV5 extends StatelessWidget {
               minFontSize: _CompanyV5Layout.backBodyMinFontSize,
             ),
           ),
-        if (data.hasSignature)
-          Positioned(
-            top: _h * _CompanyV5Layout.backSignatureTop,
-            left: _w * _CompanyV5Layout.backSignatureSide,
-            right: _w * _CompanyV5Layout.backSignatureSide,
-            height: _h * _CompanyV5Layout.backSignatureHeight,
-            child: Center(
-              child: _CompanyV5SignaturePreview(
-                path: data.signaturePath,
-                bytes: data.signatureBytes,
-                hasBorder: data.signatureHasBorder,
-                borderColor: data.signatureBorderColor,
-                borderWidth: data.signatureBorderWidth,
-              ),
-            ),
-          ),
+
         Positioned(
           left: _w * _CompanyV5Layout.backFooterSide,
           right: _w * _CompanyV5Layout.backFooterSide,

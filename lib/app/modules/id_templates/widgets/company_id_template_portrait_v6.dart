@@ -261,22 +261,7 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
               minFontSize: 14,
             ),
           ),
-        if (data.hasSignature)
-          Positioned(
-            top: _h * _CompanyV6Layout.backSignatureTop,
-            left: _w * _CompanyV6Layout.backSignatureSide,
-            right: _w * _CompanyV6Layout.backSignatureSide,
-            height: _h * _CompanyV6Layout.backSignatureHeight,
-            child: Center(
-              child: _CompanyV6SignaturePreview(
-                path: data.signaturePath,
-                bytes: data.signatureBytes,
-                hasBorder: data.signatureHasBorder,
-                borderColor: data.signatureBorderColor,
-                borderWidth: data.signatureBorderWidth,
-              ),
-            ),
-          ),
+
       ],
     );
   }
