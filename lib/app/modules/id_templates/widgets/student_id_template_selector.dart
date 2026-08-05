@@ -17,6 +17,7 @@ import 'student_id_template_portrait_v13.dart';
 import 'student_id_template_portrait_v14.dart';
 import 'student_id_template_landscape_v15.dart';
 import 'student_id_template_landscape_v16.dart';
+import 'student_id_template_portrait_v17.dart';
 
 /// Picker index matches layout variant (0 → v1, 1 → v2, 2 → v3, …).
 int studentTemplateVariantFor(int globalIndex) => globalIndex;
@@ -110,6 +111,12 @@ Widget buildStudentPortraitTemplate({
       );
     case 14:
       return StudentIdTemplateLandscapeV16(
+        data: data,
+        side: side,
+        fontFamily: fontFamily,
+      );
+    case 15:
+      return StudentIdTemplatePortraitV17(
         data: data,
         side: side,
         fontFamily: fontFamily,

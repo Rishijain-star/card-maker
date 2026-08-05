@@ -69,4 +69,8 @@ abstract final class StudentIdTemplateAssets {
 
   /// Template 16 — elephant landscape, single-sided (front only).
   static const String frontBackgroundV16 = 'assets/template 16.png';
+
+  /// Template 17 — Green polygon mesh background (front & back).
+  static const String frontBackgroundV17 = 'assets/student_id_v17_front.png';
+  static const String backBackgroundV17 = 'assets/student_id_v17_back.png';
 }
