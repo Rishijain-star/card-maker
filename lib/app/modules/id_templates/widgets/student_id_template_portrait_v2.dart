@@ -33,7 +33,7 @@ abstract final class _PortraitV2Layout {
   static const double backMinFontSize = 18;
 
   // ── Front — photo circle ────────────────────────────────────────────────────
-  static const double frontPhotoTopRatio  = 0.0950; // nudge up ~10px on 1012h
+  static const double frontPhotoTopRatio  = 0.118; // nudged down slightly
   static const double frontPhotoSizeRatio = 0.410; // 296.5 / 638
   static const double frontPhotoBorderWidth = 4.0;
 
