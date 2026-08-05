@@ -724,7 +724,7 @@ class StudentSignatureSection extends GetView<CreateFlowController> {
                   const Icon(Icons.draw_rounded, color: _kFormBlue, size: 22),
                   const SizedBox(width: 6),
                   Text(
-                    'Signature Image & Outline',
+                    'Stamp & Signature',
                     style: GoogleFonts.poppins(
                       color: _kFormBlue,
                       fontWeight: FontWeight.w600,

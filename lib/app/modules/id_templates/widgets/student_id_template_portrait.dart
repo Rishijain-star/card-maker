@@ -175,12 +175,16 @@ class StudentIdTemplatePortrait extends StatelessWidget {
         ),
         if (data.hasSignature)
           Positioned(
-            right: _w * _PortraitFrontLayout.frontSignatureRightRatio,
-            bottom: _h * _PortraitFrontLayout.frontSignatureBottomRatio,
-            child: _PortraitSignatureCircle(
-              size: _w * _PortraitFrontLayout.frontSignatureSizeRatio,
+            right: _w * 0.05,
+            bottom: _h * 0.045,
+            child: _PortraitSignatureEllipse(
+              width: _w * 0.25,
+              height: _h * 0.065,
               path: data.signaturePath,
               bytes: data.signatureBytes,
+              hasBorder: data.signatureHasBorder,
+              borderColor: data.signatureBorderColor,
+              borderWidth: data.signatureBorderWidth,
             ),
           ),
       ],
@@ -478,26 +482,37 @@ class _PortraitPhoto extends StatelessWidget {
   }
 }
 
-class _PortraitSignatureCircle extends StatelessWidget {
-  const _PortraitSignatureCircle({
-    required this.size,
+class _PortraitSignatureEllipse extends StatelessWidget {
+  const _PortraitSignatureEllipse({
+    required this.width,
+    required this.height,
     required this.path,
     this.bytes,
+    this.hasBorder = false,
+    this.borderColor = const Color(0xFF0F172A),
+    this.borderWidth = 1.0,
   });
 
-  final double size;
+  final double width;
+  final double height;
   final String path;
   final Uint8List? bytes;
+  final bool hasBorder;
+  final Color borderColor;
+  final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: size,
-      height: size,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
         color: Colors.white,
-        border: Border.all(color: const Color(0xFFCBD5E1), width: 2),
+        borderRadius: BorderRadius.all(Radius.ellipse(width / 2, height / 2)),
+        border: Border.all(
+          color: hasBorder ? borderColor : const Color(0xFFCBD5E1),
+          width: hasBorder ? borderWidth : 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -506,19 +521,21 @@ class _PortraitSignatureCircle extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(4),
-      child: ClipOval(child: _buildImage()),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      child: ClipOval(
+        child: _buildImage(),
+      ),
     );
   }
 
   Widget _buildImage() {
     if (bytes != null && bytes!.isNotEmpty) {
-      return Image.memory(bytes!, fit: BoxFit.contain, width: size, height: size);
+      return Image.memory(bytes!, fit: BoxFit.contain, width: width, height: height);
     }
     if (path.trim().isNotEmpty) {
       final file = File(path);
       if (file.existsSync()) {
-        return Image.file(file, fit: BoxFit.contain, width: size, height: size);
+        return Image.file(file, fit: BoxFit.contain, width: width, height: height);
       }
     }
     return const SizedBox.shrink();
