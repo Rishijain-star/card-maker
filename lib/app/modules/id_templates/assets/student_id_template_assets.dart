@@ -8,7 +8,7 @@ abstract final class StudentIdTemplateAssets {
 
   /// Template 2 — green left/top (front), green right/bottom (back).
   static const String frontBackgroundV2 =
-      'assets/ChatGPT Image Jun 4, 2026, 05_04_07 PM.png';
+      'assets/secound etmplat.png';
 
   static const String backBackgroundV2 =
       'assets/ChatGPT Image Jun 4, 2026, 05_06_29 PM.png';
