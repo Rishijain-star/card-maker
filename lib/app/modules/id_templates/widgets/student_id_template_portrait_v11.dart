@@ -16,7 +16,7 @@ abstract final class _PortraitV11Layout {
   static const double frontInstituteTop = 0.048;
   static const double frontInstituteHeight = 0.095;
   static const double frontInstituteLeft = 0.07;
-  static const double frontInstituteRight = 0.42;
+  static const double frontInstituteRight = 0.07;
 
   static const double frontPhotoSizeRatio = 0.34;
   static const double frontPhotoCenterYRatio = 0.258;
@@ -40,7 +40,7 @@ abstract final class _PortraitV11Layout {
   static const double backInstituteTop = 0.048;
   static const double backInstituteHeight = 0.095;
   static const double backInstituteLeft = 0.07;
-  static const double backInstituteRight = 0.42;
+  static const double backInstituteRight = 0.07;
 
   /// Terms sit in central white (below top teal blob on PNG).
   static const double backTermsTop = 0.27;
@@ -134,8 +134,8 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
                 textAlign: TextAlign.center,
                 style: _ts(const TextStyle(
-                  color: Colors.white,
-                  fontSize: IdCardPortraitTypography.headerFontSize,
+                  color: Color(0xFF0F172A),
+                  fontSize: 42,
                   fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.3,
@@ -274,8 +274,8 @@ class StudentIdTemplatePortraitV11 extends StatelessWidget {
                 minFontSize: IdCardPortraitTypography.headerMinFontSize,
                 textAlign: TextAlign.center,
                 style: _ts(const TextStyle(
-                  color: Colors.white,
-                  fontSize: IdCardPortraitTypography.headerFontSize,
+                  color: Color(0xFF0F172A),
+                  fontSize: 42,
                   fontWeight: FontWeight.w900,
                   height: 1.05,
                   letterSpacing: 0.35,

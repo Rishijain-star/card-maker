@@ -20,12 +20,12 @@ abstract final class _LandscapeV16Layout {
   static const double headerHeight = 0.22;
 
   static const double nameTop = 0.25;
-  static const double nameLeft = 0.36;
-  static const double nameRight = 0.42;
+  static const double nameLeft = 0.30;
+  static const double nameRight = 0.37;
 
   static const double detailsTop = 0.36;
-  static const double detailsLeft = 0.36;
-  static const double detailsRight = 0.42;
+  static const double detailsLeft = 0.30;
+  static const double detailsRight = 0.37;
   static const double detailsBottom = 0.08;
 
   static const double photoTop = 0.24;
