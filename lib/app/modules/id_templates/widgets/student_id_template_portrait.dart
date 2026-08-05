@@ -508,7 +508,7 @@ class _PortraitSignatureEllipse extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.ellipse(width / 2, height / 2)),
+        borderRadius: BorderRadius.all(Radius.elliptical(width / 2, height / 2)),
         border: Border.all(
           color: hasBorder ? borderColor : const Color(0xFFCBD5E1),
           width: hasBorder ? borderWidth : 1.5,
