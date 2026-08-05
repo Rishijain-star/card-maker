@@ -224,11 +224,10 @@ class CompanyIdTemplatePortraitV11 extends StatelessWidget {
         ),
         if (data.hasSignature)
           Positioned(
-            left: _contentLeft,
-            width: _contentWidth,
-            bottom: _h * _CompanyV11Layout.frontSignatureBottom,
-            height: _h * _CompanyV11Layout.frontSignatureHeight,
-            child: _CompanyV11SignaturePreview(
+            right: _w * 0.05,
+            bottom: _h * 0.04,
+            child: StudentPortraitSignatureCircle(
+              size: _h * 0.09,
               path: data.signaturePath,
               bytes: data.signatureBytes,
               hasBorder: data.signatureHasBorder,
