@@ -11,7 +11,7 @@ abstract final class StudentIdTemplateAssets {
   static const String backBackgroundV3 = 'assets/3rd back.png';
   static const String frontBackgroundV4 = 'assets/4th tempalte front.png';
   static const String backBackgroundV4 = 'assets/4th template back.png';
-  static const String frontBackgroundV5 = 'assets/5th template fronted.png';
+  static const String frontBackgroundV5 = 'assets/template number 5 perfact.png';
   static const String backBackgroundV5 = 'assets/5th tempate back.png';
   static const String frontBackgroundV6 = 'assets/6th front.png';
   static const String backBackgroundV6 = 'assets/6th back.png';
@@ -27,7 +27,7 @@ abstract final class StudentIdTemplateAssets {
   static const String backBackgroundV11 = 'assets/11th back.png';
   static const String frontBackgroundV13 = 'assets/template 13.png';
   static const String frontBackgroundV14 = 'assets/original mango.png';
-  static const String frontBackgroundV15 = 'assets/Beer template.png';
+  static const String frontBackgroundV15 = 'assets/rihgt one .png';
   static const String frontBackgroundV16 = 'assets/template 16.png';
 
   static const String frontBackgroundV26 = 'assets/26 th front.png';
@@ -67,7 +67,7 @@ abstract final class StudentIdTemplateAssets {
     'assets/secound etmplat.png',                         // 2
     'assets/3rd tempolate front.png',                     // 3
     'assets/4th tempalte front.png',                      // 4
-    'assets/5th template fronted.png',                    // 5
+    'assets/template number 5 perfact.png',               // 5
     'assets/6th front.png',                               // 6
     'assets/7th front.png',                               // 7
     'assets/8th front.png',                               // 8
@@ -77,8 +77,7 @@ abstract final class StudentIdTemplateAssets {
     'assets/template 13.png',                             // 12
     'assets/template 13.png',                             // 13
     'assets/original mango.png',                          // 14
-    'assets/company 1st frnt.png',                       // 15
-    'assets/company front 2.png',                         // 16
+    'assets/rihgt one .png',                              // 15
     'assets/3rd company front.png',                       // 17
     'assets/4th company front.png',                       // 18
     'assets/student_comp_5_front.png',                    // 19
@@ -122,7 +121,6 @@ abstract final class StudentIdTemplateAssets {
     'assets/template 13.png',                             // 13
     'assets/original mango.png',                          // 14
     'assets/company 1st back.png',                        // 15
-    'assets/company front 2 back.png',                    // 16
     'assets/3rd company back.png',                        // 17
     'assets/4th back comanpy.png',                        // 18
     'assets/back company 5.png',                          // 19

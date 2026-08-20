@@ -36,6 +36,7 @@ class StudentIdTemplateImageOnly extends StatelessWidget {
     this.validTo = '',
     this.isPreview = false,
     this.customHeaderColor,
+    this.customTextColor,
   });
 
   final int templateIndex;
@@ -69,6 +70,7 @@ class StudentIdTemplateImageOnly extends StatelessWidget {
   final String validTo;
   final bool isPreview;
   final Color? customHeaderColor;
+  final Color? customTextColor;
 
   /// Standard portrait ID card aspect ratio (53.98mm / 85.60mm)
   static const double cardAspectRatio = 53.98 / 85.60;
@@ -150,7 +152,9 @@ class StudentIdTemplateImageOnly extends StatelessWidget {
             
             // Student details color: Black default, White only for Template 32 (index 31)
             Color detailsTextColor = Colors.black;
-            if (templateIndex == 31) {
+            if (customTextColor != null) {
+              detailsTextColor = customTextColor!;
+            } else if (templateIndex == 31) {
               detailsTextColor = Colors.white;
             }
 
@@ -199,49 +203,76 @@ class StudentIdTemplateImageOnly extends StatelessWidget {
 
                 // ── Layer 2: Overlay ─────
                 if (hasOverlayContent)
-                  Positioned(
-                    top: topGap,
-                    left: hPad,
-                    right: hPad,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (showInstitute)
-                          _HeaderStyleText(
-                            text: IdCardTypography.formatInstituteName(instituteName.trim()),
-                            fontFamily: fontFamily,
-                            textColor: instituteNameColor,
-                            isPreview: isPreview,
-                          ),
-                          
-                        // Consistent visual gap between Institute Name and Photo
-                        if (showInstitute && showPhoto)
-                          SizedBox(height: cardH * 0.02),
-                          
-                        if (photoWidget != null)
-                          photoWidget,
-                          
-                        // Clear gap between Photo and the first text field
-                        if (showPhoto && textFieldsToRender.isNotEmpty)
-                          SizedBox(height: cardH * 0.035),
-                          
-                        // Dynamically render all text fields with consistent spacing
-                        for (int i = 0; i < textFieldsToRender.length; i++) ...[
-                          if (i > 0) SizedBox(height: cardH * 0.012),
-                          _HeaderStyleText(
-                            text: textFieldsToRender[i].key,
-                            fontFamily: fontFamily,
-                            textColor: detailsTextColor,
-                            isPreview: isPreview,
-                            // Reduce font size slightly for address
-                            fontSizeOverride: textFieldsToRender[i].value 
-                                ? IdCardPortraitTypography.headerFontSize * 0.82 
-                                : null,
-                          ),
+                  if (isFront)
+                    Positioned(
+                      top: topGap,
+                      left: hPad,
+                      right: hPad,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (showInstitute)
+                            _HeaderStyleText(
+                              text: IdCardTypography.formatInstituteName(instituteName.trim()),
+                              fontFamily: fontFamily,
+                              textColor: instituteNameColor,
+                              isPreview: isPreview,
+                            ),
+                            
+                          // Consistent visual gap between Institute Name and Photo
+                          if (showInstitute && showPhoto)
+                            SizedBox(height: cardH * 0.02),
+                            
+                          if (photoWidget != null)
+                            photoWidget,
+                            
+                          // Clear gap between Photo and the first text field
+                          if (showPhoto && textFieldsToRender.isNotEmpty)
+                            SizedBox(height: cardH * 0.035),
+                            
+                          // Dynamically render all text fields with consistent spacing
+                          for (int i = 0; i < textFieldsToRender.length; i++) ...[
+                            if (i > 0) SizedBox(height: cardH * 0.012),
+                            _HeaderStyleText(
+                              text: textFieldsToRender[i].key,
+                              fontFamily: fontFamily,
+                              textColor: detailsTextColor,
+                              isPreview: isPreview,
+                              // Reduce font size slightly for address
+                              fontSizeOverride: textFieldsToRender[i].value 
+                                  ? IdCardPortraitTypography.headerFontSize * 0.82 
+                                  : null,
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
+                    )
+                  else
+                    Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: hPad,
+                      right: hPad,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (int i = 0; i < textFieldsToRender.length; i++) ...[
+                              if (i > 0) SizedBox(height: cardH * 0.015),
+                              _HeaderStyleText(
+                                text: textFieldsToRender[i].key,
+                                fontFamily: fontFamily,
+                                textColor: detailsTextColor,
+                                isPreview: isPreview,
+                                // Smaller approved text size for back side
+                                fontSizeOverride: IdCardPortraitTypography.headerFontSize * 0.45,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
 
                 // ── Layer 3: Signature / Stamp (Bottom Right Ellipse) ─────
                 if (isFront && (signaturePath.isNotEmpty || signatureBytes != null))

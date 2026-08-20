@@ -672,14 +672,6 @@ class CreateFlowController extends GetxController {
       'studentEngine': true,
       'variant': 38,
     },
-    <String, dynamic>{
-      'id': 39,
-      'title': 'Template 40',
-      'category': 'Student',
-      'premium': false,
-      'studentEngine': true,
-      'variant': 39,
-    },
   ];
 
   /// Single-sided student templates (no back swipe / back preview).

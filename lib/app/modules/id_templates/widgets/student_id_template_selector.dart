@@ -28,6 +28,30 @@ Widget buildStudentPortraitTemplate({
   bool isPreview = false,
 }) {
   final variant = studentTemplateVariantFor(globalIndex);
+  
+  Color? customHeaderColor;
+  Color? customTextColor;
+  
+  if (Get.isRegistered<CreateFlowController>()) {
+    final flow = Get.find<CreateFlowController>();
+    
+    // Check if we are actively editing this EXACT template in live customize
+    if (isPreview && flow.selectedTemplate.value == globalIndex) {
+       final headerHex = flow.idCardCustomHeaderColorHex.value;
+       if (headerHex != null) customHeaderColor = Color(headerHex);
+       
+       final textHex = flow.idCardCustomTextColorHex.value;
+       if (textHex != null) customTextColor = Color(textHex);
+    } else {
+       // Just fetch the saved template settings for this index
+       final headerHex = flow.getCustomHeaderColorForTemplate(globalIndex);
+       if (headerHex != null) customHeaderColor = Color(headerHex);
+       
+       final textHex = flow.getCustomTextColorForTemplate(globalIndex);
+       if (textHex != null) customTextColor = Color(textHex);
+    }
+  }
+
   return StudentIdTemplateImageOnly(
     templateIndex: variant,
     side: side,
@@ -50,5 +74,7 @@ Widget buildStudentPortraitTemplate({
     validFrom: data.validFrom,
     validTo: data.validTo,
     isPreview: isPreview,
+    customHeaderColor: customHeaderColor,
+    customTextColor: customTextColor,
   );
 }
