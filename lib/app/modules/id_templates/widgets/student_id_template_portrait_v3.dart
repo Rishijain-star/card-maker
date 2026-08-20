@@ -5,6 +5,7 @@ import '../../../data/models/student_data.dart';
 import '../assets/student_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
 import '../design_system/id_card_portrait_typography.dart';
+import '../design_system/id_card_text_styles.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
@@ -12,7 +13,7 @@ import 'student_id_portrait_widgets.dart';
 /// Ref: purple diamond header, photo straddling header/body line, centered name/body.
 abstract final class _PortraitV3Layout {
   // ── Front — institute (purple header, centered) ──────────────────────────────
-  static const double frontInstituteTop = 0.040;
+  static const double frontInstituteTop = 0.032;
   static const double frontInstituteHeight = 0.115;
   static const double frontInstituteLeftRatio = 0.05;
   static const double frontInstituteRightRatio = 0.05;
@@ -32,21 +33,13 @@ abstract final class _PortraitV3Layout {
   static const double frontBodySideRatio = 0.10;
   static const double frontBodyBottomRatio = 0.18;
 
-  // ── Front — address / signature ─────────────────────────────────────────────
-  static const double frontAddressTopRatio = 0.838;
-  static const double frontAddressSideRatio = 0.10;
-  static const double frontAddressHeightRatio = 0.09;
-  static const double frontSignatureSizeRatio = 0.12;
-  static const double frontSignatureRightRatio = 0.06;
-  static const double frontSignatureBottomRatio = 0.14;
-
   // ── Back — terms in upper white; institute in bottom purple art ─────────────
-  static const double backBodyTopRatio = 0.10;
+  static const double backBodyTopRatio = 0.16;
   static const double backBodySideRatio = 0.12;
-  static const double backBodyBottomRatio = 0.30;
-  static const double backInstituteTopRatio = 0.76;
-  static const double backInstituteSideRatio = 0.10;
-  static const double backInstituteHeightRatio = 0.10;
+  static const double backBodyBottomRatio = 0.15;
+  static const double backInstituteTopRatio = 0.038;
+  static const double backInstituteSideRatio = 0.05;
+  static const double backInstituteHeightRatio = 0.08;
 }
 
 class StudentIdTemplatePortraitV3 extends StatelessWidget {
@@ -55,25 +48,30 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
     required this.data,
     required this.side,
     this.fontFamily = 'Poppins',
+    this.frontBgAsset,
+    this.backBgAsset,
+    this.headerTextColor,
+    this.backHeaderTextColor,
+    this.isBackHeaderAtTop = false,
+    this.isBackTermsShiftedDown = false,
+    this.isBackTermsBold = false,
+    this.frontInstituteTopOverride,
   });
 
   final StudentData data;
   final StudentIdCardSide side;
   final String fontFamily;
+  final String? frontBgAsset;
+  final String? backBgAsset;
+  final Color? headerTextColor;
+  final Color? backHeaderTextColor;
+  final bool isBackHeaderAtTop;
+  final bool isBackTermsShiftedDown;
+  final bool isBackTermsBold;
+  final double? frontInstituteTopOverride;
 
   static const double _w = IdCardPortraitDimensions.width;
   static const double _h = IdCardPortraitDimensions.height;
-
-  TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
-  TextStyle _tsPrimary(TextStyle base) => studentPortraitPrimaryTextStyle(base, fontFamily);
-
-  static int _instituteMaxLines(String name) {
-    if (name.contains('\n')) {
-      final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
-      return lines.clamp(2, 4);
-    }
-    return 2;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,30 +91,18 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          StudentIdTemplateAssets.frontBackgroundV3,
+          frontBgAsset ?? StudentIdTemplateAssets.frontBackgroundV3,
           fit: BoxFit.fill,
         ),
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
-            top: _h * _PortraitV3Layout.frontInstituteTop,
-            height: _h * _PortraitV3Layout.frontInstituteHeight,
-            left: _w * _PortraitV3Layout.frontInstituteLeftRatio,
-            right: _w * _PortraitV3Layout.frontInstituteRightRatio,
-            child: Center(
-              child: AutoSizeText(
-                formatInstituteName(
-                    data.instituteName.trim().toUpperCase()),
-                maxLines: _instituteMaxLines(data.instituteName),
-                minFontSize: IdCardPortraitTypography.headerMinFontSize,
-                textAlign: TextAlign.center,
-                style: _ts(const TextStyle(
-                  color: Colors.white,
-                  fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: 1.05,
-                  letterSpacing: 0.4,
-                )),
-              ),
+            top: _h * (frontInstituteTopOverride ?? _PortraitV3Layout.frontInstituteTop),
+            left: _w * 0.05,
+            right: _w * 0.05,
+            child: GlobalInstituteHeader(
+              name: data.instituteName,
+              fontFamily: fontFamily,
+              color: headerTextColor,
             ),
           ),
         Positioned(
@@ -146,13 +132,7 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
                 maxLines: 1,
                 minFontSize: IdCardPortraitTypography.nameMinFontSize,
                 textAlign: TextAlign.center,
-                style: _tsPrimary(const TextStyle(
-                  color: Color(0xFF0F172A),
-                  fontSize: IdCardPortraitTypography.nameFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: 1.08,
-                  letterSpacing: 0.5,
-                )),
+                style: IdCardTextStyles.personName(fontFamily),
               ),
             ),
           ),
@@ -164,36 +144,13 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
           child: _PortraitV3BodyList(
             fatherName: data.fatherName,
             className: data.className,
-            fatherStyle: _tsPrimary(const TextStyle(
-              color: Color(0xFF0F172A),
-              fontSize: IdCardPortraitTypography.nameFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.08,
-              letterSpacing: 0.5,
-            )),
-            courseStyle: _tsPrimary(const TextStyle(
-              color: Color(0xFF0F172A),
-              fontSize: IdCardPortraitTypography.nameFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.08,
-              letterSpacing: 0.5,
-            )),
+            fatherStyle: IdCardTextStyles.fatherName(fontFamily),
+            courseStyle: IdCardTextStyles.course(fontFamily),
             lines: data.frontDetailLines,
             footerLine: data.frontValidityHorizontalLine,
-            bodyStyle: _ts(const TextStyle(
-              color: Color(0xFF0F172A),
-              fontSize: IdCardPortraitTypography.bodyFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.08,
-              letterSpacing: 0.5,
-            )),
+            bodyStyle: IdCardTextStyles.detail(fontFamily),
             bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
-            footerStyle: _ts(const TextStyle(
-              color: Color(0xFF1E293B),
-              fontSize: IdCardPortraitTypography.validityFontSize,
-              fontWeight: FontWeight.w800,
-              height: 1.2,
-            )),
+            footerStyle: IdCardTextStyles.footer(fontFamily),
             footerMinFontSize: IdCardPortraitTypography.validityMinFontSize,
             compactSpacing: data.useCompactFrontSpacing,
             relaxedSpacing: data.useRelaxedFrontSpacing,
@@ -217,27 +174,26 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
   }
 
   Widget _buildBack() {
+    final terms = data.backDetailLines;
+
     return Stack(
       fit: StackFit.expand,
       children: [
         Image.asset(
-          StudentIdTemplateAssets.backBackgroundV3,
+          backBgAsset ?? StudentIdTemplateAssets.backBackgroundV3,
           fit: BoxFit.fill,
         ),
         Positioned(
-          top: _h * _PortraitV3Layout.backBodyTopRatio,
+          top: _h * (isBackTermsShiftedDown ? 0.20 : _PortraitV3Layout.backBodyTopRatio),
           left: _w * _PortraitV3Layout.backBodySideRatio,
           right: _w * _PortraitV3Layout.backBodySideRatio,
-          bottom: _h * _PortraitV3Layout.backBodyBottomRatio,
+          bottom: _h * (isBackTermsShiftedDown ? 0.12 : 0.13),
           child: StudentPortraitEvenContent(
-            lines: data.backDetailLines,
+            lines: terms,
             fontFamily: fontFamily,
-            bodyStyle: _ts(const TextStyle(
-              color: Color(0xFF1E293B),
-              fontSize: IdCardPortraitTypography.backBodyFontSize,
-              fontWeight: FontWeight.w600,
-              height: 1.28,
-            )),
+            bodyStyle: isBackTermsBold
+                ? IdCardTextStyles.terms(fontFamily).copyWith(fontWeight: FontWeight.w600)
+                : IdCardTextStyles.terms(fontFamily),
             bodyMinFontSize: IdCardPortraitTypography.backBodyMinFontSize,
             maxLinesPerItem: 4,
             compactSpacing: data.useCompactFrontSpacing,
@@ -250,24 +206,14 @@ class StudentIdTemplatePortraitV3 extends StatelessWidget {
         ),
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
-            top: _h * _PortraitV3Layout.backInstituteTopRatio,
-            height: _h * _PortraitV3Layout.backInstituteHeightRatio,
-            left: _w * _PortraitV3Layout.backInstituteSideRatio,
-            right: _w * _PortraitV3Layout.backInstituteSideRatio,
-            child: Center(
-              child: AutoSizeText(
-                formatInstituteName(
-                    data.instituteName.trim().toUpperCase()),
-                maxLines: 2,
-                minFontSize: IdCardPortraitTypography.headerMinFontSize,
-                textAlign: TextAlign.center,
-                style: _ts(const TextStyle(
-                  color: Colors.white,
-                  fontSize: IdCardPortraitTypography.backHeaderFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: 1.15,
-                )),
-              ),
+            top: isBackHeaderAtTop ? _h * (frontInstituteTopOverride ?? _PortraitV3Layout.backInstituteTopRatio) : null,
+            bottom: isBackHeaderAtTop ? null : _h * 0.035,
+            left: _w * 0.05,
+            right: _w * 0.05,
+            child: GlobalInstituteHeader(
+              name: data.instituteName,
+              fontFamily: fontFamily,
+              color: backHeaderTextColor ?? headerTextColor,
             ),
           ),
       ],

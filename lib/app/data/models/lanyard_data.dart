@@ -14,6 +14,8 @@ class LanyardData {
     this.offsetY = 0.0,
     this.logoTextSpacing = 6.0,
     this.textColorHex,
+    this.isCustom = false,
+    this.customRibbonColorHex = 0xFF1E3A8A,
   });
 
   final String organization;
@@ -27,6 +29,8 @@ class LanyardData {
   final double offsetY;
   final double logoTextSpacing;
   final int? textColorHex;
+  final bool isCustom;
+  final int customRibbonColorHex;
 
   factory LanyardData.fromCreateFlow(CreateFlowController flow) {
     final color = flow.palette[flow.selectedColor.value.clamp(0, flow.palette.length - 1)];
@@ -42,6 +46,8 @@ class LanyardData {
       offsetY: flow.lanyardTextOffsetY.value,
       logoTextSpacing: flow.lanyardLogoTextSpacing.value,
       textColorHex: flow.lanyardCustomTextColorHex.value,
+      isCustom: flow.isCustomLanyard.value,
+      customRibbonColorHex: flow.lanyardCustomRibbonColorHex.value,
     );
   }
 

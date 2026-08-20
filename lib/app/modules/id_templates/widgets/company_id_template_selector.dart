@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/models/employee_data.dart';
+import '../assets/company_id_template_assets.dart';
 import 'company_id_template_portrait_v1.dart';
 import 'company_id_template_portrait_v2.dart';
 import 'company_id_template_portrait_v3.dart';
@@ -21,6 +22,7 @@ Widget buildCompanyPortraitTemplate({
   required EmployeeData data,
   required StudentIdCardSide side,
   required String fontFamily,
+  String? overrideFrontBgAsset,
 }) {
   final variant = companyTemplateVariantFor(globalIndex);
   switch (variant) {
@@ -53,6 +55,7 @@ Widget buildCompanyPortraitTemplate({
         data: data,
         side: side,
         fontFamily: fontFamily,
+        frontBgAsset: overrideFrontBgAsset,
       );
     case 5:
       return CompanyIdTemplatePortraitV6(
@@ -65,6 +68,7 @@ Widget buildCompanyPortraitTemplate({
         data: data,
         side: side,
         fontFamily: fontFamily,
+        frontBgAsset: overrideFrontBgAsset,
       );
     case 7:
       return CompanyIdTemplatePortraitV8(
@@ -77,6 +81,7 @@ Widget buildCompanyPortraitTemplate({
         data: data,
         side: side,
         fontFamily: fontFamily,
+        frontBgAsset: overrideFrontBgAsset,
       );
     case 9:
       return CompanyIdTemplatePortraitV10(

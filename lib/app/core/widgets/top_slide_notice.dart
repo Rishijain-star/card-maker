@@ -16,7 +16,8 @@ class TopSlideNotice {
     Duration autoDismiss = const Duration(seconds: 2),
   }) {
     dismiss();
-    final overlay = Overlay.of(context, rootOverlay: true);
+    final overlay = Overlay.maybeOf(context, rootOverlay: true);
+    if (overlay == null) return;
     late OverlayEntry entry;
     entry = OverlayEntry(
       builder: (ctx) => _TopSlideNoticeBanner(

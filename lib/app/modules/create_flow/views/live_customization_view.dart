@@ -82,8 +82,8 @@ class LiveCustomizationView extends GetView<CreateFlowController> {
                   _ToolChip(
                     label: 'Fonts',
                     onTap: () {
-                      controller.selectedFont.value =
-                          (controller.selectedFont.value + 1) % controller.fonts.length;
+                      final nextIndex = (controller.selectedFont.value + 1) % controller.fonts.length;
+                      controller.updateCurrentTemplateSettings(fontIndex: nextIndex);
                     },
                   ),
                   _ToolChip(

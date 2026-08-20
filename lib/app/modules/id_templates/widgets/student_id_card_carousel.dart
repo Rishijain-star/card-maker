@@ -182,13 +182,13 @@ class LiveIdCardCarousel extends StatelessWidget {
 
     return Obx(
       () {
-        flow.selectedFont.value;
+        final templateFontFamily = flow.getFontFamilyForTemplate(templateIndex);
         final isEmployee = flow.isEmployeeService;
         return StudentIdCardCarousel(
           studentData: isEmployee ? null : templateCtrl.studentData.value,
           employeeData: isEmployee ? templateCtrl.employeeData.value : null,
           isEmployee: isEmployee,
-          fontFamily: flow.selectedFontFamily,
+          fontFamily: templateFontFamily,
           templateIndex: templateIndex,
           repaintBoundaryKey: repaintBoundaryKey,
         );

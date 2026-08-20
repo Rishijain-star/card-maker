@@ -985,57 +985,95 @@ class EmployeeJoinDateField extends StatelessWidget {
 
   final TextEditingController controller;
 
+  Future<void> _selectDate(BuildContext context) async {
+    final now = DateTime.now();
+    DateTime initial = now;
+    if (controller.text.trim().isNotEmpty) {
+      final parts = controller.text.trim().split('-');
+      if (parts.length == 3) {
+        final d = int.tryParse(parts[0]);
+        final m = int.tryParse(parts[1]);
+        final y = int.tryParse(parts[2]);
+        if (d != null && m != null && y != null) {
+          try {
+            initial = DateTime(y, m, d);
+          } catch (_) {}
+        }
+      }
+    }
+
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(1970),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      final dd = picked.day.toString().padLeft(2, '0');
+      final mm = picked.month.toString().padLeft(2, '0');
+      final yyyy = picked.year.toString();
+      controller.text = '$dd-$mm-$yyyy';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF1F5F9),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _selectDate(context),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(Icons.calendar_month_rounded, color: _kFormBlue, size: 28),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'JOIN DATE',
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: _kFormBlue,
-                      letterSpacing: 0.6,
-                    ),
-                  ),
-                  TextField(
-                    controller: controller,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: const [DdMmYyyyDashInputFormatter()],
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: const Color(0xFF0F172A),
-                      fontWeight: FontWeight.w500,
-                    ),
-                    decoration: StudentUnderlineField._fieldDecoration.copyWith(
-                      hintText: 'dd-mm-yyyy',
-                      hintStyle: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: _kHint,
-                      ),
-                      contentPadding: const EdgeInsets.only(top: 2, bottom: 4),
-                    ),
-                  ),
-                ],
-              ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F5F9),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
-          ],
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(Icons.calendar_month_rounded, color: _kFormBlue, size: 28),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'JOIN DATE',
+                        style: GoogleFonts.poppins(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: _kFormBlue,
+                          letterSpacing: 0.6,
+                        ),
+                      ),
+                      TextField(
+                        controller: controller,
+                        readOnly: true,
+                        onTap: () => _selectDate(context),
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: const Color(0xFF0F172A),
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: StudentUnderlineField._fieldDecoration.copyWith(
+                          hintText: 'dd-mm-yyyy',
+                          hintStyle: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: _kHint,
+                          ),
+                          contentPadding: const EdgeInsets.only(top: 2, bottom: 4),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

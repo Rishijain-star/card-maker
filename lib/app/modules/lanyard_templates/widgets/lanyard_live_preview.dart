@@ -30,6 +30,7 @@ class LanyardLivePreview extends GetView<TemplateController> {
         flow.lanyardLogoTextSpacing.value;
         flow.lanyardCustomTextColorHex.value;
         final data = controller.lanyardData.value;
+        final variant = flow.lanyardVariantForIndex(templateIndex);
 
         return RepaintBoundary(
           key: repaintBoundaryKey,
@@ -40,7 +41,7 @@ class LanyardLivePreview extends GetView<TemplateController> {
                   ? MediaQuery.sizeOf(context).height * 0.55
                   : MediaQuery.sizeOf(context).width - 16,
               child: buildLanyardTemplate(
-                variant: templateIndex,
+                variant: variant,
                 data: data,
               ),
             ),

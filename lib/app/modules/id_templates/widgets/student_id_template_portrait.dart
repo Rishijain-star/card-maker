@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import '../../../data/models/student_data.dart';
 import '../assets/student_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
+import '../design_system/id_card_text_styles.dart';
 import '../design_system/id_card_typography.dart';
 import 'student_id_card_side.dart';
+import 'student_id_portrait_widgets.dart';
 
 /// Layout tuned only for this portrait PNG (638×1012) — not shared globally.
 abstract final class _PortraitFrontLayout {
@@ -23,41 +25,22 @@ abstract final class _PortraitFrontLayout {
 
   static const double photoSizeRatio = 0.26;
 
-  /// Front — small circular signature, bottom-right white area.
-  static const double frontSignatureSizeRatio = 0.145;
-  static const double frontSignatureRightRatio = 0.08;
-  static const double frontSignatureBottomRatio = 0.128;
-
-  static const double addressTopRatio = 0.902;
-  static const double addressLeftRatio = 0.26;
-  static const double addressRightRatio = 0.18;
-
-  static const double validityFontSize = 17;
   static const double validityMinFontSize = 13;
 
   /// Institute header — position in green band (student name unchanged).
   static const double instituteTopRatio = 0.048 + 0.02;
-  static const double instituteLeftRatio = 0.15;
 
-  /// Back — institute in bottom-left gray strip; terms in white above it.
-  static const double backFooterStripTopRatio = 0.878;
-  static const double backFooterStripLeftRatio = 0.1;
-  static const double backFooterStripRightRatio = 0.38;
+  /// Back — terms in the white area above the bottom strip.
   static const double backBodyTopRatio = 0.26;
   static const double backBodyBottomRatio = 0.152;
 
-  static const double headerFontSize = 44;
   static const double headerMinFontSize = 20;
 
   static const double nameFontSize = 40;
   static const double nameMinFontSize = 22;
   static const double bodyFontSize = 27;
   static const double bodyMinFontSize = 18;
-  static const double addressFontSize = 20;
-  static const double addressMinFontSize = 15;
 
-  static const double backHeaderFontSize = 28;
-  static const double backBodyFontSize = 27;
   static const double backBodyMinFontSize = 18;
 }
 
@@ -68,17 +51,28 @@ class StudentIdTemplatePortrait extends StatelessWidget {
     required this.data,
     required this.side,
     this.fontFamily = 'Poppins',
+    this.frontBgAsset,
+    this.backBgAsset,
+    this.isCenterAligned = false,
+    this.photoSizeRatio,
+    this.contentTopRatio,
+    this.contentBottomRatio,
+    this.frontInstituteTopOverride,
   });
 
   final StudentData data;
   final StudentIdCardSide side;
   final String fontFamily;
+  final String? frontBgAsset;
+  final String? backBgAsset;
+  final bool isCenterAligned;
+  final double? photoSizeRatio;
+  final double? contentTopRatio;
+  final double? contentBottomRatio;
+  final double? frontInstituteTopOverride;
 
   static const double _w = IdCardPortraitDimensions.width;
   static const double _h = IdCardPortraitDimensions.height;
-
-  TextStyle _ts(TextStyle base) => IdCardTypography.apply(base, fontFamily);
-  TextStyle _tsPrimary(TextStyle base) => IdCardTypography.applyPrimary(base, fontFamily);
 
   @override
   Widget build(BuildContext context) {
@@ -90,48 +84,35 @@ class StudentIdTemplatePortrait extends StatelessWidget {
   }
 
   Widget _buildFront() {
-    final bodyLines = data.frontBodyLines;
-    final photoSize = _w * _PortraitFrontLayout.photoSizeRatio;
+    final photoSize = _w * (photoSizeRatio ?? _PortraitFrontLayout.photoSizeRatio);
+    final topRatio = contentTopRatio ??
+        (_PortraitFrontLayout.safeTopRatio +
+            _PortraitFrontLayout.contentShiftDownRatio);
+    final bottomRatio = contentBottomRatio ?? _PortraitFrontLayout.safeBottomRatio;
 
     return Stack(
       fit: StackFit.expand,
       children: [
         Image.asset(
-          StudentIdTemplateAssets.frontBackground,
+          frontBgAsset ?? StudentIdTemplateAssets.frontBackground,
           fit: BoxFit.fill,
         ),
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
-            top: _h * _PortraitFrontLayout.instituteTopRatio,
+            top: _h * (frontInstituteTopOverride ?? _PortraitFrontLayout.instituteTopRatio),
             left: _w * 0.05,
             right: _w * 0.05,
-            child: Center(
-              child: AutoSizeText(
-                IdCardTypography.formatInstituteName(
-                    data.instituteName.trim().toUpperCase()),
-                maxLines: 2,
-                minFontSize: _PortraitFrontLayout.headerMinFontSize,
-                textAlign: TextAlign.center,
-                style: _ts(
-                  const TextStyle(
-                    color: Colors.white,
-                    fontSize: _PortraitFrontLayout.headerFontSize,
-                    fontWeight: FontWeight.w900,
-                    height: 1.05,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
+            child: GlobalInstituteHeader(
+              name: data.instituteName,
+              fontFamily: fontFamily,
             ),
           ),
         // Photo → name → details inside safe white band (avoids green art)
         Positioned(
-          top: _h *
-              (_PortraitFrontLayout.safeTopRatio +
-                  _PortraitFrontLayout.contentShiftDownRatio),
+          top: _h * topRatio,
           left: _w * _PortraitFrontLayout.safeLeftRatio,
           right: _w * _PortraitFrontLayout.safeRightRatio,
-          bottom: _h * _PortraitFrontLayout.safeBottomRatio,
+          bottom: _h * bottomRatio,
           child: _PortraitEvenContent(
             photoPath: data.photoPath,
             photoSize: photoSize,
@@ -141,36 +122,14 @@ class StudentIdTemplatePortrait extends StatelessWidget {
             lines: data.frontDetailLines,
             fontFamily: fontFamily,
             footerLine: data.frontValidityHorizontalLine,
-            footerStyle: _ts(
-              const TextStyle(
-                color: Color(0xFF1E293B),
-                fontSize: _PortraitFrontLayout.validityFontSize,
-                fontWeight: FontWeight.w900,
-                height: 1.2,
-              ),
-            ),
+            footerStyle: IdCardTextStyles.footer(fontFamily),
             footerMinFontSize: _PortraitFrontLayout.validityMinFontSize,
-            nameStyle: _tsPrimary(
-              const TextStyle(
-                color: Color(0xFF0F172A),
-                fontSize: _PortraitFrontLayout.nameFontSize,
-                fontWeight: FontWeight.w900,
-                height: 1.08,
-                letterSpacing: 0.5,
-              ),
-            ),
-            bodyStyle: _ts(
-              const TextStyle(
-                color: Color(0xFF0F172A),
-                fontSize: _PortraitFrontLayout.bodyFontSize,
-                fontWeight: FontWeight.w900,
-                height: 1.2,
-                letterSpacing: 0.5,
-              ),
-            ),
+            nameStyle: IdCardTextStyles.personName(fontFamily),
+            bodyStyle: IdCardTextStyles.detail(fontFamily),
             nameMinFontSize: _PortraitFrontLayout.nameMinFontSize,
             bodyMinFontSize: _PortraitFrontLayout.bodyMinFontSize,
             compactSpacing: data.useCompactFrontSpacing,
+            isCenterAligned: isCenterAligned,
           ),
         ),
         if (data.hasSignature)
@@ -197,7 +156,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          StudentIdTemplateAssets.backBackground,
+          backBgAsset ?? StudentIdTemplateAssets.backBackground,
           fit: BoxFit.fill,
         ),
         Positioned(
@@ -208,14 +167,7 @@ class StudentIdTemplatePortrait extends StatelessWidget {
           child: _PortraitEvenContent(
             lines: lines,
             fontFamily: fontFamily,
-            bodyStyle: _ts(
-              const TextStyle(
-                color: Color(0xFF1E293B),
-                fontSize: _PortraitFrontLayout.backBodyFontSize,
-                fontWeight: FontWeight.w600,
-                height: 1.28,
-              ),
-            ),
+            bodyStyle: IdCardTextStyles.terms(fontFamily),
             bodyMinFontSize: _PortraitFrontLayout.backBodyMinFontSize,
             maxLinesPerItem: 4,
             compactSpacing: data.useCompactFrontSpacing,
@@ -223,26 +175,12 @@ class StudentIdTemplatePortrait extends StatelessWidget {
         ),
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
-            left: _w * _PortraitFrontLayout.backFooterStripLeftRatio,
-            right: _w * _PortraitFrontLayout.backFooterStripRightRatio,
-            top: _h * _PortraitFrontLayout.backFooterStripTopRatio,
-            bottom: _h * 0.012,
-            child: Center(
-              child: AutoSizeText(
-                IdCardTypography.formatInstituteName(
-                    data.instituteName.trim().toUpperCase()),
-                maxLines: 2,
-                minFontSize: _PortraitFrontLayout.addressMinFontSize,
-                textAlign: TextAlign.center,
-                style: _ts(
-                  const TextStyle(
-                    color: Color(0xFF0F172A),
-                    fontSize: _PortraitFrontLayout.backHeaderFontSize,
-                    fontWeight: FontWeight.w900,
-                    height: 1.2,
-                  ),
-                ),
-              ),
+            left: _w * 0.05,
+            right: _w * 0.05,
+            top: _h * (frontInstituteTopOverride ?? _PortraitFrontLayout.instituteTopRatio),
+            child: GlobalInstituteHeader(
+              name: data.instituteName,
+              fontFamily: fontFamily,
             ),
           ),
       ],
@@ -263,17 +201,17 @@ class _PortraitEvenContent extends StatelessWidget {
     this.fatherName = '',
     this.className = '',
     this.nameStyle,
-    this.fatherStyle,
-    this.courseStyle,
     this.nameMinFontSize = 20,
     this.maxLinesPerItem = 2,
     this.compactSpacing = false,
     this.footerLine,
     this.footerStyle,
     this.footerMinFontSize = 13,
+    this.isCenterAligned = false,
   });
 
   final bool compactSpacing;
+  final bool isCenterAligned;
   final String? footerLine;
   final TextStyle? footerStyle;
   final double footerMinFontSize;
@@ -287,8 +225,6 @@ class _PortraitEvenContent extends StatelessWidget {
   final TextStyle bodyStyle;
   final double bodyMinFontSize;
   final TextStyle? nameStyle;
-  final TextStyle? fatherStyle;
-  final TextStyle? courseStyle;
   final double nameMinFontSize;
   final int maxLinesPerItem;
 
@@ -304,6 +240,8 @@ class _PortraitEvenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final blocks = <Widget>[];
+    final txtAlign = isCenterAligned ? TextAlign.center : TextAlign.left;
+    final crossAlign = isCenterAligned ? CrossAxisAlignment.center : CrossAxisAlignment.start;
 
     if (photoSize > 0) {
       blocks.add(_PortraitPhoto(photoPath: photoPath, size: photoSize));
@@ -316,34 +254,34 @@ class _PortraitEvenContent extends StatelessWidget {
           name,
           maxLines: 2,
           minFontSize: nameMinFontSize,
-          textAlign: TextAlign.left,
+          textAlign: txtAlign,
           style: nameStyle,
         ),
       );
     }
 
     final father = _cap(fatherName);
-    if (father.isNotEmpty && (fatherStyle != null || nameStyle != null)) {
+    if (father.isNotEmpty && nameStyle != null) {
       blocks.add(
         AutoSizeText(
           father,
           maxLines: 1,
           minFontSize: nameMinFontSize,
-          textAlign: TextAlign.left,
-          style: fatherStyle ?? nameStyle,
+          textAlign: txtAlign,
+          style: nameStyle,
         ),
       );
     }
 
     final course = _cap(className);
-    if (course.isNotEmpty && (courseStyle != null || nameStyle != null)) {
+    if (course.isNotEmpty && nameStyle != null) {
       blocks.add(
         AutoSizeText(
           course,
           maxLines: 1,
           minFontSize: nameMinFontSize,
-          textAlign: TextAlign.left,
-          style: courseStyle ?? nameStyle,
+          textAlign: txtAlign,
+          style: nameStyle,
         ),
       );
     }
@@ -358,7 +296,7 @@ class _PortraitEvenContent extends StatelessWidget {
             _cap(v),
             maxLines: maxLinesPerItem,
             minFontSize: bodyMinFontSize,
-            textAlign: TextAlign.left,
+            textAlign: txtAlign,
             style: bodyStyle,
           ),
         );
@@ -372,7 +310,7 @@ class _PortraitEvenContent extends StatelessWidget {
           footer,
           maxLines: 1,
           minFontSize: footerMinFontSize,
-          textAlign: TextAlign.left,
+          textAlign: txtAlign,
           style: footerStyle,
         ),
       );
@@ -385,7 +323,7 @@ class _PortraitEvenContent extends StatelessWidget {
         final gapCount = blocks.length - 1;
         if (gapCount <= 0) {
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: crossAlign,
             children: blocks,
           );
         }
@@ -413,10 +351,17 @@ class _PortraitEvenContent extends StatelessWidget {
           children.add(blocks[i]);
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: children,
+        return FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: constraints.maxWidth,
+            child: Column(
+              crossAxisAlignment: crossAlign,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: children,
+            ),
+          ),
         );
       },
     );
@@ -521,7 +466,7 @@ class _PortraitSignatureEllipse extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      padding: EdgeInsets.all(hasBorder ? borderWidth : 0),
       child: ClipOval(
         child: _buildImage(),
       ),
@@ -530,12 +475,12 @@ class _PortraitSignatureEllipse extends StatelessWidget {
 
   Widget _buildImage() {
     if (bytes != null && bytes!.isNotEmpty) {
-      return Image.memory(bytes!, fit: BoxFit.contain, width: width, height: height);
+      return Image.memory(bytes!, fit: BoxFit.fill, width: width, height: height);
     }
     if (path.trim().isNotEmpty) {
       final file = File(path);
       if (file.existsSync()) {
-        return Image.file(file, fit: BoxFit.contain, width: width, height: height);
+        return Image.file(file, fit: BoxFit.fill, width: width, height: height);
       }
     }
     return const SizedBox.shrink();

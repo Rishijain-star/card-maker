@@ -4,23 +4,26 @@ import 'package:flutter/material.dart';
 import '../../../data/models/employee_data.dart';
 import '../assets/company_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
+import '../design_system/id_card_portrait_typography.dart';
+import '../design_system/id_card_text_styles.dart';
+import '../design_system/id_card_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
 /// Company template 9 — navy wave; all main form fields on front, optional on back.
+///
+/// Artwork only. All text styling comes from [IdCardTextStyles] so that every
+/// template renders the same data identically — only the design differs.
 abstract final class _CompanyV9Layout {
+  /// Decorative only (bullet dots, name divider) — never text.
   static const Color accentNavy = Color(0xFF1E2A4A);
-  static const Color textDark = Color(0xFF2D3748);
-  static const Color textMuted = Color(0xFF64748B);
-  static const Color headerText = Colors.white;
   static const Color dividerColor = Color(0xFFCBD5E1);
 
   static const double headerBrandTop = 0.055;
   static const double headerBrandHeight = 0.10;
-  static const double headerBrandSide = 0.12;
+  static const double headerBrandSide = 0.05;
   static const double logoSize = 36.0;
   static const double logoGap = 8.0;
-  static const double companyNameFontSize = 24;
 
   static const double frontPhotoSizeRatio = 0.34;
   static const double frontPhotoCenterYRatio = 0.505;
@@ -29,19 +32,13 @@ abstract final class _CompanyV9Layout {
   static const double frontContentMinTopRatio = 0.555;
   static const double frontContentSide = 0.12;
   static const double frontContentBottomRatio = 0.08;
-  static const double frontNameFontSize = 34;
-  static const double frontTitleFontSize = 20;
-  static const double frontBodyFontSize = 20;
   static const double frontBodyMinFontSize = 13;
-  static const double frontLineGapMin = 5.0;
-  static const double frontLineGapMax = 10.0;
+  static const double frontLineGapMin = 10.0;
+  static const double frontLineGapMax = 18.0;
 
   static const double backTermsTop = 0.08;
   static const double backTermsSide = 0.14;
   static const double backTermsBottom = 0.48;
-
-  static const double backFooterHeight = 0.42;
-  static const double backFooterSide = 0.10;
 }
 
 class CompanyIdTemplatePortraitV9 extends StatelessWidget {
@@ -50,31 +47,20 @@ class CompanyIdTemplatePortraitV9 extends StatelessWidget {
     required this.data,
     required this.side,
     this.fontFamily = 'Poppins',
+    this.frontBgAsset,
+    this.backBgAsset,
   });
 
   final EmployeeData data;
   final StudentIdCardSide side;
   final String fontFamily;
+  final String? frontBgAsset;
+  final String? backBgAsset;
 
   static const double _w = IdCardPortraitDimensions.width;
   static const double _h = IdCardPortraitDimensions.height;
 
-  TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
-
-  List<String> _frontLines(EmployeeData data) {
-    final lines = <String>[];
-    void add(String value) {
-      final v = value.trim();
-      if (v.isNotEmpty) lines.add(v);
-    }
-
-    add(data.employeeId);
-    add(data.joinDate);
-    add(data.email);
-    add(data.phone);
-    add(data.bloodGroup);
-    return lines;
-  }
+  List<String> _frontLines(EmployeeData data) => data.frontDetailLines;
 
   @override
   Widget build(BuildContext context) {
@@ -86,24 +72,29 @@ class CompanyIdTemplatePortraitV9 extends StatelessWidget {
   }
 
   Widget _buildFront() {
+    final isCustomBg = frontBgAsset != null;
+    final photoCenterYRatio = isCustomBg ? 0.230 : _CompanyV9Layout.frontPhotoCenterYRatio;
+    final contentMinTopRatio = isCustomBg ? 0.370 : _CompanyV9Layout.frontContentMinTopRatio;
+    final headerTopRatio = isCustomBg ? 0.020 : _CompanyV9Layout.headerBrandTop;
+
     final photoSize = _w * _CompanyV9Layout.frontPhotoSizeRatio;
     final photoTop =
-        _h * _CompanyV9Layout.frontPhotoCenterYRatio - photoSize / 2;
+        _h * photoCenterYRatio - photoSize / 2;
     final photoLeft = (_w - photoSize) / 2;
     final contentTop = [
       photoTop + photoSize + _CompanyV9Layout.frontGapBelowPhoto,
-      _h * _CompanyV9Layout.frontContentMinTopRatio,
+      _h * contentMinTopRatio,
     ].reduce((a, b) => a > b ? a : b);
 
     return Stack(
       fit: StackFit.expand,
       children: [
         Image.asset(
-          CompanyIdTemplateAssets.frontBackgroundV9,
+          frontBgAsset ?? CompanyIdTemplateAssets.frontBackgroundV9,
           fit: BoxFit.fill,
         ),
         Positioned(
-          top: _h * _CompanyV9Layout.headerBrandTop,
+          top: _h * headerTopRatio,
           height: _h * _CompanyV9Layout.headerBrandHeight,
           left: _w * _CompanyV9Layout.headerBrandSide,
           right: _w * _CompanyV9Layout.headerBrandSide,
@@ -112,14 +103,8 @@ class CompanyIdTemplatePortraitV9 extends StatelessWidget {
             child: _CompanyV9BrandRow(
               companyName: data.companyName,
               logoAsset: data.logoAsset,
-              nameStyle: _ts(const TextStyle(
-                color: _CompanyV9Layout.headerText,
-                fontSize: _CompanyV9Layout.companyNameFontSize,
-                fontWeight: FontWeight.w800,
-                height: 1.05,
-                letterSpacing: 0.4,
-              )),
-              minNameSize: 14,
+              nameStyle: IdCardTextStyles.instituteHeader(fontFamily),
+              minNameSize: IdCardPortraitTypography.headerMinFontSize,
             ),
           ),
         ),
@@ -156,25 +141,10 @@ class CompanyIdTemplatePortraitV9 extends StatelessWidget {
                       employeeName: data.employeeName,
                       position: data.position,
                       detailLines: _frontLines(data),
-                      nameStyle: _ts(const TextStyle(
-                        color: _CompanyV9Layout.textDark,
-                        fontSize: _CompanyV9Layout.frontNameFontSize,
-                        fontWeight: FontWeight.w800,
-                        height: 1.05,
-                      )),
-                      titleStyle: _ts(const TextStyle(
-                        color: _CompanyV9Layout.textMuted,
-                        fontSize: _CompanyV9Layout.frontTitleFontSize,
-                        fontWeight: FontWeight.w600,
-                        height: 1.15,
-                      )),
-                      bodyStyle: _ts(const TextStyle(
-                        color: _CompanyV9Layout.textDark,
-                        fontSize: _CompanyV9Layout.frontBodyFontSize,
-                        fontWeight: FontWeight.w500,
-                        height: 1.26,
-                      )),
-                      bodyMinFontSize: _CompanyV9Layout.frontBodyMinFontSize,
+                      nameStyle: IdCardTextStyles.personName(fontFamily),
+                      titleStyle: IdCardTextStyles.position(fontFamily),
+                      bodyStyle: IdCardTextStyles.detail(fontFamily),
+                      isStudentData: data.isStudentData,
                     ),
                   ),
                 ),
@@ -206,7 +176,7 @@ class CompanyIdTemplatePortraitV9 extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          CompanyIdTemplateAssets.backBackgroundV9,
+          backBgAsset ?? CompanyIdTemplateAssets.backBackgroundV9,
           fit: BoxFit.fill,
         ),
         if (terms.isNotEmpty)
@@ -217,32 +187,22 @@ class CompanyIdTemplatePortraitV9 extends StatelessWidget {
             bottom: _h * _CompanyV9Layout.backTermsBottom,
             child: _CompanyV9BackTerms(
               lines: terms,
-              textStyle: _ts(const TextStyle(
-                color: _CompanyV9Layout.textDark,
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-                height: 1.36,
-              )),
+              textStyle: IdCardTextStyles.terms(fontFamily),
               minFontSize: 12,
             ),
           ),
         Positioned(
-          left: _w * _CompanyV9Layout.backFooterSide,
-          right: _w * _CompanyV9Layout.backFooterSide,
-          bottom: 0,
-          height: _h * _CompanyV9Layout.backFooterHeight,
+          left: _w * 0.05,
+          right: _w * 0.05,
+          bottom: _h * 0.02,
+          height: _h * 0.08,
           child: Align(
             alignment: Alignment.center,
             child: _CompanyV9BrandRow(
               companyName: data.companyName,
               logoAsset: data.logoAsset,
-              nameStyle: _ts(const TextStyle(
-                color: _CompanyV9Layout.headerText,
-                fontSize: _CompanyV9Layout.companyNameFontSize,
-                fontWeight: FontWeight.w800,
-                height: 1.05,
-              )),
-              minNameSize: 14,
+              nameStyle: IdCardTextStyles.instituteHeader(fontFamily),
+              minNameSize: IdCardPortraitTypography.headerMinFontSize,
             ),
           ),
         ),
@@ -281,12 +241,14 @@ class _CompanyV9BrandRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = companyName.trim();
     final logo = logoAsset.trim();
+    final hasLogo = logo.isNotEmpty && !logo.contains('play');
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (logo.isNotEmpty) ...[
+        if (hasLogo) ...[
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: Image.asset(
@@ -294,11 +256,7 @@ class _CompanyV9BrandRow extends StatelessWidget {
               width: _CompanyV9Layout.logoSize,
               height: _CompanyV9Layout.logoSize,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Icon(
-                Icons.play_arrow_rounded,
-                size: _CompanyV9Layout.logoSize,
-                color: _CompanyV9Layout.headerText,
-              ),
+              errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
             ),
           ),
           SizedBox(width: _CompanyV9Layout.logoGap),
@@ -306,9 +264,9 @@ class _CompanyV9BrandRow extends StatelessWidget {
         if (name.isNotEmpty)
           Flexible(
             child: AutoSizeText(
-              name.toUpperCase(),
-              maxLines: 2,
-              minFontSize: minNameSize,
+              IdCardTypography.formatInstituteName(name.toUpperCase()),
+              maxLines: 3,
+              minFontSize: IdCardPortraitTypography.headerMinFontSize,
               textAlign: TextAlign.center,
               style: nameStyle,
             ),
@@ -326,7 +284,8 @@ class _CompanyV9FrontBody extends StatelessWidget {
     required this.nameStyle,
     required this.titleStyle,
     required this.bodyStyle,
-    required this.bodyMinFontSize,
+    this.bodyMinFontSize = 18.0,
+    this.isStudentData = false,
   });
 
   final String employeeName;
@@ -336,6 +295,7 @@ class _CompanyV9FrontBody extends StatelessWidget {
   final TextStyle titleStyle;
   final TextStyle bodyStyle;
   final double bodyMinFontSize;
+  final bool isStudentData;
 
   @override
   Widget build(BuildContext context) {
@@ -393,17 +353,24 @@ class _CompanyV9FrontBody extends StatelessWidget {
       );
     }
 
-    for (final line in detailLines) {
+    for (var i = 0; i < detailLines.length; i++) {
+      final line = detailLines[i];
       final isEmail = line.contains('@');
+      final isStudentProminentLine = isStudentData && i < 2;
+      final lineStyle = isStudentProminentLine ? nameStyle : bodyStyle;
+      final lineMinFont =
+          isStudentProminentLine ? (bodyMinFontSize + 4) : bodyMinFontSize;
+
       add(
         AutoSizeText(
           cap(line),
           maxLines: isEmail ? 2 : 1,
-          minFontSize: bodyMinFontSize,
+          minFontSize: lineMinFont,
           textAlign: TextAlign.center,
-          style: bodyStyle,
+          style: lineStyle,
         ),
-        (bodyStyle.fontSize ?? 20) * (isEmail ? 1.4 : 1.2),
+        (lineStyle.fontSize ?? 20) *
+            (isEmail ? 1.4 : (isStudentProminentLine ? 1.08 : 1.2)),
       );
     }
 

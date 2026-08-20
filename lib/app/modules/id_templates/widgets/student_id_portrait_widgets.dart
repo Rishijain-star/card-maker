@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
+import '../design_system/id_card_portrait_typography.dart';
+import '../design_system/id_card_text_styles.dart';
 import '../design_system/id_card_typography.dart';
 
 /// Shared portrait card text/photo widgets (template 1 & 2).
@@ -492,3 +494,46 @@ TextStyle studentPortraitPrimaryTextStyle(TextStyle base, String fontFamily) =>
 
 String formatInstituteName(String name) =>
     IdCardTypography.formatInstituteName(name);
+
+/// Global, unified Institute Name header widget across ALL templates.
+/// Enforces:
+/// 1. Fixed font size (never shrinks automatically)
+/// 2. Fixed font family & font weight
+/// 3. Whole-word multi-line wrapping (up to 3 lines)
+/// 4. Center alignment
+class GlobalInstituteHeader extends StatelessWidget {
+  const GlobalInstituteHeader({
+    super.key,
+    required this.name,
+    required this.fontFamily,
+    this.color,
+    this.onBanner = true,
+  });
+
+  final String name;
+  final String fontFamily;
+  final Color? color;
+  final bool onBanner;
+
+  @override
+  Widget build(BuildContext context) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return const SizedBox.shrink();
+
+    final formatted =
+        IdCardTypography.formatInstituteName(trimmed.toUpperCase());
+    final style = IdCardTextStyles.instituteHeader(
+      fontFamily,
+      onBanner: onBanner,
+      color: color,
+    );
+
+    return AutoSizeText(
+      formatted,
+      maxLines: 3,
+      minFontSize: IdCardPortraitTypography.headerMinFontSize,
+      textAlign: TextAlign.center,
+      style: style,
+    );
+  }
+}

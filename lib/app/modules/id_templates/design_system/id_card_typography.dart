@@ -7,13 +7,13 @@ import '../../create_flow/controllers/create_flow_controller.dart';
 /// Applies the selected card font to any [TextStyle] (all template text uses this).
 abstract final class IdCardTypography {
   /// Global default font family across all ID card templates.
-  static const String defaultFontFamily = 'Times New Roman';
+  static const String defaultFontFamily = 'Merienda';
 
   /// Stylish fonts curated for ID cards, lanyards & badges.
   static const List<String> fontOptions = <String>[
+    'Merienda',
     'Times New Roman',
     'Lobster',
-    'Merienda',
     'Poppins',
     'Montserrat',
     'Rubik',
@@ -50,15 +50,31 @@ abstract final class IdCardTypography {
       final newSize = (style.fontSize! * activeScale).clamp(6.0, 120.0);
       style = style.copyWith(fontSize: newSize);
     }
+
+    // NOTE: colour is deliberately NOT handled here. The user's Header/Text
+    // colour pickers are applied per-role in IdCardTextStyles, which knows
+    // whether a style is a header or body text. Doing it here would also
+    // recolour things that merely share a colour value — the font-picker
+    // preview chips and the lanyard templates both call this method.
     final fontToUse = (fontFamily.isEmpty || fontFamily == 'Poppins')
         ? defaultFontFamily
         : fontFamily;
 
+    TextStyle result;
     final applier = _appliers[fontToUse];
     if (applier != null) {
-      return applier(textStyle: style);
+      result = applier(textStyle: style);
+    } else {
+      result = GoogleFonts.tinos(textStyle: style);
     }
-    return GoogleFonts.tinos(textStyle: style);
+
+    if (style.fontWeight != null && result.fontWeight != style.fontWeight) {
+      result = result.copyWith(fontWeight: style.fontWeight);
+    }
+    if (style.shadows != null && result.shadows != style.shadows) {
+      result = result.copyWith(shadows: style.shadows);
+    }
+    return result;
   }
 
   /// Formats institute name for consistent multi-line wrapping across all ID card templates.
@@ -66,28 +82,7 @@ abstract final class IdCardTypography {
   /// 4 words: 3 top + 1 bottom (e.g. "MIDDLE SCHOOL SUDIYARI\nPRATAPGANJ")
   /// 5 words: 3 top + 2 bottom (e.g. "SRI CHAITANYA TECHNO\nSCHOOL INDORE")
   static String formatInstituteName(String raw) {
-    final s = raw.trim();
-    if (s.isEmpty) return '';
-    if (s.contains('\n')) return s;
-
-    final words = s.split(RegExp(r'\s+'));
-    if (words.length <= 2) return s;
-
-    if (words.length == 4) {
-      return '${words.sublist(0, 3).join(' ')}\n${words.last}';
-    } else if (words.length == 5) {
-      return '${words.sublist(0, 3).join(' ')}\n${words.sublist(3).join(' ')}';
-    } else if (words.length == 3) {
-      if (s.length > 22) {
-        return '${words.sublist(0, 2).join(' ')}\n${words.last}';
-      }
-      return s;
-    } else if (words.length > 5) {
-      final splitIndex = (words.length * 0.6).round().clamp(3, words.length - 1);
-      return '${words.sublist(0, splitIndex).join(' ')}\n${words.sublist(splitIndex).join(' ')}';
-    }
-
-    return s;
+    return raw.replaceAll('\n', ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
   }
 
   /// Dynamic font applier for primary fields (uses defaultFontFamily by default).

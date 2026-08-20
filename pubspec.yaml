@@ -98,6 +98,16 @@ flutter:
 
   assets:
     - assets/
+    - assets/template number 32.png
+    - assets/template_32_front.png
+    - assets/template number 40.png
+    - assets/template_40_front.png
+    - assets/new perfact for studen .png
+    - assets/student_9_front.png
+    - assets/new perfact for student 2.png
+    - assets/student_comp_7_front.png
+    - assets/new pwefacr for student 3.png
+    - assets/student_comp_5_front.png
     - assets/secound etmplat.png
     - assets/template 13.png
     - assets/lanyard/
@@ -140,6 +150,7 @@ flutter:
     - assets/7th frotn comapony.png
     - assets/7th back company.png
     - assets/8th front company.png
+    - assets/complamy template 8.png
     - assets/8th backl company.png
     - assets/9th fronted company.png
     - assets/9th backed company.png

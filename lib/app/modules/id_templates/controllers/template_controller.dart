@@ -10,7 +10,8 @@ import '../design_system/id_card_dimensions.dart';
 import '../design_system/id_card_theme.dart';
 import '../widgets/student_id_card_view.dart';
 
-enum TemplateEditorPanel { none, fonts, colors, logos, position }
+/// `colors` = body text colour, `headerColors` = the institute/company title.
+enum TemplateEditorPanel { none, fonts, colors, headerColors, logos, position }
 
 /// Coordinates template selection, live card data, and export capture keys.
 class TemplateController extends GetxController {
@@ -82,10 +83,18 @@ class TemplateController extends GetxController {
   }
 
   void selectCompanyLogo(int pickerIndex) {
-    _flow.selectedCompanyLogo.value =
-        pickerIndex.clamp(0, _flow.companyLogoOptions.length);
-    refreshCardData();
-    _flow.update(<Object>['template_editor']);
+    _flow.updateCurrentTemplateSettings(
+        companyLogoIndex: pickerIndex.clamp(0, _flow.companyLogoOptions.length));
+  }
+
+  void selectFont(int index) {
+    _flow.updateCurrentTemplateSettings(
+        fontIndex: index.clamp(0, _flow.fonts.length - 1));
+  }
+
+  void selectColor(int index) {
+    _flow.updateCurrentTemplateSettings(
+        colorIndex: index.clamp(0, _flow.palette.length - 1));
   }
 
   void refreshCardData() {
@@ -121,17 +130,6 @@ class TemplateController extends GetxController {
 
   void togglePanel(TemplateEditorPanel panel) {
     activePanel.value = activePanel.value == panel ? TemplateEditorPanel.none : panel;
-  }
-
-  void selectFont(int index) {
-    _flow.selectedFont.value = index.clamp(0, _flow.fonts.length - 1);
-    refreshCardData();
-    _flow.update(<Object>['template_editor', 'template_screen']);
-  }
-
-  void selectColor(int index) {
-    _flow.selectedColor.value = index.clamp(0, _flow.palette.length - 1);
-    _flow.update(<Object>['template_editor']);
   }
 
   String get currentFontFamily => _flow.selectedFontFamily;

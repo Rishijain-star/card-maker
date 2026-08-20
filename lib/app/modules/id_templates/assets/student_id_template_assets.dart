@@ -69,4 +69,50 @@ abstract final class StudentIdTemplateAssets {
 
   /// Template 16 — elephant landscape, single-sided (front only).
   static const String frontBackgroundV16 = 'assets/template 16.png';
+
+  /// Templates 26 to 40 — 15 new template image pairs.
+  static const String frontBackgroundV26 = 'assets/26 th front.png';
+  static const String backBackgroundV26 = 'assets/26th back .png';
+
+  static const String frontBackgroundV27 = 'assets/27 front.png';
+  static const String backBackgroundV27 = 'assets/27 back .png';
+
+  static const String frontBackgroundV28 = 'assets/templatenumber 28.png';
+  static const String backBackgroundV28 = 'assets/28th back .png';
+
+  static const String frontBackgroundV29 = 'assets/templatenumber29.png';
+  static const String backBackgroundV29 = 'assets/templatenumber29.png';
+
+  static const String frontBackgroundV30 = 'assets/30th front.png';
+  static const String backBackgroundV30 = 'assets/30th back .png';
+
+  static const String frontBackgroundV31 = 'assets/31th froint.png';
+  static const String backBackgroundV31 = 'assets/31th back .png';
+
+  static const String frontBackgroundV32 = 'assets/template_32_front.png';
+  static const String backBackgroundV32 = 'assets/32th back .png';
+
+  static const String frontBackgroundV33 = 'assets/33front.png';
+  static const String backBackgroundV33 = 'assets/33back.png';
+
+  static const String frontBackgroundV34 = 'assets/34front.png';
+  static const String backBackgroundV34 = 'assets/34back.png';
+
+  static const String frontBackgroundV35 = 'assets/35front.png';
+  static const String backBackgroundV35 = 'assets/35back.png';
+
+  static const String frontBackgroundV36 = 'assets/template number 36.png';
+  static const String backBackgroundV36 = 'assets/36 back.png';
+
+  static const String frontBackgroundV37 = 'assets/temaopternumber 37.png';
+  static const String backBackgroundV37 = 'assets/37 back.png';
+
+  static const String frontBackgroundV38 = 'assets/tempalte number 389 forne.png';
+  static const String backBackgroundV38 = 'assets/templatenumber 38 back.png';
+
+  static const String frontBackgroundV39 = 'assets/tempalt number 39.png';
+  static const String backBackgroundV39 = 'assets/39 back.png';
+
+  static const String frontBackgroundV40 = 'assets/template_40_front.png';
+  static const String backBackgroundV40 = frontBackgroundV40;
 }

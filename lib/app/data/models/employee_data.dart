@@ -13,6 +13,7 @@ class EmployeeData {
     this.employeeId = '',
     this.joinDate = '',
     this.expireDate = '',
+    this.address = '',
     this.phone = '',
     this.email = '',
     this.bloodGroup = '',
@@ -26,6 +27,7 @@ class EmployeeData {
     this.note2 = '',
     this.note3 = '',
     this.customFrontDetailLines,
+    this.isStudentData = false,
   });
 
   final String companyName;
@@ -35,6 +37,7 @@ class EmployeeData {
   final String employeeId;
   final String joinDate;
   final String expireDate;
+  final String address;
   final String phone;
   final String email;
   final String bloodGroup;
@@ -48,6 +51,7 @@ class EmployeeData {
   final String note2;
   final String note3;
   final List<String>? customFrontDetailLines;
+  final bool isStudentData;
 
   static const EmployeeData empty = EmployeeData();
 
@@ -89,8 +93,9 @@ class EmployeeData {
 
     add(employeeId);
     add(joinDate);
-    add(email);
+    add(address);
     add(phone);
+    add(email);
     add(bloodGroup);
     return lines;
   }
@@ -108,6 +113,7 @@ class EmployeeData {
       employeeId: flow.idNumberCtrl.text,
       joinDate: join,
       expireDate: flow.validToCtrl.text,
+      address: flow.addressCtrl.text,
       phone: flow.phoneCtrl.text,
       email: flow.emailCtrl.text,
       bloodGroup: flow.bloodGroupCtrl.text,

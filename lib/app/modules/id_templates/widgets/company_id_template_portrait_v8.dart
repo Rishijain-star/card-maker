@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -8,47 +7,41 @@ import '../../../data/models/employee_data.dart';
 import '../assets/company_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
 import '../design_system/id_card_portrait_typography.dart';
+import '../design_system/id_card_text_styles.dart';
+import '../design_system/id_card_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
 /// Company template 8 — green swoosh theme (ref: 8th front/back company PNGs).
+///
+/// Artwork only. All text styling comes from [IdCardTextStyles] so that every
+/// template renders the same data identically — only the design differs.
 abstract final class _CompanyV8Layout {
+  /// Decorative only (icons, bullet dots, photo frame) — never text.
   static const Color accentGreen = Color(0xFF2E8B3C);
-  static const Color lightGreen = Color(0xFF5FAF4A);
   static const Color textOnGradient = Colors.white;
   static const Color frameOuter = Color(0xFFA8B0BA);
   static const Color frameInner = Color(0xFFD1D5DB);
 
   static const double frontPhotoSizeRatio = 0.33;
   static const double frontPhotoCenterYRatio = 0.245;
-  static const double frontGapBelowPhoto = 16.0;
-  static const double frontContentMinTopRatio = 0.375;
+  static const double frontGapBelowPhoto = 8.0;
+  static const double frontContentMinTopRatio = 0.34;
   static const double frontContentSide = 0.14;
-  static const double frontNameFontSize = 34;
-  static const double frontTitleFontSize = 20;
   static const double frontContactTop = 0.57;
   static const double frontContactSide = 0.22;
   static const double frontContactBottom = 0.14;
-  static const double frontContactFontSize = 18;
-  static const double frontContactMinFontSize = 13;
   static const double frontContactIconSize = 20.0;
   static const double frontContactGap = 10.0;
 
   static const double backBrandTop = 0.075;
   static const double backBrandHeight = 0.12;
-  static const double backBrandSide = 0.12;
   static const double logoSize = 38.0;
   static const double logoGap = 8.0;
-  static const double companyNameFontSize = 26;
 
   static const double backTermsTop = 0.22;
   static const double backTermsSide = 0.14;
   static const double backTermsBottom = 0.28;
-
-  static const double backSignatureRight = 0.12;
-  static const double backSignatureBottom = 0.10;
-  static const double backSignatureWidth = 0.42;
-  static const double backSignatureHeight = 0.12;
 }
 
 class CompanyIdTemplatePortraitV8 extends StatelessWidget {
@@ -57,18 +50,18 @@ class CompanyIdTemplatePortraitV8 extends StatelessWidget {
     required this.data,
     required this.side,
     this.fontFamily = 'Poppins',
+    this.frontBgAsset,
+    this.backBgAsset,
   });
 
   final EmployeeData data;
   final StudentIdCardSide side;
   final String fontFamily;
+  final String? frontBgAsset;
+  final String? backBgAsset;
 
   static const double _w = IdCardPortraitDimensions.width;
   static const double _h = IdCardPortraitDimensions.height;
-
-  TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
-  TextStyle _tsPrimary(TextStyle base) =>
-      studentPortraitPrimaryTextStyle(base, fontFamily);
 
   @override
   Widget build(BuildContext context) {
@@ -93,28 +86,18 @@ class CompanyIdTemplatePortraitV8 extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          CompanyIdTemplateAssets.frontBackgroundV8,
+          frontBgAsset ?? CompanyIdTemplateAssets.frontBackgroundV8,
           fit: BoxFit.fill,
         ),
         if (data.companyName.trim().isNotEmpty)
           Positioned(
-            top: _h * 0.035,
-            height: _h * 0.075,
-            left: _w * 0.08,
-            right: _w * 0.08,
-            child: Center(
-              child: AutoSizeText(
-                data.companyName,
-                maxLines: 2,
-                minFontSize: 12,
-                textAlign: TextAlign.center,
-                style: _tsPrimary(const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  height: 1.1,
-                )),
-              ),
+            top: _h * 0.038,
+            left: _w * 0.05,
+            right: _w * 0.05,
+            child: GlobalInstituteHeader(
+              name: data.companyName,
+              fontFamily: fontFamily,
+              color: Colors.white,
             ),
           ),
         Positioned(
@@ -131,39 +114,12 @@ class CompanyIdTemplatePortraitV8 extends StatelessWidget {
           top: greetingTop,
           left: _w * _CompanyV8Layout.frontContentSide,
           right: _w * _CompanyV8Layout.frontContentSide,
-          height: _h * 0.14,
-          child: _CompanyV8GreetingBlock(
-            employeeName: data.employeeName,
-            position: data.position,
-            nameStyle: _tsPrimary(const TextStyle(
-              color: _CompanyV8Layout.accentGreen,
-              fontSize: IdCardPortraitTypography.nameFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.05,
-            )),
-            titleStyle: _tsPrimary(const TextStyle(
-              color: _CompanyV8Layout.lightGreen,
-              fontSize: IdCardPortraitTypography.nameFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.05,
-            )),
-            minFontSize: IdCardPortraitTypography.nameMinFontSize,
-          ),
-        ),
-        Positioned(
-          top: _h * _CompanyV8Layout.frontContactTop,
-          left: _w * _CompanyV8Layout.frontContactSide,
-          right: _w * _CompanyV8Layout.frontContactSide,
-          bottom: _h * _CompanyV8Layout.frontContactBottom,
-          child: _CompanyV8ContactRows(
+          bottom: _h * 0.10,
+          child: _CompanyV8FrontBody(
             data: data,
-            valueStyle: _tsPrimary(const TextStyle(
-              color: _CompanyV8Layout.accentGreen,
-              fontSize: IdCardPortraitTypography.bodyFontSize,
-              fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
-              height: 1.2,
-            )),
+            nameStyle: IdCardTextStyles.personName(fontFamily),
+            titleStyle: IdCardTextStyles.position(fontFamily),
+            bodyStyle: IdCardTextStyles.detail(fontFamily),
             minFontSize: IdCardPortraitTypography.bodyMinFontSize,
           ),
         ),
@@ -191,45 +147,32 @@ class CompanyIdTemplatePortraitV8 extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          CompanyIdTemplateAssets.backBackgroundV8,
+          backBgAsset ?? CompanyIdTemplateAssets.backBackgroundV8,
           fit: BoxFit.fill,
         ),
-        Positioned(
-          top: _h * _CompanyV8Layout.backBrandTop,
-          height: _h * _CompanyV8Layout.backBrandHeight,
-          left: _w * _CompanyV8Layout.backBrandSide,
-          right: _w * _CompanyV8Layout.backBrandSide,
-          child: _CompanyV8BrandColumn(
-            companyName: data.companyName,
-            logoAsset: data.logoAsset,
-            nameStyle: _ts(const TextStyle(
-              color: _CompanyV8Layout.textOnGradient,
-              fontSize: _CompanyV8Layout.companyNameFontSize,
-              fontWeight: FontWeight.w800,
-              height: 1.05,
-              letterSpacing: 0.5,
-            )),
-            minNameSize: 14,
+        if (data.companyName.trim().isNotEmpty)
+          Positioned(
+            top: _h * 0.038,
+            left: _w * 0.05,
+            right: _w * 0.05,
+            child: GlobalInstituteHeader(
+              name: data.companyName,
+              fontFamily: fontFamily,
+              color: Colors.white,
+            ),
           ),
-        ),
         if (terms.isNotEmpty)
           Positioned(
-            top: _h * _CompanyV8Layout.backTermsTop,
+            top: _h * 0.16,
             left: _w * _CompanyV8Layout.backTermsSide,
             right: _w * _CompanyV8Layout.backTermsSide,
-            bottom: _h * _CompanyV8Layout.backTermsBottom,
+            bottom: _h * 0.15,
             child: _CompanyV8DotBullets(
               lines: terms,
-              textStyle: _ts(const TextStyle(
-                color: _CompanyV8Layout.textOnGradient,
-                fontSize: 17,
-                fontWeight: FontWeight.w400,
-                height: 1.38,
-              )),
+              textStyle: IdCardTextStyles.terms(fontFamily, onBanner: true),
               minFontSize: 12,
             ),
           ),
-
       ],
     );
   }
@@ -292,19 +235,19 @@ class _CompanyV8FramedPhoto extends StatelessWidget {
   }
 }
 
-class _CompanyV8GreetingBlock extends StatelessWidget {
-  const _CompanyV8GreetingBlock({
-    required this.employeeName,
-    required this.position,
+class _CompanyV8FrontBody extends StatelessWidget {
+  const _CompanyV8FrontBody({
+    required this.data,
     required this.nameStyle,
     required this.titleStyle,
+    required this.bodyStyle,
     required this.minFontSize,
   });
 
-  final String employeeName;
-  final String position;
+  final EmployeeData data;
   final TextStyle nameStyle;
   final TextStyle titleStyle;
+  final TextStyle bodyStyle;
   final double minFontSize;
 
   @override
@@ -318,90 +261,86 @@ class _CompanyV8GreetingBlock extends StatelessWidget {
           .join(' ');
     }
 
-    final name = cap(employeeName);
-    final title = cap(position);
-    if (name.isEmpty && title.isEmpty) return const SizedBox.shrink();
+    final blocks = <Widget>[];
+    final estimates = <double>[];
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (name.isNotEmpty)
-          AutoSizeText(
-            name,
-            maxLines: 2,
-            minFontSize: minFontSize + 2,
-            textAlign: TextAlign.center,
-            style: nameStyle,
-          ),
-        if (title.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          AutoSizeText(
-            title,
-            maxLines: 1,
-            minFontSize: minFontSize,
-            textAlign: TextAlign.center,
-            style: titleStyle,
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _CompanyV8ContactRows extends StatelessWidget {
-  const _CompanyV8ContactRows({
-    required this.data,
-    required this.valueStyle,
-    required this.minFontSize,
-  });
-
-  final EmployeeData data;
-  final TextStyle valueStyle;
-  final double minFontSize;
-
-  @override
-  Widget build(BuildContext context) {
-    final rows = <({IconData icon, String value})>[];
-    void add(IconData icon, String value) {
-      final v = value.trim();
-      if (v.isNotEmpty) rows.add((icon: icon, value: v));
+    void add(Widget w, double est) {
+      blocks.add(w);
+      estimates.add(est);
     }
 
-    add(Icons.badge_outlined, data.employeeId);
-    add(Icons.event_outlined, data.joinDate);
-    add(Icons.email_outlined, data.email);
-    add(Icons.phone_outlined, data.phone);
-    add(Icons.bloodtype_outlined, data.bloodGroup);
+    final name = cap(data.employeeName);
+    if (name.isNotEmpty) {
+      add(
+        AutoSizeText(
+          name,
+          maxLines: 2,
+          minFontSize: minFontSize + 4,
+          textAlign: TextAlign.center,
+          style: nameStyle,
+        ),
+        (nameStyle.fontSize ?? 42) * 1.08,
+      );
+    }
 
-    if (rows.isEmpty) return const SizedBox.shrink();
+    final title = cap(data.position);
+    if (title.isNotEmpty) {
+      add(
+        AutoSizeText(
+          title,
+          maxLines: 1,
+          minFontSize: minFontSize,
+          textAlign: TextAlign.center,
+          style: titleStyle,
+        ),
+        (titleStyle.fontSize ?? 42) * 1.08,
+      );
+    }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        for (var i = 0; i < rows.length; i++) ...[
-          if (i > 0) const SizedBox(height: _CompanyV8Layout.frontContactGap),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                rows[i].icon,
-                size: _CompanyV8Layout.frontContactIconSize,
-                color: _CompanyV8Layout.accentGreen,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: AutoSizeText(
-                  rows[i].value,
-                  maxLines: 2,
-                  minFontSize: minFontSize,
-                  style: valueStyle,
-                ),
-              ),
+    final detailLines = data.frontDetailLines;
+    for (var i = 0; i < detailLines.length; i++) {
+      final line = detailLines[i];
+      final isEmail = line.contains('@');
+      final isStudentProminentLine = data.isStudentData && i < 2;
+      final lineStyle = isStudentProminentLine ? nameStyle : bodyStyle;
+      final lineMinFont =
+          isStudentProminentLine ? (minFontSize + 4) : minFontSize;
+
+      add(
+        AutoSizeText(
+          cap(line),
+          maxLines: isEmail ? 2 : 1,
+          minFontSize: lineMinFont,
+          textAlign: TextAlign.center,
+          style: lineStyle,
+        ),
+        (lineStyle.fontSize ?? 32) *
+            (isEmail ? 1.45 : (isStudentProminentLine ? 1.08 : 1.22)),
+      );
+    }
+
+    if (blocks.isEmpty) return const SizedBox.shrink();
+
+    final gapCount = blocks.length - 1;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final totalEstH = estimates.fold<double>(0, (a, b) => a + b);
+        final availH = constraints.maxHeight;
+        double gap = 6.0;
+        if (gapCount > 0 && availH > totalEstH) {
+          gap = ((availH - totalEstH) / gapCount).clamp(4.0, 14.0);
+        }
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (var i = 0; i < blocks.length; i++) ...[
+              if (i > 0) SizedBox(height: gap),
+              blocks[i],
             ],
-          ),
-        ],
-      ],
+          ],
+        );
+      },
     );
   }
 }
@@ -423,11 +362,12 @@ class _CompanyV8BrandColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = companyName.trim();
     final logo = logoAsset.trim();
+    final hasLogo = logo.isNotEmpty && !logo.contains('eco');
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (logo.isNotEmpty)
+        if (hasLogo)
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image.asset(
@@ -435,23 +375,13 @@ class _CompanyV8BrandColumn extends StatelessWidget {
               width: _CompanyV8Layout.logoSize,
               height: _CompanyV8Layout.logoSize,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const Icon(
-                Icons.eco_outlined,
-                size: _CompanyV8Layout.logoSize,
-                color: _CompanyV8Layout.textOnGradient,
-              ),
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
             ),
-          )
-        else
-          const Icon(
-            Icons.eco_outlined,
-            size: _CompanyV8Layout.logoSize,
-            color: _CompanyV8Layout.textOnGradient,
           ),
         if (name.isNotEmpty) ...[
-          SizedBox(height: logo.isNotEmpty ? _CompanyV8Layout.logoGap : 0),
+          SizedBox(height: hasLogo ? _CompanyV8Layout.logoGap : 0),
           AutoSizeText(
-            name.toUpperCase(),
+            name.replaceAll('\n', ' ').trim().toUpperCase(),
             maxLines: 2,
             minFontSize: minNameSize,
             textAlign: TextAlign.center,
@@ -498,34 +428,6 @@ class _CompanyV8DotBullets extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-}
-
-class _CompanyV8SignaturePreview extends StatelessWidget {
-  const _CompanyV8SignaturePreview({
-    required this.path,
-    this.bytes,
-    this.hasBorder = false,
-    this.borderColor = const Color(0xFF0F172A),
-    this.borderWidth = 1.0,
-  });
-
-  final String path;
-  final Uint8List? bytes;
-  final bool hasBorder;
-  final Color borderColor;
-  final double borderWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    return StudentPortraitSignatureCircle(
-      size: 80,
-      path: path,
-      bytes: bytes,
-      hasBorder: hasBorder,
-      borderColor: borderColor,
-      borderWidth: borderWidth,
     );
   }
 }

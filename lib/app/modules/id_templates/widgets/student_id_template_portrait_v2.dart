@@ -5,6 +5,7 @@ import '../../../data/models/student_data.dart';
 import '../assets/student_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
 import '../design_system/id_card_portrait_typography.dart';
+import '../design_system/id_card_text_styles.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
@@ -18,17 +19,10 @@ import 'student_id_portrait_widgets.dart';
 /// Circle bottom:           y=599 image → 395px flutter (ratio 0.390)
 abstract final class _PortraitV2Layout {
   // ── Typography (same as Template 2 / student_id_template_portrait.dart) ─────
-  static const double headerFontSize = IdCardPortraitTypography.headerFontSize;
   static const double headerMinFontSize = IdCardPortraitTypography.headerMinFontSize;
-  static const double nameFontSize = IdCardPortraitTypography.nameFontSize;
   static const double nameMinFontSize = IdCardPortraitTypography.nameMinFontSize;
-  static const double bodyFontSize = IdCardPortraitTypography.bodyFontSize;
   static const double bodyMinFontSize = IdCardPortraitTypography.bodyMinFontSize;
-  static const double validityFontSize = 17;
   static const double validityMinFontSize = 13;
-  static const double addressFontSize = 20;
-  static const double addressMinFontSize = 15;
-  static const double backHeaderFontSize = 28;
   static const double backBodyFontSize = 27;
   static const double backMinFontSize = 18;
 
@@ -67,17 +61,6 @@ abstract final class _PortraitV2Layout {
   static const double frontGapRelaxedMax    = 34.0;
   static const double frontGapRelaxedSpread = 1.05;
 
-  // ── Front — signature ───────────────────────────────────────────────────────
-  static const double frontSignatureSizeRatio   = 0.12;
-  static const double frontSignatureRightRatio  = 0.04;
-  static const double frontSignatureBottomRatio = 0.120;
-
-  // ── Front — address (bottom) ────────────────────────────────────────────────
-  static const double frontAddressBottomRatio = 0.018;
-  static const double frontAddressLeftRatio   = 0.320; // slightly right of body block
-  static const double frontAddressRightRatio  = 0.04;
-  static const double frontAddressHeightRatio = 0.095;
-
   // ── Back ─────────────────────────────────────────────────────────────────────
   static const double backBodyTopRatio    = 0.10;
   static const double backBodyLeftRatio   = 0.08;
@@ -97,25 +80,20 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
     required this.data,
     required this.side,
     this.fontFamily = 'Poppins',
+    this.frontBgAsset,
+    this.backBgAsset,
+    this.frontInstituteTopOverride,
   });
 
   final StudentData data;
   final StudentIdCardSide side;
   final String fontFamily;
+  final String? frontBgAsset;
+  final String? backBgAsset;
+  final double? frontInstituteTopOverride;
 
   static const double _w = IdCardPortraitDimensions.width;
   static const double _h = IdCardPortraitDimensions.height;
-
-  TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
-  TextStyle _tsPrimary(TextStyle base) => studentPortraitPrimaryTextStyle(base, fontFamily);
-
-  static int _instituteMaxLines(String name) {
-    if (name.contains('\n')) {
-      final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
-      return lines.clamp(2, 4);
-    }
-    return 2;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,8 +105,6 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
   }
 
   Widget _buildFront() {
-    final bodyLines = data.frontBodyLines;
-
     // Photo: size includes the white border so it covers the entire PNG circle.
     final photoSize = _w * _PortraitV2Layout.frontPhotoSizeRatio; // ~296px
     final photoTop  = _h * _PortraitV2Layout.frontPhotoTopRatio;  // shifted down
@@ -139,32 +115,19 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
       children: [
         // Background
         Image.asset(
-          StudentIdTemplateAssets.frontBackgroundV2,
+          frontBgAsset ?? StudentIdTemplateAssets.frontBackgroundV2,
           fit: BoxFit.fill,
         ),
 
         // Institute name — green top band, centered; wrap only if very long
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
-            top:    _h * _PortraitV2Layout.frontInstituteTop,
-            height: _h * _PortraitV2Layout.frontInstituteHeight,
-            left:   _w * _PortraitV2Layout.frontInstituteLeftRatio,
-            right:  _w * _PortraitV2Layout.frontInstituteRightRatio,
-            child: Center(
-              child: AutoSizeText(
-                formatInstituteName(
-                    data.instituteName.trim().toUpperCase()),
-                maxLines: _instituteMaxLines(data.instituteName),
-                minFontSize: _PortraitV2Layout.headerMinFontSize,
-                textAlign: TextAlign.center,
-                style: _ts(const TextStyle(
-                  color: Colors.white,
-                  fontSize: _PortraitV2Layout.headerFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: 1.05,
-                  letterSpacing: 0.3,
-                )),
-              ),
+            top:    _h * (frontInstituteTopOverride ?? _PortraitV2Layout.frontInstituteTop),
+            left:   _w * 0.05,
+            right:  _w * 0.05,
+            child: GlobalInstituteHeader(
+              name: data.instituteName,
+              fontFamily: fontFamily,
             ),
           ),
 
@@ -198,12 +161,7 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
                 maxLines: 1,
                 minFontSize: _PortraitV2Layout.nameMinFontSize,
                 textAlign: TextAlign.left,
-                style: _tsPrimary(const TextStyle(
-                  color: Color(0xFF0F172A),
-                  fontSize: _PortraitV2Layout.nameFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: 1.1,
-                )),
+                style: IdCardTextStyles.personName(fontFamily),
               ),
             ),
           ),
@@ -217,39 +175,14 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
           child: _LabeledBodyList(
             fatherName: data.fatherName,
             className: data.className,
-            fatherStyle: _tsPrimary(const TextStyle(
-              color: Color(0xFF0F172A),
-              fontSize: _PortraitV2Layout.nameFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.1,
-              letterSpacing: 0.5,
-            )),
-            courseStyle: _tsPrimary(const TextStyle(
-              color: Color(0xFF0F172A),
-              fontSize: _PortraitV2Layout.nameFontSize,
-              fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
-              height: 1.1,
-              letterSpacing: 0.5,
-            )),
+            fatherStyle: IdCardTextStyles.fatherName(fontFamily),
+            courseStyle: IdCardTextStyles.course(fontFamily),
             lines: data.frontDetailLines,
             footerLine: data.frontValidityHorizontalLine,
             fontFamily: fontFamily,
-            bodyStyle: _ts(const TextStyle(
-              color: Color(0xFF0F172A),
-              fontSize: _PortraitV2Layout.bodyFontSize,
-              fontWeight: FontWeight.w900,
-              fontStyle: FontStyle.italic,
-              height: 1.1,
-              letterSpacing: 0.5,
-            )),
+            bodyStyle: IdCardTextStyles.detail(fontFamily),
             bodyMinFontSize: _PortraitV2Layout.bodyMinFontSize,
-            footerStyle: _ts(const TextStyle(
-              color: Color(0xFF1E293B),
-              fontSize: _PortraitV2Layout.validityFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.2,
-            )),
+            footerStyle: IdCardTextStyles.footer(fontFamily),
             footerMinFontSize: _PortraitV2Layout.validityMinFontSize,
             gapMin: _PortraitV2Layout.frontGapMin,
             gapMax: _PortraitV2Layout.frontGapMax,
@@ -286,7 +219,7 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          StudentIdTemplateAssets.backBackgroundV2,
+          backBgAsset ?? StudentIdTemplateAssets.backBackgroundV2,
           fit: BoxFit.fill,
         ),
         Positioned(
@@ -297,12 +230,7 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
           child: StudentPortraitEvenContent(
             lines: lines,
             fontFamily: fontFamily,
-            bodyStyle: _ts(const TextStyle(
-              color: Color(0xFF1E293B),
-              fontSize: _PortraitV2Layout.backBodyFontSize,
-              fontWeight: FontWeight.w600,
-              height: 1.35,
-            )),
+            bodyStyle: IdCardTextStyles.terms(fontFamily),
             bodyMinFontSize: _PortraitV2Layout.backMinFontSize,
             maxLinesPerItem: 4,
             compactSpacing: data.useCompactFrontSpacing,
@@ -315,24 +243,13 @@ class StudentIdTemplatePortraitV2 extends StatelessWidget {
         ),
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
-            left:   _w * _PortraitV2Layout.backInstituteLeftRatio,
-            right:  _w * _PortraitV2Layout.backInstituteRightRatio,
+            left:   _w * 0.05,
+            right:  _w * 0.05,
             bottom: _h * _PortraitV2Layout.backInstituteBottomRatio,
-            height: _h * 0.08,
-            child: Center(
-              child: AutoSizeText(
-                formatInstituteName(
-                    data.instituteName.trim().toUpperCase()),
-                maxLines: 2,
-                minFontSize: _PortraitV2Layout.headerMinFontSize,
-                textAlign: TextAlign.center,
-                style: _ts(const TextStyle(
-                  color: Color(0xFF0F172A),
-                  fontSize: _PortraitV2Layout.backHeaderFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: 1.15,
-                )),
-              ),
+            child: GlobalInstituteHeader(
+              name: data.instituteName,
+              fontFamily: fontFamily,
+              color: Colors.white,
             ),
           ),
       ],

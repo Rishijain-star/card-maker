@@ -7,41 +7,26 @@ import '../../../data/models/student_data.dart';
 import '../assets/student_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
 import '../design_system/id_card_portrait_typography.dart';
+import '../design_system/id_card_text_styles.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
 /// Template 13 — colorful single-sided student card (front only).
 abstract final class _PortraitV13Layout {
-  static const Color textDark = Color(0xFF1F2937);
-  static const Color textMuted = Color(0xFF4B5563);
-  static const Color nameGreen = Color(0xFF2D9B47);
   static const Color pillBorder = Color(0xFF7EC8E3);
   static const Color photoBorder = Color(0xFFE85D4C);
   static const Color dottedLine = Color(0xFFD1D5DB);
   static const Color iconTint = Color(0xFF374151);
 
-  static const List<Color> titleGradient = [
-    Color(0xFFEC4899),
-    Color(0xFF8B5CF6),
-    Color(0xFF2563EB),
-  ];
-
   static const double headerInstituteTop = 0.088;
   static const double headerInstituteHeight = 0.075;
   static const double headerInstituteSide = 0.10;
-
-  static const double headerContactTop = 0.168;
-  static const double headerContactHeight = 0.052;
-  static const double headerContactSide = 0.12;
 
   static const double photoWidthRatio = 0.33;
   static const double photoHeightRatio = 0.24;
   static const double photoTopRatio = 0.195;
   static const double photoRadius = 10.0;
   static const double photoBorderWidth = 4.0;
-
-  static const double sessionLeftRatio = 0.06;
-  static const double sessionWidthRatio = 0.20;
 
   static const double namePillTopRatio = 0.415;
   static const double namePillSide = 0.10;
@@ -50,7 +35,6 @@ abstract final class _PortraitV13Layout {
   static const double detailsSide = 0.11;
   static const double detailsBottomRatio = 0.13;
 
-  static const double detailFontSize = 17;
   static const double detailMinFontSize = 11;
   static const double detailRowGapMin = 6.0;
   static const double detailRowGapMax = 11.0;
@@ -70,16 +54,6 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
 
   static const double _w = IdCardPortraitDimensions.width;
   static const double _h = IdCardPortraitDimensions.height;
-
-  TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
-
-  static int _instituteMaxLines(String name) {
-    if (name.contains('\n')) {
-      final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
-      return lines.clamp(2, 4);
-    }
-    return 2;
-  }
 
   String? _classLine() {
     final cls = data.className.trim();
@@ -143,20 +117,12 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
             top: _h * _PortraitV13Layout.headerInstituteTop,
-            height: _h * _PortraitV13Layout.headerInstituteHeight,
-            left: _w * _PortraitV13Layout.headerInstituteSide,
-            right: _w * _PortraitV13Layout.headerInstituteSide,
-            child: _PortraitV13GradientTitle(
-              text: formatInstituteName(
-                  data.instituteName.trim().toUpperCase()),
-              maxLines: _instituteMaxLines(data.instituteName),
-              style: _ts(const TextStyle(
-                fontSize: IdCardPortraitTypography.headerFontSize,
-                fontWeight: FontWeight.w900,
-                height: 1.02,
-                letterSpacing: 0.5,
-              )),
-              minFontSize: IdCardPortraitTypography.headerMinFontSize,
+            left: _w * 0.05,
+            right: _w * 0.05,
+            child: GlobalInstituteHeader(
+              name: data.instituteName,
+              fontFamily: fontFamily,
+              color: Colors.white,
             ),
           ),
         Positioned(
@@ -179,13 +145,7 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
             right: _w * _PortraitV13Layout.namePillSide,
             child: _PortraitV13NamePill(
               name: data.studentName.trim().toUpperCase(),
-              textStyle: _ts(const TextStyle(
-                color: _PortraitV13Layout.nameGreen,
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-                height: 1.05,
-                letterSpacing: 0.45,
-              )),
+              textStyle: IdCardTextStyles.personName(fontFamily),
               minFontSize: 14,
             ),
           ),
@@ -197,13 +157,7 @@ class StudentIdTemplatePortraitV13 extends StatelessWidget {
             bottom: _h * _PortraitV13Layout.detailsBottomRatio,
             child: _PortraitV13DetailList(
               rows: detailRows,
-              textStyle: _ts(const TextStyle(
-                color: _PortraitV13Layout.textDark,
-                fontSize: _PortraitV13Layout.detailFontSize,
-                fontWeight: FontWeight.w800,
-                height: 1.35,
-                letterSpacing: 0.35,
-              )),
+              textStyle: IdCardTextStyles.detail(fontFamily),
               minFontSize: _PortraitV13Layout.detailMinFontSize,
               compact: data.useCompactFrontSpacing,
               relaxed: data.useRelaxedFrontSpacing,
@@ -254,86 +208,7 @@ class _PortraitV13GradientTitle extends StatelessWidget {
       maxLines: maxLines,
       minFontSize: minFontSize,
       textAlign: TextAlign.center,
-      style: style.copyWith(color: const Color(0xFF0F172A)),
-    );
-  }
-}
-
-class _PortraitV13HeaderContacts extends StatelessWidget {
-  const _PortraitV13HeaderContacts({
-    required this.address,
-    required this.phone,
-    required this.textStyle,
-    required this.minFontSize,
-  });
-
-  final String address;
-  final String phone;
-  final TextStyle textStyle;
-  final double minFontSize;
-
-  @override
-  Widget build(BuildContext context) {
-    final rows = <Widget>[];
-    if (address.isNotEmpty) {
-      rows.add(
-        _PortraitV13ContactLine(
-          icon: Icons.location_on_outlined,
-          value: address,
-          textStyle: textStyle,
-          minFontSize: minFontSize,
-        ),
-      );
-    }
-    if (phone.isNotEmpty) {
-      if (rows.isNotEmpty) rows.add(const SizedBox(height: 2));
-      rows.add(
-        _PortraitV13ContactLine(
-          icon: Icons.phone_outlined,
-          value: phone,
-          textStyle: textStyle,
-          minFontSize: minFontSize,
-        ),
-      );
-    }
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: rows,
-    );
-  }
-}
-
-class _PortraitV13ContactLine extends StatelessWidget {
-  const _PortraitV13ContactLine({
-    required this.icon,
-    required this.value,
-    required this.textStyle,
-    required this.minFontSize,
-  });
-
-  final IconData icon;
-  final String value;
-  final TextStyle textStyle;
-  final double minFontSize;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, size: 14, color: Colors.white.withValues(alpha: 0.95)),
-        const SizedBox(width: 5),
-        Flexible(
-          child: AutoSizeText(
-            value,
-            maxLines: 2,
-            minFontSize: minFontSize,
-            textAlign: TextAlign.center,
-            style: textStyle,
-          ),
-        ),
-      ],
+      style: style,
     );
   }
 }

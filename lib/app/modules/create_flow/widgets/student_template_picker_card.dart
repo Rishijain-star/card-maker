@@ -30,7 +30,7 @@ class StudentTemplatePickerCard extends GetView<TemplateController> {
       behavior: HitTestBehavior.opaque,
       child: Obx(
         () {
-          flow.selectedFont.value;
+          final templateFontFamily = flow.getFontFamilyForTemplate(templateIndex);
           final isEmployee = flow.isEmployeeService;
           final frontOnly =
               !isEmployee && flow.studentTemplateIsFrontOnly(templateIndex);
@@ -54,7 +54,7 @@ class StudentTemplatePickerCard extends GetView<TemplateController> {
               borderRadius: BorderRadius.circular(selected ? 9 : 12),
               child: frontOnly
                   ? _Face(
-                      fontFamily: flow.selectedFontFamily,
+                      fontFamily: templateFontFamily,
                       templateIndex: templateIndex,
                       side: StudentIdCardSide.front,
                       isEmployee: isEmployee,
@@ -65,7 +65,7 @@ class StudentTemplatePickerCard extends GetView<TemplateController> {
                       children: [
                         Expanded(
                           child: _Face(
-                            fontFamily: flow.selectedFontFamily,
+                            fontFamily: templateFontFamily,
                             templateIndex: templateIndex,
                             side: StudentIdCardSide.front,
                             isEmployee: isEmployee,
@@ -75,7 +75,7 @@ class StudentTemplatePickerCard extends GetView<TemplateController> {
                         const SizedBox(width: 5),
                         Expanded(
                           child: _Face(
-                            fontFamily: flow.selectedFontFamily,
+                            fontFamily: templateFontFamily,
                             templateIndex: templateIndex,
                             side: StudentIdCardSide.back,
                             isEmployee: isEmployee,

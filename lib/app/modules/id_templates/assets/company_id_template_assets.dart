@@ -28,7 +28,7 @@ abstract final class CompanyIdTemplateAssets {
 
   static const String backBackgroundV7 = 'assets/7th back company.png';
 
-  static const String frontBackgroundV8 = 'assets/8th front company.png';
+  static const String frontBackgroundV8 = 'assets/complamy template 8.png';
 
   static const String backBackgroundV8 = 'assets/8th backl company.png';
 
@@ -43,6 +43,52 @@ abstract final class CompanyIdTemplateAssets {
   static const String frontBackgroundV11 = 'assets/11th company frotn.png';
 
   static const String backBackgroundV11 = 'assets/11th company bacl.png';
+
+  /// Templates 26 to 40 — 15 new template image pairs.
+  static const String frontBackgroundV26 = 'assets/26 th front.png';
+  static const String backBackgroundV26 = 'assets/26th back .png';
+
+  static const String frontBackgroundV27 = 'assets/27 front.png';
+  static const String backBackgroundV27 = 'assets/27 back .png';
+
+  static const String frontBackgroundV28 = 'assets/28th front.png';
+  static const String backBackgroundV28 = 'assets/28th back .png';
+
+  static const String frontBackgroundV29 = 'assets/29th front.png';
+  static const String backBackgroundV29 = 'assets/29 back.png';
+
+  static const String frontBackgroundV30 = 'assets/30th front.png';
+  static const String backBackgroundV30 = 'assets/30th back .png';
+
+  static const String frontBackgroundV31 = 'assets/31th froint.png';
+  static const String backBackgroundV31 = 'assets/31th back .png';
+
+  static const String frontBackgroundV32 = 'assets/template_32_front.png';
+  static const String backBackgroundV32 = 'assets/32th back .png';
+
+  static const String frontBackgroundV33 = 'assets/33front.png';
+  static const String backBackgroundV33 = 'assets/33back.png';
+
+  static const String frontBackgroundV34 = 'assets/34front.png';
+  static const String backBackgroundV34 = 'assets/34back.png';
+
+  static const String frontBackgroundV35 = 'assets/35front.png';
+  static const String backBackgroundV35 = 'assets/35back.png';
+
+  static const String frontBackgroundV36 = 'assets/36 front.png';
+  static const String backBackgroundV36 = 'assets/36 back.png';
+
+  static const String frontBackgroundV37 = 'assets/37 front.png';
+  static const String backBackgroundV37 = 'assets/37 back.png';
+
+  static const String frontBackgroundV38 = 'assets/tempalte number 389 forne.png';
+  static const String backBackgroundV38 = 'assets/38 back.png';
+
+  static const String frontBackgroundV39 = 'assets/39 front.png';
+  static const String backBackgroundV39 = 'assets/39 back.png';
+
+  static const String frontBackgroundV40 = 'assets/template_40_front.png';
+  static const String backBackgroundV40 = 'assets/40 back.png';
 
   /// Horizontal logo picker (index 1+); index 0 = no logo on card.
   static const List<String> logoPickerOptions = <String>[

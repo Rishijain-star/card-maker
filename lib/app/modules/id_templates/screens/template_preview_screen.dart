@@ -22,7 +22,7 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
     final globalIndex = flow.selectedTemplate.value;
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        flow.loadFontSizeScaleForCurrentTemplate();
+        flow.discardUnsavedEdits();
       },
       child: AppScaffold(
         child: ColoredBox(
@@ -37,6 +37,7 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                 children: [
                   IconButton(
                     onPressed: () {
+                      flow.discardUnsavedEdits();
                       flow.resetQuickCreate();
                       if (Navigator.of(context).canPop()) {
                         Get.back<void>();
@@ -115,11 +116,15 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                   : Obx(
                       () {
                         flow.selectedFont.value;
+                        flow.idCardCustomTextColorHex.value;
+                        flow.idCardCustomHeaderColorHex.value;
                         return LiveIdCardCarousel(
                           key: ValueKey<String>(
                             '${flow.isEmployeeService}-'
                             '$globalIndex-'
                             '${flow.selectedFont.value}-'
+                            '${flow.idCardCustomTextColorHex.value}-'
+                            '${flow.idCardCustomHeaderColorHex.value}-'
                             '${controller.studentData.value.photoPath}-'
                             '${controller.employeeData.value.photoPath}',
                           ),

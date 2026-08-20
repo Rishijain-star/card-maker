@@ -8,13 +8,13 @@ import '../../../data/models/student_data.dart';
 import '../assets/student_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
 import '../design_system/id_card_portrait_typography.dart';
+import '../design_system/id_card_text_styles.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
 /// Template 14 — mango-shaped single-sided student card (front only).
 abstract final class _PortraitV14Layout {
-  static const Color instituteRed = Color(0xFFB71C1C);
-  static const Color textBrown = Color(0xFF3E2723);
+  /// Decorative only (name bar, session pill) — never text.
   static const Color nameBarBlue = Color(0xFF4FC3F7);
   static const Color sessionRed = Color(0xFFD32F2F);
 
@@ -38,7 +38,6 @@ abstract final class _PortraitV14Layout {
   static const double detailsLeft = 0.31;
   static const double detailsRight = 0.11;
   static const double detailsBottom = 0.18;
-  static const double detailFontSize = 24;
   static const double detailMinFontSize = 14;
 
   static const double sessionBottom = 0.18;
@@ -104,16 +103,6 @@ class StudentIdTemplatePortraitV14 extends StatelessWidget {
   static const double _w = IdCardPortraitDimensions.width;
   static const double _h = IdCardPortraitDimensions.height;
 
-  TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
-
-  static int _instituteMaxLines(String name) {
-    if (name.contains('\n')) {
-      final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
-      return lines.clamp(2, 4);
-    }
-    return 2;
-  }
-
   String? _classLine() {
     final cls = data.className.trim();
     final sec = data.section.trim();
@@ -173,24 +162,12 @@ class StudentIdTemplatePortraitV14 extends StatelessWidget {
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
             top: _h * _PortraitV14Layout.headerTop,
-            height: _h * _PortraitV14Layout.headerHeight,
-            left: headerLeft,
-            right: headerRight,
-            child: Center(
-              child: AutoSizeText(
-                formatInstituteName(
-                    data.instituteName.trim().toUpperCase()),
-                maxLines: _instituteMaxLines(data.instituteName),
-                minFontSize: IdCardPortraitTypography.headerMinFontSize,
-                textAlign: TextAlign.center,
-                style: _ts(const TextStyle(
-                  color: _PortraitV14Layout.instituteRed,
-                  fontSize: IdCardPortraitTypography.headerFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: 1.02,
-                  letterSpacing: 0.35,
-                )),
-              ),
+            left: _w * 0.05,
+            right: _w * 0.05,
+            child: GlobalInstituteHeader(
+              name: data.instituteName,
+              fontFamily: fontFamily,
+              color: Colors.white,
             ),
           ),
         Positioned(
@@ -229,13 +206,7 @@ class StudentIdTemplatePortraitV14 extends StatelessWidget {
                 maxLines: 1,
                 minFontSize: 11,
                 textAlign: TextAlign.center,
-                style: _ts(const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  height: 1.05,
-                  letterSpacing: 0.3,
-                )),
+                style: IdCardTextStyles.personName(fontFamily, onBanner: true),
               ),
             ),
           ),
@@ -247,13 +218,7 @@ class StudentIdTemplatePortraitV14 extends StatelessWidget {
             bottom: _h * _PortraitV14Layout.detailsBottom,
             child: _PortraitV14DetailColumn(
               lines: detailLines,
-              textStyle: _ts(const TextStyle(
-                color: _PortraitV14Layout.textBrown,
-                fontSize: _PortraitV14Layout.detailFontSize,
-                fontWeight: FontWeight.w800,
-                fontStyle: FontStyle.italic,
-                height: 1.35,
-              )),
+              textStyle: IdCardTextStyles.detail(fontFamily),
               minFontSize: _PortraitV14Layout.detailMinFontSize,
               compact: data.useCompactFrontSpacing,
               relaxed: data.useRelaxedFrontSpacing,
@@ -279,12 +244,7 @@ class StudentIdTemplatePortraitV14 extends StatelessWidget {
                   maxLines: 1,
                   minFontSize: 9,
                   textAlign: TextAlign.center,
-                  style: _ts(const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    height: 1.0,
-                  )),
+                  style: IdCardTextStyles.badge(fontFamily),
                 ),
               ),
             ),
@@ -376,19 +336,8 @@ class _PortraitV14DetailColumn extends StatelessWidget {
       return AutoSizeText.rich(
         TextSpan(
           children: [
-            TextSpan(
-              text: '$label: ',
-              style: textStyle.copyWith(
-                fontWeight: FontWeight.w900,
-                color: const Color(0xFF0F172A),
-              ),
-            ),
-            TextSpan(
-              text: value,
-              style: textStyle.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
-            ),
+            TextSpan(text: '$label: ', style: textStyle),
+            TextSpan(text: value, style: textStyle),
           ],
         ),
         maxLines: 2,
@@ -401,7 +350,7 @@ class _PortraitV14DetailColumn extends StatelessWidget {
       maxLines: 2,
       minFontSize: minFontSize,
       textAlign: TextAlign.center,
-      style: textStyle.copyWith(fontWeight: FontWeight.w800),
+      style: textStyle,
     );
   }
 

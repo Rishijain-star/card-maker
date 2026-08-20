@@ -12,6 +12,7 @@ class AppColors {
   static const Color successGreen = Color(0xFF22C55E);
   static const Color errorRed = Color(0xFFEF4444);
 
+
   static const Color lightBackground = Color(0xFFF8FAFC);
   static const Color lightCard = Color(0xFFFFFFFF);
   static const Color lightSecondaryBackground = Color(0xFFEEF2FF);

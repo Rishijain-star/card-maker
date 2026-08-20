@@ -68,6 +68,15 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                     ),
                     EmployeeJoinDateField(controller: controller.expiryDateCtrl),
                     StudentUnderlineField(
+                      iconWidget: const Icon(Icons.location_on_rounded, color: Color(0xFF2563EB), size: 26),
+                      hint: 'Write your address',
+                      controller: controller.addressCtrl,
+                    ),
+                    StudentPhoneField(
+                      hint: 'Write Phone Number',
+                      controller: controller.phoneCtrl,
+                    ),
+                    StudentUnderlineField(
                       iconAsset: EmployeeFormAssets.email,
                       hint: 'Write your email',
                       controller: controller.emailCtrl,
@@ -80,10 +89,6 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
                 child: Column(
                   children: [
-                    StudentPhoneField(
-                      hint: 'Write Phone Number',
-                      controller: controller.phoneCtrl,
-                    ),
                     StudentUnderlineField(
                       iconAsset: EmployeeFormAssets.blood,
                       hint: 'Write Blood Group',

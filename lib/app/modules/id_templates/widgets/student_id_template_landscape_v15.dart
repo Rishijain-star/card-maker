@@ -7,14 +7,12 @@ import '../../../data/models/student_data.dart';
 import '../assets/student_id_template_assets.dart';
 import '../design_system/id_card_dimensions.dart';
 import '../design_system/id_card_portrait_typography.dart';
+import '../design_system/id_card_text_styles.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
 /// Template 15 — deer / grass landscape card; front only; main form fields only.
 abstract final class _LandscapeV15Layout {
-  static const Color instituteRed = Color(0xFFC62828);
-  static const Color nameRed = Color(0xFFB71C1C);
-
   static const double headerTop = 0.035;
   static const double headerLeft = 0.21;
   static const double headerRight = 0.28;
@@ -52,10 +50,6 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
   static const double _w = IdCardDimensions.width;
   static const double _h = IdCardDimensions.height;
 
-  TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
-  TextStyle _tsPrimary(TextStyle base) =>
-      studentPortraitPrimaryTextStyle(base, fontFamily);
-
   static String _cap(String raw) {
     final s = raw.trim();
     if (s.isEmpty) return '';
@@ -63,14 +57,6 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
         .split(' ')
         .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
         .join(' ');
-  }
-
-  static int _instituteMaxLines(String name) {
-    if (name.contains('\n')) {
-      final lines = name.split('\n').where((s) => s.trim().isNotEmpty).length;
-      return lines.clamp(2, 4);
-    }
-    return 2;
   }
 
   List<String> _frontDetailLines() {
@@ -115,20 +101,12 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
         if (data.instituteName.trim().isNotEmpty)
           Positioned(
             top: _h * _LandscapeV15Layout.headerTop,
-            left: _w * _LandscapeV15Layout.headerLeft,
-            right: _w * _LandscapeV15Layout.headerRight,
-            height: _h * _LandscapeV15Layout.headerHeight,
-            child: _LandscapeV15Header(
-              instituteName: data.instituteName.trim(),
-              instituteStyle: _ts(const TextStyle(
-                color: _LandscapeV15Layout.instituteRed,
-                fontSize: IdCardPortraitTypography.headerFontSize,
-                fontWeight: FontWeight.w900,
-                height: 1.02,
-                letterSpacing: 0.3,
-              )),
-              instituteMaxLines: _instituteMaxLines(data.instituteName),
-              minFontSize: IdCardPortraitTypography.headerMinFontSize,
+            left: _w * 0.05,
+            right: _w * 0.05,
+            child: GlobalInstituteHeader(
+              name: data.instituteName,
+              fontFamily: fontFamily,
+              color: Colors.black,
             ),
           ),
         Positioned(
@@ -152,13 +130,7 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
               maxLines: 2,
               minFontSize: IdCardPortraitTypography.nameMinFontSize,
               textAlign: TextAlign.center,
-              style: _tsPrimary(const TextStyle(
-                color: _LandscapeV15Layout.nameRed,
-                fontSize: IdCardPortraitTypography.nameFontSize,
-                fontWeight: FontWeight.w900,
-                height: 1.05,
-                letterSpacing: 0.35,
-              )),
+              style: IdCardTextStyles.personName(fontFamily),
             ),
           ),
         Positioned(
@@ -170,27 +142,9 @@ class StudentIdTemplateLandscapeV15 extends StatelessWidget {
             fatherName: data.fatherName,
             className: data.className,
             detailLines: detailLines,
-            fatherStyle: _tsPrimary(const TextStyle(
-              color: Color(0xFF0F172A),
-              fontSize: IdCardPortraitTypography.nameFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.05,
-              letterSpacing: 0.5,
-            )),
-            courseStyle: _tsPrimary(const TextStyle(
-              color: Color(0xFF0F172A),
-              fontSize: IdCardPortraitTypography.nameFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.05,
-              letterSpacing: 0.5,
-            )),
-            bodyStyle: _tsPrimary(const TextStyle(
-              color: Color(0xFF0F172A),
-              fontSize: IdCardPortraitTypography.bodyFontSize,
-              fontWeight: FontWeight.w900,
-              height: 1.05,
-              letterSpacing: 0.5,
-            )),
+            fatherStyle: IdCardTextStyles.fatherName(fontFamily),
+            courseStyle: IdCardTextStyles.course(fontFamily),
+            bodyStyle: IdCardTextStyles.detail(fontFamily),
             nameMinFontSize: IdCardPortraitTypography.nameMinFontSize,
             bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
             compactSpacing: data.useCompactFrontSpacing,

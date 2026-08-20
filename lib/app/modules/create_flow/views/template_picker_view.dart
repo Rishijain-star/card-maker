@@ -8,6 +8,7 @@ import '../../../core/widgets/shimmer_skeleton_loader.dart';
 import '../../id_templates/controllers/template_controller.dart';
 import '../../id_templates/widgets/id_card_scaled_preview.dart';
 import '../controllers/create_flow_controller.dart';
+import '../../lanyard_templates/widgets/custom_lanyard_creator_sheet.dart';
 import '../widgets/lanyard_template_picker_card.dart';
 import '../widgets/student_template_picker_card.dart';
 
@@ -42,6 +43,80 @@ class TemplatePickerView extends GetView<CreateFlowController> {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
+            if (controller.isLanyardService)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF1E3A8A), Color(0xFF2563EB)],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF1E3A8A).withValues(alpha: 0.25),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        controller.selectedTemplate.value = 0;
+                        controller.isCustomLanyard.value = true;
+                        CustomLanyardCreatorSheet.show(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white24,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text('🎨', style: TextStyle(fontSize: 20)),
+                            ),
+                            SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Create Your Own Lanyard',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    'Custom ribbon color, text & logo',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 16),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            const SizedBox(height: AppSpacing.xs),
             Expanded(
               child: Obx(
                 () {

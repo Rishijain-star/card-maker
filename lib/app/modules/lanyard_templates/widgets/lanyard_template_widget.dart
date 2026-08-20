@@ -40,8 +40,12 @@ class LanyardTemplateWidget extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // Background: Asset Image (variants 0-5) or Procedural Custom Artwork (variants 6-17)
-            if (variant >= 6)
+            // Background: Asset Image (variants 0-5) or Procedural Custom Artwork (variants 6-23)
+            if (variant == 99)
+              ColoredBox(
+                color: Color(data.customRibbonColorHex),
+              )
+            else if (variant >= 6)
               CustomPaint(
                 painter: _RibbonStripePainter(
                   variant: variant,

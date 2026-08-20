@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -8,39 +7,37 @@ import '../../../data/models/employee_data.dart';
 import '../assets/company_id_template_assets.dart';
 import '../design_system/id_card_portrait_dimensions.dart';
 import '../design_system/id_card_portrait_typography.dart';
+import '../design_system/id_card_text_styles.dart';
+import '../design_system/id_card_typography.dart';
 import 'student_id_card_side.dart';
 import 'student_id_portrait_widgets.dart';
 
 /// Company template 6 — navy / orange geometric theme, rounded-rect photo.
+///
+/// Artwork only. All text styling comes from [IdCardTextStyles] so that every
+/// template renders the same data identically — only the design differs.
 abstract final class _CompanyV6Layout {
+  /// Decorative only (bullet dots) — never text.
   static const Color accentOrange = Color(0xFFF97316);
-  static const Color textDark = Color(0xFF1A1A1A);
-  static const Color textMuted = Color(0xFF6B7280);
 
-  static const double headerBrandTop = 0.055;
-  static const double headerBrandHeight = 0.085;
-  static const double headerBrandSide = 0.18;
+  static const double headerBrandTop = 0.04;
+  static const double headerBrandHeight = 0.08;
+  static const double headerBrandSide = 0.05;
   static const double logoSize = 34.0;
   static const double logoGap = 8.0;
-  static const double companyNameFontSize = 24;
 
   static const double frontPhotoWidthRatio = 0.40;
   static const double frontPhotoAspect = 1.18;
-  static const double frontPhotoTopRatio = 0.155;
+  static const double frontPhotoTopRatio = 0.17;
   static const double frontPhotoRadius = 14.0;
   static const double frontGapBelowPhoto = 18.0;
   static const double frontContentSide = 0.18;
   static const double frontContentBottomRatio = 0.10;
-  static const double frontNameFontSize = 36;
-  static const double frontTitleFontSize = 21;
-  static const double frontBodyFontSize = 22;
-  static const double frontBodyMinFontSize = 14;
-  static const double frontLineGapMin = 6.0;
-  static const double frontLineGapMax = 11.0;
+  static const double frontLineGapMin = 10.0;
+  static const double frontLineGapMax = 18.0;
 
   static const double backBrandTop = 0.058;
   static const double backBrandHeight = 0.085;
-  static const double backBrandSide = 0.16;
 
   static const double backTermsTop = 0.155;
   static const double backTermsSide = 0.16;
@@ -49,10 +46,6 @@ abstract final class _CompanyV6Layout {
   static const double backDatesTop = 0.46;
   static const double backDatesHeight = 0.09;
   static const double backDatesSide = 0.16;
-
-  static const double backSignatureTop = 0.56;
-  static const double backSignatureHeight = 0.12;
-  static const double backSignatureSide = 0.18;
 }
 
 class CompanyIdTemplatePortraitV6 extends StatelessWidget {
@@ -61,17 +54,18 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
     required this.data,
     required this.side,
     this.fontFamily = 'Poppins',
+    this.frontBgAsset,
+    this.backBgAsset,
   });
 
   final EmployeeData data;
   final StudentIdCardSide side;
   final String fontFamily;
+  final String? frontBgAsset;
+  final String? backBgAsset;
 
   static const double _w = IdCardPortraitDimensions.width;
   static const double _h = IdCardPortraitDimensions.height;
-
-  TextStyle _ts(TextStyle base) => studentPortraitTextStyle(base, fontFamily);
-  TextStyle _tsPrimary(TextStyle base) => studentPortraitPrimaryTextStyle(base, fontFamily);
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +87,7 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          CompanyIdTemplateAssets.frontBackgroundV6,
+          frontBgAsset ?? CompanyIdTemplateAssets.frontBackgroundV6,
           fit: BoxFit.fill,
         ),
         Positioned(
@@ -106,14 +100,9 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
             child: _CompanyV6BrandRow(
               companyName: data.companyName,
               logoAsset: data.logoAsset,
-              nameStyle: _ts(const TextStyle(
-                color: _CompanyV6Layout.textDark,
-                fontSize: _CompanyV6Layout.companyNameFontSize,
-                fontWeight: FontWeight.w800,
-                height: 1.05,
-                letterSpacing: 0.4,
-              )),
-              minNameSize: 14,
+              nameStyle:
+                  IdCardTextStyles.instituteHeader(fontFamily, onBanner: false),
+              minNameSize: IdCardPortraitTypography.headerMinFontSize,
             ),
           ),
         ),
@@ -146,25 +135,9 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
                     constraints: BoxConstraints(maxWidth: constraints.maxWidth),
                     child: _CompanyV6FrontBody(
                       data: data,
-                      nameStyle: _tsPrimary(const TextStyle(
-                        color: _CompanyV6Layout.textDark,
-                        fontSize: IdCardPortraitTypography.nameFontSize,
-                        fontWeight: FontWeight.w900,
-                        height: 1.05,
-                      )),
-                      titleStyle: _tsPrimary(const TextStyle(
-                        color: _CompanyV6Layout.textMuted,
-                        fontSize: IdCardPortraitTypography.nameFontSize,
-                        fontWeight: FontWeight.w900,
-                        height: 1.15,
-                      )),
-                      bodyStyle: _tsPrimary(const TextStyle(
-                        color: _CompanyV6Layout.textDark,
-                        fontSize: IdCardPortraitTypography.bodyFontSize,
-                        fontWeight: FontWeight.w900,
-                        fontStyle: FontStyle.italic,
-                        height: 1.28,
-                      )),
+                      nameStyle: IdCardTextStyles.personName(fontFamily),
+                      titleStyle: IdCardTextStyles.position(fontFamily),
+                      bodyStyle: IdCardTextStyles.detail(fontFamily),
                       bodyMinFontSize: IdCardPortraitTypography.bodyMinFontSize,
                     ),
                   ),
@@ -204,26 +177,22 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.asset(
-          CompanyIdTemplateAssets.backBackgroundV6,
+          backBgAsset ?? CompanyIdTemplateAssets.backBackgroundV6,
           fit: BoxFit.fill,
         ),
         Positioned(
           top: _h * _CompanyV6Layout.backBrandTop,
           height: _h * _CompanyV6Layout.backBrandHeight,
-          left: _w * _CompanyV6Layout.backBrandSide,
-          right: _w * _CompanyV6Layout.backBrandSide,
+          left: _w * 0.05,
+          right: _w * 0.05,
           child: Align(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.center,
             child: _CompanyV6BrandRow(
               companyName: data.companyName,
               logoAsset: data.logoAsset,
-              nameStyle: _ts(const TextStyle(
-                color: _CompanyV6Layout.textDark,
-                fontSize: _CompanyV6Layout.companyNameFontSize,
-                fontWeight: FontWeight.w800,
-                height: 1.05,
-              )),
-              minNameSize: 14,
+              nameStyle:
+                  IdCardTextStyles.instituteHeader(fontFamily, onBanner: false),
+              minNameSize: IdCardPortraitTypography.headerMinFontSize,
             ),
           ),
         ),
@@ -235,12 +204,7 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
             bottom: _h * _CompanyV6Layout.backTermsBottom,
             child: _CompanyV6CircleBullets(
               lines: terms,
-              textStyle: _ts(const TextStyle(
-                color: _CompanyV6Layout.textDark,
-                fontSize: 19,
-                fontWeight: FontWeight.w400,
-                height: 1.38,
-              )),
+              textStyle: IdCardTextStyles.terms(fontFamily),
               minFontSize: 13,
             ),
           ),
@@ -252,12 +216,7 @@ class CompanyIdTemplatePortraitV6 extends StatelessWidget {
             height: _h * _CompanyV6Layout.backDatesHeight,
             child: _CompanyV6CenteredLines(
               lines: dates,
-              style: _ts(const TextStyle(
-                color: _CompanyV6Layout.textDark,
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                height: 1.3,
-              )),
+              style: IdCardTextStyles.backBody(fontFamily),
               minFontSize: 14,
             ),
           ),
@@ -284,13 +243,14 @@ class _CompanyV6BrandRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = companyName.trim();
     final logo = logoAsset.trim();
+    final hasLogo = logo.isNotEmpty && !logo.contains('hexagon');
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (logo.isNotEmpty) ...[
+        if (hasLogo) ...[
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: Image.asset(
@@ -298,11 +258,7 @@ class _CompanyV6BrandRow extends StatelessWidget {
               width: _CompanyV6Layout.logoSize,
               height: _CompanyV6Layout.logoSize,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Icon(
-                Icons.hexagon_outlined,
-                size: _CompanyV6Layout.logoSize,
-                color: _CompanyV6Layout.accentOrange,
-              ),
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
             ),
           ),
           SizedBox(width: _CompanyV6Layout.logoGap),
@@ -310,10 +266,10 @@ class _CompanyV6BrandRow extends StatelessWidget {
         if (name.isNotEmpty)
           Flexible(
             child: AutoSizeText(
-              name.toUpperCase(),
-              maxLines: 2,
-              minFontSize: minNameSize,
-              textAlign: TextAlign.left,
+              IdCardTypography.formatInstituteName(name.toUpperCase()),
+              maxLines: 3,
+              minFontSize: IdCardPortraitTypography.headerMinFontSize,
+              textAlign: TextAlign.center,
               style: nameStyle,
             ),
           ),
@@ -436,17 +392,25 @@ class _CompanyV6FrontBody extends StatelessWidget {
       );
     }
 
-    for (final line in data.frontDetailLines) {
+    final detailLines = data.frontDetailLines;
+    for (var i = 0; i < detailLines.length; i++) {
+      final line = detailLines[i];
       final isEmail = line.contains('@');
+      final isStudentProminentLine = data.isStudentData && i < 2;
+      final lineStyle = isStudentProminentLine ? nameStyle : bodyStyle;
+      final lineMinFont =
+          isStudentProminentLine ? (bodyMinFontSize + 4) : bodyMinFontSize;
+
       add(
         AutoSizeText(
           line,
           maxLines: isEmail ? 2 : 1,
-          minFontSize: bodyMinFontSize,
+          minFontSize: lineMinFont,
           textAlign: TextAlign.center,
-          style: bodyStyle,
+          style: lineStyle,
         ),
-        (bodyStyle.fontSize ?? 22) * (isEmail ? 1.45 : 1.22),
+        (lineStyle.fontSize ?? 22) *
+            (isEmail ? 1.45 : (isStudentProminentLine ? 1.08 : 1.22)),
       );
     }
 
@@ -563,34 +527,6 @@ class _CompanyV6CenteredLines extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-}
-
-class _CompanyV6SignaturePreview extends StatelessWidget {
-  const _CompanyV6SignaturePreview({
-    required this.path,
-    this.bytes,
-    this.hasBorder = false,
-    this.borderColor = const Color(0xFF0F172A),
-    this.borderWidth = 1.0,
-  });
-
-  final String path;
-  final Uint8List? bytes;
-  final bool hasBorder;
-  final Color borderColor;
-  final double borderWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    return StudentPortraitSignatureCircle(
-      size: 80,
-      path: path,
-      bytes: bytes,
-      hasBorder: hasBorder,
-      borderColor: borderColor,
-      borderWidth: borderWidth,
     );
   }
 }

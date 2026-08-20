@@ -36,24 +36,203 @@ class CreateFlowController extends GetxController {
   final RxDouble fontSizeScale = 1.0.obs;
   final RxMap<String, double> savedTemplateFontScales = <String, double>{}.obs;
 
+  /// Permanently saved settings per template key.
+  final RxMap<String, TemplateCustomSettings> savedTemplateSettingsMap =
+      <String, TemplateCustomSettings>{}.obs;
+
+  /// Temporary draft settings for the template currently being edited.
+  final Rxn<TemplateCustomSettings> draftTemplateSettings =
+      Rxn<TemplateCustomSettings>();
+
+  /// Index of template currently open in editing mode (-1 if none).
+  final RxInt editingTemplateIndex = (-1).obs;
+
   String get currentTemplateKey =>
       '${selectedService.value}_${selectedLayout.value}_${selectedTemplate.value}';
 
-  void loadFontSizeScaleForCurrentTemplate() {
-    final key = currentTemplateKey;
-    if (savedTemplateFontScales.containsKey(key)) {
-      fontSizeScale.value = savedTemplateFontScales[key]!;
-    } else {
-      fontSizeScale.value = 1.0;
-    }
-  }
+  String getTemplateKey(int templateIndex) =>
+      '${selectedService.value}_${selectedLayout.value}_$templateIndex';
 
-  void setFontSizeScale(double scale) {
-    fontSizeScale.value = scale.clamp(0.70, 1.50);
+  /// Open a template for editing
+  void startEditingTemplate(int templateIndex) {
+    selectedTemplate.value = templateIndex;
+    editingTemplateIndex.value = templateIndex;
+
+    final key = getTemplateKey(templateIndex);
+    if (savedTemplateSettingsMap.containsKey(key)) {
+      draftTemplateSettings.value = savedTemplateSettingsMap[key]!;
+    } else {
+      draftTemplateSettings.value = const TemplateCustomSettings();
+    }
+
+    final s = draftTemplateSettings.value!;
+    selectedFont.value = s.fontIndex;
+    fontSizeScale.value = s.fontSizeScale;
+    selectedColor.value = s.colorIndex;
+    idCardCustomTextColorHex.value = s.customTextColorHex;
+    idCardCustomHeaderColorHex.value = s.customHeaderColorHex;
+    selectedCompanyLogo.value = s.companyLogoIndex;
+    signatureHasBorder.value = s.signatureHasBorder;
+    signatureBorderColorIndex.value = s.signatureBorderColorIndex;
+    signatureBorderWidth.value = s.signatureBorderWidth;
+
     if (Get.isRegistered<TemplateController>()) {
       Get.find<TemplateController>().refreshCardData();
     }
-    update(<Object>['template_screen', 'student_preview', 'employee_preview', 'lanyard_preview', 'live_preview']);
+    update(<Object>[
+      'template_screen',
+      'student_preview',
+      'employee_preview',
+      'lanyard_preview',
+      'live_preview',
+      'template_editor'
+    ]);
+  }
+
+  /// Update draft settings while user is making changes in the editor
+  void updateCurrentTemplateSettings({
+    int? fontIndex,
+    double? fontSizeScale,
+    int? colorIndex,
+    int? customTextColorHex,
+    int? customHeaderColorHex,
+    int? companyLogoIndex,
+    bool? signatureHasBorder,
+    int? signatureBorderColorIndex,
+    double? signatureBorderWidth,
+    bool resetCustomTextColor = false,
+    bool resetCustomHeaderColor = false,
+  }) {
+    final current = draftTemplateSettings.value ??
+        getSettingsForTemplate(selectedTemplate.value);
+    final updated = current.copyWith(
+      fontIndex: fontIndex,
+      fontSizeScale: fontSizeScale,
+      colorIndex: colorIndex,
+      customTextColorHex: customTextColorHex,
+      customHeaderColorHex: customHeaderColorHex,
+      companyLogoIndex: companyLogoIndex,
+      signatureHasBorder: signatureHasBorder,
+      signatureBorderColorIndex: signatureBorderColorIndex,
+      signatureBorderWidth: signatureBorderWidth,
+      resetCustomTextColor: resetCustomTextColor,
+      resetCustomHeaderColor: resetCustomHeaderColor,
+    );
+    draftTemplateSettings.value = updated;
+
+    if (fontIndex != null) selectedFont.value = fontIndex;
+    if (fontSizeScale != null) this.fontSizeScale.value = fontSizeScale;
+    if (colorIndex != null) selectedColor.value = colorIndex;
+    if (resetCustomTextColor) {
+      idCardCustomTextColorHex.value = null;
+    } else if (customTextColorHex != null) {
+      idCardCustomTextColorHex.value = customTextColorHex;
+    }
+    if (resetCustomHeaderColor) {
+      idCardCustomHeaderColorHex.value = null;
+    } else if (customHeaderColorHex != null) {
+      idCardCustomHeaderColorHex.value = customHeaderColorHex;
+    }
+    if (companyLogoIndex != null) selectedCompanyLogo.value = companyLogoIndex;
+    if (signatureHasBorder != null) this.signatureHasBorder.value = signatureHasBorder;
+    if (signatureBorderColorIndex != null) this.signatureBorderColorIndex.value = signatureBorderColorIndex;
+    if (signatureBorderWidth != null) this.signatureBorderWidth.value = signatureBorderWidth;
+
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
+    }
+    update(<Object>[
+      'template_screen',
+      'student_preview',
+      'employee_preview',
+      'lanyard_preview',
+      'live_preview',
+      'template_editor'
+    ]);
+  }
+
+  /// Discard unsaved changes when user presses Back without saving
+  void discardUnsavedEdits() {
+    draftTemplateSettings.value = null;
+    editingTemplateIndex.value = -1;
+    idCardCustomTextColorHex.value = null;
+    idCardCustomHeaderColorHex.value = null;
+
+    final s = getSettingsForTemplate(selectedTemplate.value);
+    selectedFont.value = s.fontIndex;
+    fontSizeScale.value = s.fontSizeScale;
+    selectedColor.value = s.colorIndex;
+    selectedCompanyLogo.value = s.companyLogoIndex;
+    signatureHasBorder.value = s.signatureHasBorder;
+    signatureBorderColorIndex.value = s.signatureBorderColorIndex;
+    signatureBorderWidth.value = s.signatureBorderWidth;
+
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
+    }
+    update(<Object>[
+      'template_screen',
+      'student_preview',
+      'employee_preview',
+      'lanyard_preview',
+      'live_preview',
+      'template_editor'
+    ]);
+  }
+
+  /// Permanently save draft edits for current template
+  void saveCurrentTemplateEdits() {
+    if (draftTemplateSettings.value != null) {
+      savedTemplateSettingsMap[currentTemplateKey] = draftTemplateSettings.value!;
+    }
+    editingTemplateIndex.value = -1;
+  }
+
+  TemplateCustomSettings getSettingsForTemplate(int templateIndex) {
+    if (editingTemplateIndex.value == templateIndex &&
+        draftTemplateSettings.value != null) {
+      return draftTemplateSettings.value!;
+    }
+    final key = getTemplateKey(templateIndex);
+    if (savedTemplateSettingsMap.containsKey(key)) {
+      return savedTemplateSettingsMap[key]!;
+    }
+    return const TemplateCustomSettings();
+  }
+
+  String getFontFamilyForTemplate(int templateIndex) {
+    final settings = getSettingsForTemplate(templateIndex);
+    final idx = settings.fontIndex.clamp(0, fonts.length - 1);
+    return fonts[idx];
+  }
+
+  double getFontSizeScaleForTemplate(int templateIndex) {
+    return getSettingsForTemplate(templateIndex).fontSizeScale;
+  }
+
+  int getColorIndexForTemplate(int templateIndex) {
+    return getSettingsForTemplate(templateIndex).colorIndex;
+  }
+
+  int getCompanyLogoIndexForTemplate(int templateIndex) {
+    return getSettingsForTemplate(templateIndex).companyLogoIndex;
+  }
+
+  int? getCustomTextColorForTemplate(int templateIndex) {
+    return getSettingsForTemplate(templateIndex).customTextColorHex;
+  }
+
+  int? getCustomHeaderColorForTemplate(int templateIndex) {
+    return getSettingsForTemplate(templateIndex).customHeaderColorHex;
+  }
+
+  void loadFontSizeScaleForCurrentTemplate() {
+    final settings = getSettingsForTemplate(selectedTemplate.value);
+    fontSizeScale.value = settings.fontSizeScale;
+  }
+
+  void setFontSizeScale(double scale) {
+    updateCurrentTemplateSettings(fontSizeScale: scale.clamp(0.70, 1.50));
   }
 
   void incrementFontSizeScale() {
@@ -65,12 +244,7 @@ class CreateFlowController extends GetxController {
   }
 
   void resetFontSizeScale() {
-    fontSizeScale.value = 1.0;
-    savedTemplateFontScales.remove(currentTemplateKey);
-    if (Get.isRegistered<TemplateController>()) {
-      Get.find<TemplateController>().refreshCardData();
-    }
-    update(<Object>['template_screen', 'student_preview', 'employee_preview', 'lanyard_preview', 'live_preview']);
+    updateCurrentTemplateSettings(fontSizeScale: 1.0);
   }
 
   final RxInt selectedColor = 0.obs;
@@ -115,16 +289,16 @@ class CreateFlowController extends GetxController {
   bool _quickCreateAnother = false;
 
   /// Editable demo values — change anytime; not read-only.
-  static const String kDefaultInstitute = 'city public school';
+  static const String kDefaultInstitute = 'सिटी पब्लिक स्कूल माध्यमिक विद्यालय';
   static const String kDefaultStudentName = 'rishi jain';
-  static const String kDefaultFatherName = 'sharad jain';
+  static const String kDefaultFatherName = 'Father - sharad jain';
   static const String kDefaultCourse = 'bca';
   static const String kDefaultSection = 'A';
   static const String kDefaultRollNo = '12345677';
-  static const String kDefaultPhone = '8085909343';
+  static const String kDefaultPhone = 'Mo - 8085909343';
   static const String kDefaultEmail = '';
   static const String kDefaultBloodGroup = 'A+';
-  static const String kDefaultAddress = '33 d new angin nagar indore';
+  static const String kDefaultAddress = 'Add - 33 d new angin nagar indore';
   static const String kDefaultValidFrom = '04-06-2026';
   static const String kDefaultValidTo = '08-10-2026';
   static const String kDefaultTerm1 = 'First term: 85%';
@@ -135,7 +309,7 @@ class CreateFlowController extends GetxController {
   static const String kDefaultEmployeeName = 'John Thomouse';
   static const String kDefaultPosition = 'Software Developer';
   static const String kDefaultEmployeeId = '510484454';
-  static const String kDefaultEmployeeJoin = '03-08-2016';
+  static const String kDefaultEmployeeJoin = '';
   static const String kDefaultEmployeeExpire = '';
   static const String kDefaultEmployeeNote1 =
       'Lorem ipsum is simply dummy text of the printing industry.';
@@ -279,26 +453,16 @@ class CreateFlowController extends GetxController {
     },
     <String, dynamic>{
       'id': 11,
-      'title': 'Template 13',
+      'title': 'Template 12',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 11,
       'frontOnly': true,
     },
-    // Hidden for now:
-    // <String, dynamic>{
-    //   'id': 12,
-    //   'title': 'Template 14',
-    //   'category': 'Student',
-    //   'premium': false,
-    //   'studentEngine': true,
-    //   'variant': 12,
-    //   'frontOnly': true,
-    // },
     <String, dynamic>{
-      'id': 13,
-      'title': 'Template 15',
+      'id': 12,
+      'title': 'Template 13',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
@@ -307,8 +471,8 @@ class CreateFlowController extends GetxController {
       'landscape': true,
     },
     <String, dynamic>{
-      'id': 14,
-      'title': 'Template 16',
+      'id': 13,
+      'title': 'Template 14',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
@@ -317,92 +481,212 @@ class CreateFlowController extends GetxController {
       'landscape': true,
     },
     <String, dynamic>{
-      'id': 15,
-      'title': 'Company Template 1',
+      'id': 14,
+      'title': 'Template 15',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 100,
     },
     <String, dynamic>{
-      'id': 16,
-      'title': 'Company Template 2',
+      'id': 15,
+      'title': 'Template 16',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 101,
     },
     <String, dynamic>{
-      'id': 17,
-      'title': 'Company Template 3',
+      'id': 16,
+      'title': 'Template 17',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 102,
     },
     <String, dynamic>{
-      'id': 18,
-      'title': 'Company Template 4',
+      'id': 17,
+      'title': 'Template 18',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 103,
     },
     <String, dynamic>{
-      'id': 19,
-      'title': 'Company Template 5',
+      'id': 18,
+      'title': 'Template 19',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 104,
     },
     <String, dynamic>{
-      'id': 20,
-      'title': 'Company Template 6',
+      'id': 19,
+      'title': 'Template 20',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 105,
     },
     <String, dynamic>{
-      'id': 21,
-      'title': 'Company Template 7',
+      'id': 20,
+      'title': 'Template 21',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 106,
     },
     <String, dynamic>{
-      'id': 22,
-      'title': 'Company Template 8',
+      'id': 21,
+      'title': 'Template 22',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 107,
     },
     <String, dynamic>{
-      'id': 23,
-      'title': 'Company Template 9',
+      'id': 22,
+      'title': 'Template 23',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 108,
     },
     <String, dynamic>{
-      'id': 24,
-      'title': 'Company Template 10',
+      'id': 23,
+      'title': 'Template 24',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 109,
     },
     <String, dynamic>{
-      'id': 25,
-      'title': 'Company Template 11',
+      'id': 24,
+      'title': 'Template 25',
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
       'variant': 110,
+    },
+    <String, dynamic>{
+      'id': 25,
+      'title': 'Template 26',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 25,
+    },
+    <String, dynamic>{
+      'id': 26,
+      'title': 'Template 27',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 26,
+    },
+    <String, dynamic>{
+      'id': 27,
+      'title': 'Template 28',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 27,
+    },
+    <String, dynamic>{
+      'id': 28,
+      'title': 'Template 29',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 28,
+    },
+    <String, dynamic>{
+      'id': 29,
+      'title': 'Template 30',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 29,
+    },
+    <String, dynamic>{
+      'id': 30,
+      'title': 'Template 31',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 30,
+    },
+    <String, dynamic>{
+      'id': 31,
+      'title': 'Template 32',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 31,
+    },
+    <String, dynamic>{
+      'id': 32,
+      'title': 'Template 33',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 32,
+    },
+    <String, dynamic>{
+      'id': 33,
+      'title': 'Template 34',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 33,
+    },
+    <String, dynamic>{
+      'id': 34,
+      'title': 'Template 35',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 34,
+    },
+    <String, dynamic>{
+      'id': 35,
+      'title': 'Template 36',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 35,
+    },
+    <String, dynamic>{
+      'id': 36,
+      'title': 'Template 37',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 36,
+    },
+    <String, dynamic>{
+      'id': 37,
+      'title': 'Template 38',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 37,
+    },
+    <String, dynamic>{
+      'id': 38,
+      'title': 'Template 39',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 38,
+    },
+    <String, dynamic>{
+      'id': 39,
+      'title': 'Template 40',
+      'category': 'Student',
+      'premium': false,
+      'studentEngine': true,
+      'variant': 39,
     },
   ];
 
@@ -454,11 +738,46 @@ class CreateFlowController extends GetxController {
   }
 
   final lanyardCustomTextColorHex = RxnInt();
+  final isCustomLanyard = false.obs;
+  final lanyardCustomRibbonColorHex = 0xFF1E3A8A.obs;
+
+  void setCustomRibbonColorHex(int colorHex) {
+    lanyardCustomRibbonColorHex.value = colorHex;
+    isCustomLanyard.value = true;
+    if (Get.isRegistered<TemplateController>()) {
+      Get.find<TemplateController>().refreshCardData();
+    }
+  }
 
   void setLanyardTextColorHex(int? colorHex) {
     lanyardCustomTextColorHex.value = colorHex;
     if (Get.isRegistered<TemplateController>()) {
       Get.find<TemplateController>().refreshCardData();
+    }
+  }
+
+  /// ID card **body** text colour override (name, details, terms, …).
+  /// Null means "use the shared default". Applied per-role in
+  /// `IdCardTextStyles`, so one setting recolours every non-header field.
+  final idCardCustomTextColorHex = RxnInt();
+
+  void setIdCardTextColorHex(int? colorHex) {
+    if (colorHex == null) {
+      updateCurrentTemplateSettings(resetCustomTextColor: true);
+    } else {
+      updateCurrentTemplateSettings(customTextColorHex: colorHex);
+    }
+  }
+
+  /// ID card **header** colour override — the school / company name only,
+  /// kept separate so the title can be styled independently of body text.
+  final idCardCustomHeaderColorHex = RxnInt();
+
+  void setIdCardHeaderColorHex(int? colorHex) {
+    if (colorHex == null) {
+      updateCurrentTemplateSettings(resetCustomHeaderColor: true);
+    } else {
+      updateCurrentTemplateSettings(customHeaderColorHex: colorHex);
     }
   }
 
@@ -471,16 +790,32 @@ class CreateFlowController extends GetxController {
     }
   }
 
+  int lanyardVariantForIndex(int templateIndex) {
+    if (templateIndex < 0 || templateIndex >= lanyardTemplates.length) {
+      return 0;
+    }
+    final item = lanyardTemplates[templateIndex];
+    return (item['variant'] as int?) ?? 0;
+  }
+
   final List<Map<String, dynamic>> lanyardTemplates = <Map<String, dynamic>>[
     <String, dynamic>{
       'id': 0,
+      'title': '✨ Create Your Own Custom Lanyard',
+      'category': 'Lanyard',
+      'lanyardEngine': true,
+      'isCustomCreator': true,
+      'variant': 99,
+    },
+    <String, dynamic>{
+      'id': 1,
       'title': 'Blue Ribbon Lanyard',
       'category': 'Lanyard',
       'lanyardEngine': true,
       'variant': 0,
     },
     <String, dynamic>{
-      'id': 1,
+      'id': 2,
       'title': 'Blue & Red Ribbon Lanyard',
       'category': 'Lanyard',
       'lanyardEngine': true,
@@ -772,7 +1107,7 @@ class CreateFlowController extends GetxController {
 
   /// Pre-fills lanyard demo when opening Lanyard flow.
   void applyLanyardDemoFields() {
-    instituteCtrl.text = kDefaultInstitute;
+    instituteCtrl.text = 'सिटी पब्लिक स्कूल';
     fullNameCtrl.text = kDefaultStudentName;
     courseCtrl.text = 'STUDENT';
     fatherNameCtrl.text = '';
@@ -1273,12 +1608,7 @@ class CreateFlowController extends GetxController {
   }
 
   void setSelectedTemplate(int index) {
-    selectedTemplate.value = index;
-    loadFontSizeScaleForCurrentTemplate();
-    if (Get.isRegistered<TemplateController>()) {
-      Get.find<TemplateController>().refreshCardData();
-    }
-    update(<Object>['template_screen', 'student_preview', 'employee_preview', 'lanyard_preview', 'live_preview']);
+    startEditingTemplate(index);
   }
 
   void showPremiumLimitDialog() {
@@ -1312,6 +1642,8 @@ class CreateFlowController extends GetxController {
       showPremiumLimitDialog();
       return false;
     }
+
+    saveCurrentTemplateEdits();
 
     await Future<void>.delayed(const Duration(milliseconds: 120));
 
@@ -1627,5 +1959,55 @@ class CreateFlowController extends GetxController {
     signatureCtrl.dispose();
     signatureDrawController.dispose();
     super.onClose();
+  }
+}
+
+class TemplateCustomSettings {
+  final int fontIndex;
+  final double fontSizeScale;
+  final int colorIndex;
+  final int? customTextColorHex;
+  final int? customHeaderColorHex;
+  final int companyLogoIndex;
+  final bool signatureHasBorder;
+  final int signatureBorderColorIndex;
+  final double signatureBorderWidth;
+
+  const TemplateCustomSettings({
+    this.fontIndex = 0,
+    this.fontSizeScale = 1.0,
+    this.colorIndex = 0,
+    this.customTextColorHex,
+    this.customHeaderColorHex,
+    this.companyLogoIndex = 0,
+    this.signatureHasBorder = false,
+    this.signatureBorderColorIndex = 0,
+    this.signatureBorderWidth = 1.0,
+  });
+
+  TemplateCustomSettings copyWith({
+    int? fontIndex,
+    double? fontSizeScale,
+    int? colorIndex,
+    int? customTextColorHex,
+    int? customHeaderColorHex,
+    int? companyLogoIndex,
+    bool? signatureHasBorder,
+    int? signatureBorderColorIndex,
+    double? signatureBorderWidth,
+    bool resetCustomTextColor = false,
+    bool resetCustomHeaderColor = false,
+  }) {
+    return TemplateCustomSettings(
+      fontIndex: fontIndex ?? this.fontIndex,
+      fontSizeScale: fontSizeScale ?? this.fontSizeScale,
+      colorIndex: colorIndex ?? this.colorIndex,
+      customTextColorHex: resetCustomTextColor ? null : (customTextColorHex ?? this.customTextColorHex),
+      customHeaderColorHex: resetCustomHeaderColor ? null : (customHeaderColorHex ?? this.customHeaderColorHex),
+      companyLogoIndex: companyLogoIndex ?? this.companyLogoIndex,
+      signatureHasBorder: signatureHasBorder ?? this.signatureHasBorder,
+      signatureBorderColorIndex: signatureBorderColorIndex ?? this.signatureBorderColorIndex,
+      signatureBorderWidth: signatureBorderWidth ?? this.signatureBorderWidth,
+    );
   }
 }

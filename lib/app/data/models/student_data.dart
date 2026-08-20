@@ -10,12 +10,12 @@ class StudentData {
   const StudentData({
     this.instituteName = '',
     this.studentName = '',
-    this.fatherName = '',
+    String fatherName = '',
     this.className = '',
     this.section = '',
     this.rollNo = '',
-    this.mobileNumber = '',
-    this.address = '',
+    String mobileNumber = '',
+    String address = '',
     this.email = '',
     this.bloodGroup = '',
     this.validFrom = '',
@@ -29,20 +29,46 @@ class StudentData {
     this.term1 = '',
     this.term2 = '',
     this.term3 = '',
-  });
+  })  : _fatherName = fatherName,
+        _mobileNumber = mobileNumber,
+        _address = address;
 
   final String instituteName;
   final String studentName;
-  final String fatherName;
+  final String _fatherName;
   final String className;
   final String section;
   final String rollNo;
-  final String mobileNumber;
-  final String address;
+  final String _mobileNumber;
+  final String _address;
   final String email;
   final String bloodGroup;
   final String validFrom;
   final String validTo;
+
+  String get fatherName {
+    final f = _fatherName.trim();
+    if (f.isEmpty) return '';
+    final clean = f.replaceAll(RegExp(r'^(Father|father|FATHER)\s*[-:]?\s*'), '').trim();
+    if (clean.isEmpty) return '';
+    return 'Father - $clean';
+  }
+
+  String get mobileNumber {
+    final m = _mobileNumber.trim();
+    if (m.isEmpty) return '';
+    final clean = m.replaceAll(RegExp(r'^(MO|mo|Mo|mO)\s*[-:]?\s*'), '').trim();
+    if (clean.isEmpty) return '';
+    return 'Mo - $clean';
+  }
+
+  String get address {
+    final a = _address.trim();
+    if (a.isEmpty) return '';
+    final clean = a.replaceAll(RegExp(r'^(Add|add|ADD)\s*[-:]?\s*'), '').trim();
+    if (clean.isEmpty) return '';
+    return 'Add - $clean';
+  }
   final String photoPath;
   final String signaturePath;
   final Uint8List? signatureBytes;
@@ -262,26 +288,39 @@ class StudentData {
       if (v.isNotEmpty) detailLines.add(v);
     }
 
-    // Student Form Order: Father Name -> Roll No -> Phone -> Email -> Blood Group -> Address
+    // Student Form Order on Card:
+    // 1. Father Name
+    // 2. Class / Course
+    // 3. Section (on its own line below Course)
+    // 4. Roll No / ID Number
+    // 5. Blood Group
+    // 6. Mobile / Phone
+    // 7. Email
+    // 8. Address
     if (fatherName.trim().isNotEmpty) {
       add(_capitalizeWords(fatherName));
     }
+    if (formattedClassName.isNotEmpty) {
+      add(formattedClassName);
+    }
+    if (section.trim().isNotEmpty) {
+      add(section.trim().toUpperCase());
+    }
     add(rollNo);
+    if (validFrom.trim().isNotEmpty) {
+      add(validFrom);
+    }
+    add(address);
     add(mobileNumber);
     add(email);
     if (bloodGroup.trim().isNotEmpty) {
-      add(bloodGroup.toUpperCase());
+      add(bloodGroup.trim().toUpperCase());
     }
-    add(address);
-
-    final courseClass = formattedClassName.isNotEmpty && section.trim().isNotEmpty
-        ? '$formattedClassName - ${section.trim().toUpperCase()}'
-        : (formattedClassName.isNotEmpty ? formattedClassName : section.trim().toUpperCase());
 
     return EmployeeData(
       companyName: formattedInstituteName,
       employeeName: formattedStudentName,
-      position: courseClass,
+      position: '',
       employeeId: rollNo,
       joinDate: validFrom,
       expireDate: validTo,
@@ -298,6 +337,7 @@ class StudentData {
       note2: term2,
       note3: term3,
       customFrontDetailLines: detailLines,
+      isStudentData: true,
     );
   }
 }
