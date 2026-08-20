@@ -7,6 +7,8 @@ import '../../id_templates/widgets/company_id_template_selector.dart';
 import '../../id_templates/widgets/id_card_scaled_preview.dart';
 import '../../id_templates/widgets/student_id_card_side.dart';
 import '../../id_templates/widgets/student_id_template_selector.dart';
+import '../../../data/models/employee_data.dart';
+import '../../../data/models/student_data.dart';
 
 /// Front 50% | Back 50% — PNG background + live form data.
 class StudentTemplatePickerCard extends GetView<TemplateController> {

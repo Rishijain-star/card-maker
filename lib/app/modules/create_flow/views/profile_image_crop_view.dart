@@ -12,9 +12,11 @@ class ProfileImageCropScreen extends StatefulWidget {
   const ProfileImageCropScreen({
     super.key,
     required this.imagePath,
+    this.isSignature = false,
   });
 
   final String imagePath;
+  final bool isSignature;
 
   @override
   State<ProfileImageCropScreen> createState() => _ProfileImageCropScreenState();
@@ -112,7 +114,9 @@ class _ProfileImageCropScreenState extends State<ProfileImageCropScreen> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final cropSquareSize = constraints.maxWidth * 0.85;
+          final cropWidth = constraints.maxWidth * 0.85;
+          final cropHeight = widget.isSignature ? cropWidth * 0.45 : cropWidth;
+          final cropRadius = widget.isSignature ? cropHeight / 2 : 16.0;
 
           return Column(
             children: [
@@ -129,11 +133,11 @@ class _ProfileImageCropScreenState extends State<ProfileImageCropScreen> {
               Expanded(
                 child: Center(
                   child: Container(
-                    width: cropSquareSize,
-                    height: cropSquareSize,
+                    width: cropWidth,
+                    height: cropHeight,
                     decoration: BoxDecoration(
                       color: Colors.black,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(cropRadius),
                       border: Border.all(
                         color: const Color(0xFF2563EB),
                         width: 3.0,
@@ -147,7 +151,7 @@ class _ProfileImageCropScreenState extends State<ProfileImageCropScreen> {
                       ],
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(13),
+                      borderRadius: BorderRadius.circular(cropRadius - 3),
                       child: RepaintBoundary(
                         key: _repaintKey,
                         child: Container(

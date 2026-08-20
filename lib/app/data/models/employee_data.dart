@@ -93,10 +93,10 @@ class EmployeeData {
 
     add(employeeId);
     add(joinDate);
-    add(address);
+    add(bloodGroup);
     add(phone);
     add(email);
-    add(bloodGroup);
+    add(address);
     return lines;
   }
 

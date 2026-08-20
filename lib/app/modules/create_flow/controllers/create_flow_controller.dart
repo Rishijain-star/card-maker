@@ -289,34 +289,31 @@ class CreateFlowController extends GetxController {
   bool _quickCreateAnother = false;
 
   /// Editable demo values — change anytime; not read-only.
-  static const String kDefaultInstitute = 'सिटी पब्लिक स्कूल माध्यमिक विद्यालय';
-  static const String kDefaultStudentName = 'rishi jain';
-  static const String kDefaultFatherName = 'Father - sharad jain';
-  static const String kDefaultCourse = 'bca';
+  static const String kDefaultInstitute = 'Modern International Public School';
+  static const String kDefaultStudentName = 'Rishi Jain';
+  static const String kDefaultFatherName = 'Sharad Jain';
+  static const String kDefaultCourse = '10th';
   static const String kDefaultSection = 'A';
-  static const String kDefaultRollNo = '12345677';
-  static const String kDefaultPhone = 'Mo - 8085909343';
+  static const String kDefaultRollNo = '01';
+  static const String kDefaultPhone = '8085909343';
   static const String kDefaultEmail = '';
   static const String kDefaultBloodGroup = 'A+';
-  static const String kDefaultAddress = 'Add - 33 d new angin nagar indore';
+  static const String kDefaultAddress = '33 D New Angin Nagar Indore';
   static const String kDefaultValidFrom = '04-06-2026';
   static const String kDefaultValidTo = '08-10-2026';
   static const String kDefaultTerm1 = 'First term: 85%';
   static const String kDefaultTerm2 = 'Second term: 78%';
   static const String kDefaultTerm3 = 'Third term: 82%';
 
-  static const String kDefaultCompany = 'TCS';
-  static const String kDefaultEmployeeName = 'John Thomouse';
-  static const String kDefaultPosition = 'Software Developer';
-  static const String kDefaultEmployeeId = '510484454';
-  static const String kDefaultEmployeeJoin = '';
+  static const String kDefaultCompany = 'Modern International Solutions';
+  static const String kDefaultEmployeeName = 'Rishi Jain';
+  static const String kDefaultPosition = 'Senior Software Developer';
+  static const String kDefaultEmployeeId = 'EMP-001';
+  static const String kDefaultEmployeeJoin = '20 August 2026';
   static const String kDefaultEmployeeExpire = '';
-  static const String kDefaultEmployeeNote1 =
-      'Lorem ipsum is simply dummy text of the printing industry.';
-  static const String kDefaultEmployeeNote2 =
-      'Lorem ipsum has been the industry standard dummy text.';
-  static const String kDefaultEmployeeNote3 =
-      'Lorem ipsum is simply dummy text of the typesetting industry.';
+  static const String kDefaultEmployeeNote1 = 'Professional Developer';
+  static const String kDefaultEmployeeNote2 = '5 Years Experience';
+  static const String kDefaultEmployeeNote3 = 'Full Time';
 
   final instituteCtrl = TextEditingController(text: kDefaultInstitute);
   final fullNameCtrl = TextEditingController(text: kDefaultStudentName);
@@ -458,7 +455,6 @@ class CreateFlowController extends GetxController {
       'premium': false,
       'studentEngine': true,
       'variant': 11,
-      'frontOnly': true,
     },
     <String, dynamic>{
       'id': 12,
@@ -466,9 +462,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 13,
-      'frontOnly': true,
-      'landscape': true,
+      'variant': 12,
     },
     <String, dynamic>{
       'id': 13,
@@ -476,9 +470,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 14,
-      'frontOnly': true,
-      'landscape': true,
+      'variant': 13,
     },
     <String, dynamic>{
       'id': 14,
@@ -486,7 +478,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 100,
+      'variant': 14,
     },
     <String, dynamic>{
       'id': 15,
@@ -494,7 +486,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 101,
+      'variant': 15,
     },
     <String, dynamic>{
       'id': 16,
@@ -502,7 +494,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 102,
+      'variant': 16,
     },
     <String, dynamic>{
       'id': 17,
@@ -510,7 +502,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 103,
+      'variant': 17,
     },
     <String, dynamic>{
       'id': 18,
@@ -518,7 +510,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 104,
+      'variant': 18,
     },
     <String, dynamic>{
       'id': 19,
@@ -526,7 +518,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 105,
+      'variant': 19,
     },
     <String, dynamic>{
       'id': 20,
@@ -534,7 +526,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 106,
+      'variant': 20,
     },
     <String, dynamic>{
       'id': 21,
@@ -542,7 +534,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 107,
+      'variant': 21,
     },
     <String, dynamic>{
       'id': 22,
@@ -550,7 +542,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 108,
+      'variant': 22,
     },
     <String, dynamic>{
       'id': 23,
@@ -558,7 +550,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 109,
+      'variant': 23,
     },
     <String, dynamic>{
       'id': 24,
@@ -566,7 +558,7 @@ class CreateFlowController extends GetxController {
       'category': 'Student',
       'premium': false,
       'studentEngine': true,
-      'variant': 110,
+      'variant': 24,
     },
     <String, dynamic>{
       'id': 25,
@@ -1089,12 +1081,12 @@ class CreateFlowController extends GetxController {
     expiryDateCtrl.text = kDefaultEmployeeJoin;
     validToCtrl.text = kDefaultEmployeeExpire;
     departmentCtrl.text = '';
-    phoneCtrl.text = kDefaultPhone;
-    emailCtrl.text = kDefaultEmail;
-    bloodGroupCtrl.text = kDefaultBloodGroup;
+    phoneCtrl.text = '9876543210';
+    emailCtrl.text = 'rishi.jain@example.com';
+    bloodGroupCtrl.text = 'A+';
     fatherNameCtrl.text = '';
     sectionCtrl.text = '';
-    addressCtrl.text = '';
+    addressCtrl.text = 'New Delhi, India';
     validFromCtrl.text = '';
     term1Ctrl.text = kDefaultEmployeeNote1;
     term2Ctrl.text = kDefaultEmployeeNote2;
@@ -1535,7 +1527,7 @@ class CreateFlowController extends GetxController {
     final file = await picker.pickImage(source: ImageSource.gallery, imageQuality: 90);
     if (file != null) {
       final croppedPath = await Get.to<String>(
-        () => ProfileImageCropScreen(imagePath: file.path),
+        () => ProfileImageCropScreen(imagePath: file.path, isSignature: true),
       );
       signatureImageBytes.value = null;
       signaturePath.value = (croppedPath != null && croppedPath.isNotEmpty) ? croppedPath : file.path;
@@ -1559,7 +1551,7 @@ class CreateFlowController extends GetxController {
     );
     if (file != null) {
       final croppedPath = await Get.to<String>(
-        () => ProfileImageCropScreen(imagePath: file.path),
+        () => ProfileImageCropScreen(imagePath: file.path, isSignature: true),
       );
       signatureImageBytes.value = null;
       signaturePath.value = (croppedPath != null && croppedPath.isNotEmpty) ? croppedPath : file.path;
@@ -1576,9 +1568,10 @@ class CreateFlowController extends GetxController {
       return;
     }
     final croppedPath = await Get.to<String>(
-      () => ProfileImageCropScreen(imagePath: currentPath),
+      () => ProfileImageCropScreen(imagePath: currentPath, isSignature: true),
     );
     if (croppedPath != null && croppedPath.isNotEmpty) {
+      signatureImageBytes.value = null;
       signaturePath.value = croppedPath;
       if (Get.isRegistered<TemplateController>()) {
         Get.find<TemplateController>().refreshCardData();
