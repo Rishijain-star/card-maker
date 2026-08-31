@@ -13,7 +13,11 @@ Route::get('/admin/run-system-migrations-securely-2026', function () {
     $results = [];
 
     try {
-        // 1. Create user_device_tokens table if not exists
+        // 1. Create user_device_tokens table if not exists or recreate if wrong columns
+        if (Illuminate\Support\Facades\Schema::hasTable('user_device_tokens') && !Illuminate\Support\Facades\Schema::hasColumn('user_device_tokens', 'token')) {
+            Illuminate\Support\Facades\Schema::drop('user_device_tokens');
+        }
+
         if (!Illuminate\Support\Facades\Schema::hasTable('user_device_tokens')) {
             Illuminate\Support\Facades\Schema::create('user_device_tokens', function ($table) {
                 $table->id();
@@ -27,16 +31,7 @@ Route::get('/admin/run-system-migrations-securely-2026', function () {
             });
             $results['user_device_tokens'] = 'Created';
         } else {
-            // Ensure token and device_id columns exist
-            if (!Illuminate\Support\Facades\Schema::hasColumn('user_device_tokens', 'token')) {
-                Illuminate\Support\Facades\Schema::table('user_device_tokens', function ($table) {
-                    $table->string('token', 80)->nullable()->after('user_id');
-                    $table->string('device_id')->nullable()->after('device_name');
-                });
-                $results['user_device_tokens_columns'] = 'Added token and device_id columns';
-            } else {
-                $results['user_device_tokens'] = 'Already Exists';
-            }
+            $results['user_device_tokens'] = 'Already Exists';
         }
 
         // 2. Add form_data column to saved_cards if not exists
