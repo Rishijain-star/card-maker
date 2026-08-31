@@ -24,6 +24,11 @@ class SavedCard extends Model
         'front_path',
         'back_path',
         'saved_at_ms',
+        'form_data',
+    ];
+
+    protected $casts = [
+        'form_data' => 'array',
     ];
 
     public function user(): BelongsTo

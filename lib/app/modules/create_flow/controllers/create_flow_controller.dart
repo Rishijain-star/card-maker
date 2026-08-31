@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:signature/signature.dart';
 
+import '../../../core/config/api_config.dart';
 import '../../../core/config/razorpay_config.dart';
 import '../../../core/widgets/shimmer_skeleton_loader.dart';
 import '../../../core/widgets/top_slide_notice.dart';
@@ -1567,15 +1568,34 @@ class CreateFlowController extends GetxController {
 
       for (final card in serverCards) {
         final pairId = '${card['client_pair_id'] ?? card['id']}';
-        final frontUrl = '${card['front_url'] ?? card['front_path'] ?? ''}';
-        final backUrl = '${card['back_url'] ?? card['back_path'] ?? ''}';
+        var frontUrl = '${card['front_url'] ?? card['front_path'] ?? ''}';
+        var backUrl = '${card['back_url'] ?? card['back_path'] ?? ''}';
+
+        // Normalize URL to active server host if relative or port is missing
+        frontUrl = _normalizeCardImageUrl(frontUrl);
+        backUrl = _normalizeCardImageUrl(backUrl);
+
+        Map<String, dynamic>? serverFormData;
+        if (card['form_data'] is Map) {
+          serverFormData = Map<String, dynamic>.from(card['form_data'] as Map);
+        } else if (card['form_data'] is String && (card['form_data'] as String).isNotEmpty) {
+          try {
+            final d = jsonDecode(card['form_data'] as String);
+            if (d is Map) serverFormData = Map<String, dynamic>.from(d);
+          } catch (_) {}
+        }
 
         if (existingMap.containsKey(pairId)) {
           final local = existingMap[pairId]!;
-          if (local.frontImagePath.isEmpty && frontUrl.isNotEmpty) {
+          final isLocalMissingFront = local.frontImagePath.isEmpty ||
+              (!local.frontImagePath.startsWith('http') && !File(local.frontImagePath).existsSync());
+          final isLocalMissingFormData = local.formData == null && serverFormData != null;
+
+          if (isLocalMissingFront || isLocalMissingFormData) {
             final updated = local.copyWith(
-              frontImagePath: frontUrl,
-              backImagePath: backUrl.isNotEmpty ? backUrl : local.backImagePath,
+              frontImagePath: isLocalMissingFront && frontUrl.isNotEmpty ? frontUrl : local.frontImagePath,
+              backImagePath: isLocalMissingFront && backUrl.isNotEmpty ? backUrl : local.backImagePath,
+              formData: isLocalMissingFormData ? serverFormData : local.formData,
             );
             final idx = savedDesigns.indexWhere((d) => d.templatePairId == pairId);
             if (idx != -1) {
@@ -1598,6 +1618,7 @@ class CreateFlowController extends GetxController {
                 : DateTime.now().millisecondsSinceEpoch,
             instituteName: '${card['institute_name'] ?? ''}',
             studentName: '${card['student_name'] ?? ''}',
+            formData: serverFormData,
           );
           savedDesigns.add(newDesign);
           changed = true;
@@ -1610,6 +1631,125 @@ class CreateFlowController extends GetxController {
       }
     } catch (e, s) {
       print('syncSavedCardsFromServer error: $e\n$s');
+    }
+  }
+
+  /// Normalizes card image URLs so local dev port and relative paths resolve to current server
+  static String _normalizeCardImageUrl(String url) {
+    if (url.trim().isEmpty) return '';
+    var u = url.trim();
+    final apiBase = ApiConfig.baseUrl;
+    final serverHost = apiBase.replaceAll(RegExp(r'/api/v1/?$'), '');
+
+    if (u.startsWith('uploads/')) {
+      return '$serverHost/$u';
+    }
+    if (u.startsWith('/uploads/')) {
+      return '$serverHost$u';
+    }
+    if (u.contains('localhost/') && !u.contains(':8000')) {
+      return u.replaceFirst('http://localhost', serverHost);
+    }
+    return u;
+  }
+
+  /// Restores complete saved design data into form controllers for editing
+  void restoreDesignToForm(SavedDesign design) {
+    if (design.service.isNotEmpty) {
+      selectedService.value = design.service;
+    }
+    if (design.fontFamily.isNotEmpty) {
+      final fontIndex = fonts.indexOf(design.fontFamily);
+      if (fontIndex != -1) {
+        selectedFont.value = fontIndex;
+      }
+    }
+    fontSizeScale.value = design.fontSizeScale;
+
+    if (design.instituteName.isNotEmpty) {
+      instituteCtrl.text = design.instituteName;
+    }
+    if (design.studentName.isNotEmpty) {
+      fullNameCtrl.text = design.studentName;
+    }
+    if (design.logoPath != null && design.logoPath!.isNotEmpty) {
+      if (isEmployeeService) {
+        empPhotoPath.value = design.logoPath!;
+      } else {
+        photoPath.value = design.logoPath!;
+      }
+    }
+
+    if (design.lanyardRepeatCount != null) {
+      lanyardRepeatCount.value = design.lanyardRepeatCount!;
+    }
+    if (design.lanyardTextOffsetX != null) {
+      lanyardTextOffsetX.value = design.lanyardTextOffsetX!;
+    }
+    if (design.lanyardTextOffsetY != null) {
+      lanyardTextOffsetY.value = design.lanyardTextOffsetY!;
+    }
+    if (design.lanyardLogoTextSpacing != null) {
+      lanyardLogoTextSpacing.value = design.lanyardLogoTextSpacing!;
+    }
+    design.lanyardTextColorHex != null ? lanyardCustomTextColorHex.value = design.lanyardTextColorHex : null;
+
+    // Restore full form fields from formData
+    if (design.formData != null) {
+      final d = design.formData!;
+      if (d['fatherName'] != null) fatherNameCtrl.text = '${d['fatherName']}';
+      if (d['course'] != null) courseCtrl.text = '${d['course']}';
+      if (d['section'] != null) sectionCtrl.text = '${d['section']}';
+      if (d['term1'] != null) term1Ctrl.text = '${d['term1']}';
+      if (d['term2'] != null) term2Ctrl.text = '${d['term2']}';
+      if (d['term3'] != null) term3Ctrl.text = '${d['term3']}';
+      if (d['bloodGroup'] != null) bloodGroupCtrl.text = '${d['bloodGroup']}';
+      if (d['phone'] != null) phoneCtrl.text = '${d['phone']}';
+      if (d['email'] != null) emailCtrl.text = '${d['email']}';
+      if (d['address'] != null) addressCtrl.text = '${d['address']}';
+      if (d['expiryDate'] != null) expiryDateCtrl.text = '${d['expiryDate']}';
+      if (d['validFrom'] != null) validFromCtrl.text = '${d['validFrom']}';
+      if (d['validTo'] != null) validToCtrl.text = '${d['validTo']}';
+      if (d['idNumber'] != null) idNumberCtrl.text = '${d['idNumber']}';
+      if (d['department'] != null) departmentCtrl.text = '${d['department']}';
+      if (d['photoPath'] != null && '${d['photoPath']}'.isNotEmpty) photoPath.value = '${d['photoPath']}';
+
+      if (d['empCompanyName'] != null) empCompanyNameCtrl.text = '${d['empCompanyName']}';
+      if (d['empFullName'] != null) empFullNameCtrl.text = '${d['empFullName']}';
+      if (d['empPosition'] != null) empPositionCtrl.text = '${d['empPosition']}';
+      if (d['empIdNumber'] != null) empIdNumberCtrl.text = '${d['empIdNumber']}';
+      if (d['empJoinDate'] != null) empJoinDateCtrl.text = '${d['empJoinDate']}';
+      if (d['empExpireDate'] != null) empExpireDateCtrl.text = '${d['empExpireDate']}';
+      if (d['empPhone'] != null) empPhoneCtrl.text = '${d['empPhone']}';
+      if (d['empEmail'] != null) empEmailCtrl.text = '${d['empEmail']}';
+      if (d['empAddress'] != null) empAddressCtrl.text = '${d['empAddress']}';
+      if (d['empBloodGroup'] != null) empBloodGroupCtrl.text = '${d['empBloodGroup']}';
+      if (d['empNote1'] != null) empNote1Ctrl.text = '${d['empNote1']}';
+      if (d['empNote2'] != null) empNote2Ctrl.text = '${d['empNote2']}';
+      if (d['empNote3'] != null) empNote3Ctrl.text = '${d['empNote3']}';
+      if (d['empPhotoPath'] != null && '${d['empPhotoPath']}'.isNotEmpty) empPhotoPath.value = '${d['empPhotoPath']}';
+
+      if (d['selectedTemplate'] is int) {
+        selectedTemplate.value = d['selectedTemplate'] as int;
+      }
+      if (d['selectedFont'] is int) {
+        selectedFont.value = d['selectedFont'] as int;
+      }
+      if (d['selectedColor'] is int) {
+        selectedColor.value = d['selectedColor'] as int;
+      }
+      if (d['employeeSelectedTemplate'] is int) {
+        employeeSelectedTemplate.value = d['employeeSelectedTemplate'] as int;
+      }
+    }
+
+    int templateIdx = design.lanyardVariant ?? (int.tryParse(design.templatePairId) ?? selectedTemplate.value);
+    setSelectedTemplate(templateIdx);
+    if (Get.isRegistered<TemplateController>()) {
+      final templateCtrl = Get.find<TemplateController>();
+      templateCtrl.selectTemplate(templateIdx);
+      templateCtrl.refreshCardData();
+      templateCtrl.openTemplateEditor(templateIdx);
     }
   }
 
@@ -2002,6 +2142,46 @@ class CreateFlowController extends GetxController {
     // Save current font size scale to permanent memory for this template only when user saves
     savedTemplateFontScales[currentTemplateKey] = isEmployeeService ? employeeFontSizeScale.value : fontSizeScale.value;
 
+    final cardFormData = <String, dynamic>{
+      'institute': instituteCtrl.text,
+      'fullName': fullNameCtrl.text,
+      'fatherName': fatherNameCtrl.text,
+      'course': courseCtrl.text,
+      'section': sectionCtrl.text,
+      'term1': term1Ctrl.text,
+      'term2': term2Ctrl.text,
+      'term3': term3Ctrl.text,
+      'bloodGroup': bloodGroupCtrl.text,
+      'phone': phoneCtrl.text,
+      'email': emailCtrl.text,
+      'address': addressCtrl.text,
+      'expiryDate': expiryDateCtrl.text,
+      'validFrom': validFromCtrl.text,
+      'validTo': validToCtrl.text,
+      'idNumber': idNumberCtrl.text,
+      'department': departmentCtrl.text,
+      'selectedTemplate': selectedTemplate.value,
+      'selectedFont': selectedFont.value,
+      'selectedColor': selectedColor.value,
+      if (isEmployeeService) ...{
+        'empCompanyName': empCompanyNameCtrl.text,
+        'empFullName': empFullNameCtrl.text,
+        'empPosition': empPositionCtrl.text,
+        'empIdNumber': empIdNumberCtrl.text,
+        'empJoinDate': empJoinDateCtrl.text,
+        'empExpireDate': empExpireDateCtrl.text,
+        'empPhone': empPhoneCtrl.text,
+        'empEmail': empEmailCtrl.text,
+        'empAddress': empAddressCtrl.text,
+        'empBloodGroup': empBloodGroupCtrl.text,
+        'empNote1': empNote1Ctrl.text,
+        'empNote2': empNote2Ctrl.text,
+        'empNote3': empNote3Ctrl.text,
+        'employeeSelectedTemplate': employeeSelectedTemplate.value,
+        'employeeSelectedFont': employeeSelectedFont.value,
+      },
+    };
+
     final design = SavedDesign(
       templatePairId: pairId,
       title: title,
@@ -2021,6 +2201,7 @@ class CreateFlowController extends GetxController {
       lanyardLogoTextSpacing: lanyardLogoTextSpacing.value,
       lanyardTextColorHex: lanyardCustomTextColorHex.value,
       logoPath: isEmployeeService ? empPhotoPath.value : photoPath.value,
+      formData: cardFormData,
     );
     savedDesigns.insert(0, design);
     await _persistSavedDesigns();
@@ -2039,6 +2220,7 @@ class CreateFlowController extends GetxController {
         frontImageBase64: base64Encode(frontBytes),
         backImageBase64: backBytes != null ? base64Encode(backBytes) : null,
         savedAtMs: int.tryParse(pairId),
+        formData: cardFormData,
       );
     } catch (_) {}
 

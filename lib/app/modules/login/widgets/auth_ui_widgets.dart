@@ -33,123 +33,137 @@ class AuthScreenShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final bottomInset = MediaQuery.paddingOf(context).bottom;
-    final headerHeight = size.height * 0.36;
-
-    final formBody = scrollable
-        ? SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(20, 8, 20, bottomInset + 12),
-            child: child,
-          )
-        : Padding(
-            padding: EdgeInsets.fromLTRB(20, 8, 20, bottomInset + 12),
-            child: child,
-          );
+    final keyboardBottom = MediaQuery.viewInsetsOf(context).bottom;
+    final isKeyboardOpen = keyboardBottom > 0;
+    final headerHeight = isKeyboardOpen ? (size.height * 0.20) : (size.height * 0.36);
 
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light.copyWith(
           statusBarColor: Colors.transparent,
           systemNavigationBarColor: Colors.black,
         ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: headerHeight,
-              width: double.infinity,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [kAuthHeaderBlue, kAuthHeaderBlueDark],
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: -20,
-                    left: -30,
-                    child: _DecorCircle(size: 90, opacity: 0.14),
-                  ),
-                  Positioned(
-                    top: 40,
-                    right: -24,
-                    child: _DecorCircle(size: 64, opacity: 0.12),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 64,
-                            height: 64,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.12),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              physics: const ClampingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: headerHeight,
+                        width: double.infinity,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            const DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [kAuthHeaderBlue, kAuthHeaderBlueDark],
                                 ),
-                              ],
+                              ),
                             ),
-                            padding: const EdgeInsets.all(10),
-                            child: Image.asset(
-                              kAuthBadgeAsset,
-                              fit: BoxFit.contain,
+                            Positioned(
+                              top: -20,
+                              left: -30,
+                              child: _DecorCircle(size: 90, opacity: 0.14),
                             ),
-                          ),
-                          const SizedBox(height: 14),
-                          const AuthBrandBanner(),
-                          const SizedBox(height: 10),
-                          Text(
-                            title,
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
+                            Positioned(
+                              top: 40,
+                              right: -24,
+                              child: _DecorCircle(size: 64, opacity: 0.12),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            subtitle,
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
-                              color: Colors.white.withValues(alpha: 0.88),
-                              fontSize: 13,
-                              height: 1.35,
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 24),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if (!isKeyboardOpen) ...[
+                                      Container(
+                                        width: 64,
+                                        height: 64,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withValues(alpha: 0.12),
+                                              blurRadius: 12,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        padding: const EdgeInsets.all(10),
+                                        child: Image.asset(
+                                          kAuthBadgeAsset,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 14),
+                                      const AuthBrandBanner(),
+                                      const SizedBox(height: 10),
+                                    ] else ...[
+                                      const SizedBox(height: 16),
+                                    ],
+                                    Text(
+                                      title,
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontSize: isKeyboardOpen ? 18 : 20,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    if (!isKeyboardOpen) ...[
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        subtitle,
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white.withValues(alpha: 0.88),
+                                          fontSize: 13,
+                                          height: 1.35,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
+                      Expanded(
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Positioned.fill(
+                              top: -20,
+                              child: ClipPath(
+                                clipper: WelcomeWaveClipper(),
+                                child: const ColoredBox(color: Colors.white),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 8, 20, bottomInset + 12),
+                              child: child,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-            Expanded(
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Positioned.fill(
-                    top: -20,
-                    child: ClipPath(
-                      clipper: WelcomeWaveClipper(),
-                      child: const ColoredBox(color: Colors.white),
-                    ),
-                  ),
-                  Positioned.fill(child: formBody),
-                ],
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

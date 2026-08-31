@@ -139,9 +139,11 @@ class MyDesignsView extends GetView<CreateFlowController> {
                     itemBuilder: (context, index) {
                       final design = controller.savedDesigns[index];
                       final hasFront = design.frontImagePath.isNotEmpty &&
-                          File(design.frontImagePath).existsSync();
+                          (design.frontImagePath.startsWith('http') ||
+                              File(design.frontImagePath).existsSync());
                       final hasBack = design.backImagePath.isNotEmpty &&
-                          File(design.backImagePath).existsSync();
+                          (design.backImagePath.startsWith('http') ||
+                              File(design.backImagePath).existsSync());
                       return AppCard(
                         child: InkWell(
                           onTap: () => _openCardViewer(context, design),
@@ -301,13 +303,18 @@ class _SavedCardViewerDialogState extends State<SavedCardViewerDialog> {
   Widget build(BuildContext context) {
     final design = widget.design;
     final hasFront = design.frontImagePath.isNotEmpty &&
-        File(design.frontImagePath).existsSync();
+        (design.frontImagePath.startsWith('http') ||
+            File(design.frontImagePath).existsSync());
     final hasBack = design.backImagePath.isNotEmpty &&
-        File(design.backImagePath).existsSync();
+        (design.backImagePath.startsWith('http') ||
+            File(design.backImagePath).existsSync());
 
     final currentPath = _selectedSide == 0
         ? (hasFront ? design.frontImagePath : design.backImagePath)
         : (hasBack ? design.backImagePath : design.frontImagePath);
+
+    final isNetwork = currentPath.startsWith('http://') || currentPath.startsWith('https://');
+    final canRender = currentPath.isNotEmpty && (isNetwork || File(currentPath).existsSync());
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -356,6 +363,29 @@ class _SavedCardViewerDialogState extends State<SavedCardViewerDialog> {
                           color: const Color(0xFF94A3B8),
                         ),
                       ),
+                      if (design.formData != null && design.formData!.isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          children: [
+                            if ('${design.formData!['fatherName'] ?? ''}'.trim().isNotEmpty)
+                              _buildDetailBadge('Father: ${design.formData!['fatherName']}'),
+                            if ('${design.formData!['course'] ?? ''}'.trim().isNotEmpty)
+                              _buildDetailBadge('Course: ${design.formData!['course']}'),
+                            if ('${design.formData!['section'] ?? ''}'.trim().isNotEmpty)
+                              _buildDetailBadge('Section: ${design.formData!['section']}'),
+                            if ('${design.formData!['bloodGroup'] ?? ''}'.trim().isNotEmpty)
+                              _buildDetailBadge('Blood: ${design.formData!['bloodGroup']}'),
+                            if ('${design.formData!['phone'] ?? ''}'.trim().isNotEmpty)
+                              _buildDetailBadge('Ph: ${design.formData!['phone']}'),
+                            if ('${design.formData!['empPosition'] ?? ''}'.trim().isNotEmpty)
+                              _buildDetailBadge('Position: ${design.formData!['empPosition']}'),
+                            if ('${design.formData!['empIdNumber'] ?? ''}'.trim().isNotEmpty)
+                              _buildDetailBadge('Emp ID: ${design.formData!['empIdNumber']}'),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -407,32 +437,25 @@ class _SavedCardViewerDialogState extends State<SavedCardViewerDialog> {
               child: Container(
                 constraints: const BoxConstraints(maxHeight: 380),
                 color: const Color(0xFF1E293B),
-                child: currentPath.isNotEmpty && File(currentPath).existsSync()
+                child: canRender
                     ? InteractiveViewer(
                         panEnabled: true,
                         boundaryMargin: const EdgeInsets.all(20),
                         minScale: 0.8,
                         maxScale: 3.5,
-                        child: Image.file(
-                          File(currentPath),
-                          fit: BoxFit.contain,
-                        ),
+                        child: isNetwork
+                            ? Image.network(
+                                currentPath,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) => _buildErrorPlaceholder(),
+                              )
+                            : Image.file(
+                                File(currentPath),
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) => _buildErrorPlaceholder(),
+                              ),
                       )
-                    : Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.broken_image_rounded,
-                                size: 48, color: Colors.grey),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Image file not found',
-                              style: GoogleFonts.poppins(
-                                  color: Colors.grey, fontSize: 13),
-                            ),
-                          ],
-                        ),
-                      ),
+                    : _buildErrorPlaceholder(),
               ),
             ),
             const SizedBox(height: 16),
@@ -469,46 +492,7 @@ class _SavedCardViewerDialogState extends State<SavedCardViewerDialog> {
                       Navigator.of(context).pop();
                       if (Get.isRegistered<CreateFlowController>()) {
                         final flow = Get.find<CreateFlowController>();
-                        if (design.service.isNotEmpty) {
-                          flow.selectedService.value = design.service;
-                        }
-                        if (design.fontFamily.isNotEmpty) {
-                          final fontIndex = flow.fonts.indexOf(design.fontFamily);
-                          if (fontIndex != -1) {
-                            flow.selectedFont.value = fontIndex;
-                          }
-                        }
-                        flow.fontSizeScale.value = design.fontSizeScale;
-                        if (design.instituteName.isNotEmpty) {
-                          flow.instituteCtrl.text = design.instituteName;
-                        }
-                        if (design.studentName.isNotEmpty) {
-                          flow.fullNameCtrl.text = design.studentName;
-                        }
-                        if (design.logoPath != null && design.logoPath!.isNotEmpty) {
-                          flow.photoPath.value = design.logoPath!;
-                        }
-                        if (design.lanyardRepeatCount != null) {
-                          flow.lanyardRepeatCount.value = design.lanyardRepeatCount!;
-                        }
-                        if (design.lanyardTextOffsetX != null) {
-                          flow.lanyardTextOffsetX.value = design.lanyardTextOffsetX!;
-                        }
-                        if (design.lanyardTextOffsetY != null) {
-                          flow.lanyardTextOffsetY.value = design.lanyardTextOffsetY!;
-                        }
-                        if (design.lanyardLogoTextSpacing != null) {
-                          flow.lanyardLogoTextSpacing.value = design.lanyardLogoTextSpacing!;
-                        }
-                        flow.lanyardCustomTextColorHex.value = design.lanyardTextColorHex;
-                        int templateIdx = design.lanyardVariant ?? (int.tryParse(design.templatePairId) ?? 0);
-                        flow.setSelectedTemplate(templateIdx);
-                        if (Get.isRegistered<TemplateController>()) {
-                          final templateCtrl = Get.find<TemplateController>();
-                          templateCtrl.selectTemplate(templateIdx);
-                          templateCtrl.refreshCardData();
-                          templateCtrl.openTemplateEditor(templateIdx);
-                        }
+                        flow.restoreDesignToForm(design);
                       }
                     },
                     icon: const Icon(Icons.edit_rounded, size: 18),
@@ -550,6 +534,41 @@ class _SavedCardViewerDialogState extends State<SavedCardViewerDialog> {
       ),
     );
   }
+
+  Widget _buildDetailBadge(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E293B),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: const Color(0xFF334155), width: 0.8),
+      ),
+      child: Text(
+        text,
+        style: GoogleFonts.poppins(
+          fontSize: 10,
+          color: const Color(0xFFCBD5E1),
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorPlaceholder() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.broken_image_rounded, size: 48, color: Colors.grey),
+          const SizedBox(height: 8),
+          Text(
+            'Image file not found',
+            style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _DesignThumb extends StatelessWidget {
@@ -565,25 +584,32 @@ class _DesignThumb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isNetwork = path.startsWith('http://') || path.startsWith('https://');
+
+    Widget imageWidget;
+    if (isNetwork) {
+      imageWidget = Image.network(
+        path,
+        width: 52,
+        height: 72,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _placeholder(),
+      );
+    } else if (hasFile) {
+      imageWidget = Image.file(
+        File(path),
+        width: 52,
+        height: 72,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _placeholder(),
+      );
+    } else {
+      imageWidget = _placeholder();
+    }
+
     return Stack(
       children: [
-        hasFile
-            ? Image.file(
-                File(path),
-                width: 52,
-                height: 72,
-                fit: BoxFit.cover,
-              )
-            : Container(
-                width: 52,
-                height: 72,
-                color: const Color(0xFFE2E8F0),
-                child: const Icon(
-                  Icons.badge_outlined,
-                  color: Color(0xFF94A3B8),
-                  size: 22,
-                ),
-              ),
+        imageWidget,
         Positioned(
           right: 2,
           bottom: 2,
@@ -606,4 +632,15 @@ class _DesignThumb extends StatelessWidget {
       ],
     );
   }
+
+  Widget _placeholder() => Container(
+        width: 52,
+        height: 72,
+        color: const Color(0xFFE2E8F0),
+        child: const Icon(
+          Icons.badge_outlined,
+          color: Color(0xFF94A3B8),
+          size: 22,
+        ),
+      );
 }

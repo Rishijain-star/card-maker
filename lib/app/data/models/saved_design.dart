@@ -20,6 +20,7 @@ class SavedDesign {
     this.lanyardLogoTextSpacing,
     this.lanyardTextColorHex,
     this.logoPath,
+    this.formData,
   });
 
   final String templatePairId;
@@ -40,6 +41,7 @@ class SavedDesign {
   final double? lanyardLogoTextSpacing;
   final int? lanyardTextColorHex;
   final String? logoPath;
+  final Map<String, dynamic>? formData;
 
   /// Same as [templatePairId] — one ID links front + back images.
   String get id => templatePairId;
@@ -77,6 +79,7 @@ class SavedDesign {
     double? lanyardLogoTextSpacing,
     int? lanyardTextColorHex,
     String? logoPath,
+    Map<String, dynamic>? formData,
   }) {
     return SavedDesign(
       templatePairId: templatePairId ?? this.templatePairId,
@@ -97,6 +100,7 @@ class SavedDesign {
       lanyardLogoTextSpacing: lanyardLogoTextSpacing ?? this.lanyardLogoTextSpacing,
       lanyardTextColorHex: lanyardTextColorHex ?? this.lanyardTextColorHex,
       logoPath: logoPath ?? this.logoPath,
+      formData: formData ?? this.formData,
     );
   }
 
@@ -121,12 +125,25 @@ class SavedDesign {
         if (lanyardLogoTextSpacing != null) 'lanyardLogoTextSpacing': lanyardLogoTextSpacing,
         if (lanyardTextColorHex != null) 'lanyardTextColorHex': lanyardTextColorHex,
         if (logoPath != null) 'logoPath': logoPath,
+        if (formData != null) 'formData': formData,
       };
 
   factory SavedDesign.fromJson(Map<String, dynamic> json) {
     final pairId = '${json['templatePairId'] ?? json['id'] ?? ''}';
     final front = '${json['frontImagePath'] ?? json['imagePath'] ?? ''}';
     final title = '${json['title'] ?? 'Untitled'}';
+    Map<String, dynamic>? parsedFormData;
+    if (json['formData'] is Map) {
+      parsedFormData = Map<String, dynamic>.from(json['formData'] as Map);
+    } else if (json['form_data'] is Map) {
+      parsedFormData = Map<String, dynamic>.from(json['form_data'] as Map);
+    } else if (json['form_data'] is String && (json['form_data'] as String).isNotEmpty) {
+      try {
+        final d = jsonDecode(json['form_data'] as String);
+        if (d is Map) parsedFormData = Map<String, dynamic>.from(d);
+      } catch (_) {}
+    }
+
     return SavedDesign(
       templatePairId: pairId,
       title: title,
@@ -146,6 +163,7 @@ class SavedDesign {
       lanyardLogoTextSpacing: (json['lanyardLogoTextSpacing'] as num?)?.toDouble(),
       lanyardTextColorHex: json['lanyardTextColorHex'] as int?,
       logoPath: json['logoPath'] as String?,
+      formData: parsedFormData,
     );
   }
 

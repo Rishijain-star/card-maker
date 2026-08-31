@@ -64,15 +64,17 @@ class CardController extends Controller
             ->latest('saved_at_ms')
             ->get();
 
-        $cardList = $cards->map(function ($card) {
+        $host = $request->getSchemeAndHttpHost();
+
+        $cardList = $cards->map(function ($card) use ($host) {
             $frontUrl = null;
             if ($card->front_path) {
-                $frontUrl = str_starts_with($card->front_path, 'http') ? $card->front_path : asset($card->front_path);
+                $frontUrl = str_starts_with($card->front_path, 'http') ? $card->front_path : $host . '/' . ltrim($card->front_path, '/');
             }
 
             $backUrl = null;
             if ($card->back_path) {
-                $backUrl = str_starts_with($card->back_path, 'http') ? $card->back_path : asset($card->back_path);
+                $backUrl = str_starts_with($card->back_path, 'http') ? $card->back_path : $host . '/' . ltrim($card->back_path, '/');
             }
 
             return [
@@ -88,6 +90,7 @@ class CardController extends Controller
                 'back_path' => $card->back_path,
                 'front_url' => $frontUrl,
                 'back_url' => $backUrl,
+                'form_data' => $card->form_data,
                 'saved_at_ms' => $card->saved_at_ms,
                 'created_at' => $card->created_at?->toIso8601String(),
             ];
@@ -124,8 +127,16 @@ class CardController extends Controller
         $fontFamily = $request->input('font_family') ?: 'Poppins';
         $savedAtMs = $request->input('saved_at_ms') ?: (int) (microtime(true) * 1000);
 
+        $formData = $request->input('form_data');
+        if (is_string($formData)) {
+            $decoded = json_decode($formData, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $formData = $decoded;
+            }
+        }
+
         // Atomic transaction with row lock on user to prevent race condition quota bypass
-        $result = DB::transaction(function () use ($user, $pairId, $title, $studentName, $instituteName, $service, $templateName, $fontFamily, $savedAtMs, $request) {
+        $result = DB::transaction(function () use ($user, $pairId, $title, $studentName, $instituteName, $service, $templateName, $fontFamily, $savedAtMs, $formData, $request) {
             // Lock user row for update
             $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
             $limit = $lockedUser->getSaveLimit();
@@ -161,6 +172,7 @@ class CardController extends Controller
                     'font_family' => $fontFamily,
                     'front_path' => $frontPath ?: $existingCard->front_path,
                     'back_path' => $backPath ?: $existingCard->back_path,
+                    'form_data' => $formData ?: $existingCard->form_data,
                     'saved_at_ms' => $savedAtMs,
                 ]);
                 $card = $existingCard;
@@ -176,6 +188,7 @@ class CardController extends Controller
                     'font_family' => $fontFamily,
                     'front_path' => $frontPath,
                     'back_path' => $backPath,
+                    'form_data' => $formData,
                     'saved_at_ms' => $savedAtMs,
                 ]);
             }
@@ -200,6 +213,7 @@ class CardController extends Controller
         }
 
         $card = $result['card'];
+        $host = $request->getSchemeAndHttpHost();
 
         return response()->json([
             'status' => true,
@@ -207,8 +221,9 @@ class CardController extends Controller
             'data' => [
                 'card_id' => $card->id,
                 'client_pair_id' => $card->client_pair_id,
-                'front_url' => $card->front_path ? (str_starts_with($card->front_path, 'http') ? $card->front_path : asset($card->front_path)) : null,
-                'back_url' => $card->back_path ? (str_starts_with($card->back_path, 'http') ? $card->back_path : asset($card->back_path)) : null,
+                'front_url' => $card->front_path ? (str_starts_with($card->front_path, 'http') ? $card->front_path : $host . '/' . ltrim($card->front_path, '/')) : null,
+                'back_url' => $card->back_path ? (str_starts_with($card->back_path, 'http') ? $card->back_path : $host . '/' . ltrim($card->back_path, '/')) : null,
+                'form_data' => $card->form_data,
             ],
             'meta' => [
                 'total_saved' => $result['total_saved'],

@@ -515,6 +515,7 @@ class ApiRepository {
     String? frontImageBase64,
     String? backImageBase64,
     int? savedAtMs,
+    Map<String, dynamic>? formData,
   }) async {
     try {
       return await ApiClient().postRequest(
@@ -530,6 +531,7 @@ class ApiRepository {
           if (frontImageBase64 != null) "front_image_base64": frontImageBase64,
           if (backImageBase64 != null) "back_image_base64": backImageBase64,
           if (savedAtMs != null) "saved_at_ms": savedAtMs,
+          if (formData != null) "form_data": formData,
         },
       );
     } catch (e, s) {
