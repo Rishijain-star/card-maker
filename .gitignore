@@ -60,3 +60,5 @@ app.*.map.json
 detils
 detils*
 .agents/
+admin/public/uploads/cards/*
+!admin/public/uploads/cards/.gitkeep
