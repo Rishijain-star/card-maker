@@ -43,6 +43,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/products', [ProductController::class, 'index'])->name('products');
         Route::post('/products', [ProductController::class, 'store'])->name('products.store');
         Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
         Route::get('/orders/{order}', [AdminController::class, 'showOrder'])->name('orders.show');
         Route::get('/orders/{order}/print', [AdminController::class, 'printOrder'])->name('orders.print');

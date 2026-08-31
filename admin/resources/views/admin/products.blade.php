@@ -85,8 +85,15 @@
                         <label>Change image</label>
                         <input type="file" name="image" accept="image/*">
                     </div>
-                    <button type="submit" class="btn-save">Update</button>
+                    <div style="display:flex; gap:8px; align-items:center; margin-top:4px;">
+                        <button type="submit" class="btn-save">Update</button>
+                        <button type="button" class="btn-delete" onclick="if(confirm('Are you sure you want to delete \'{{ addslashes($product->name) }}\'? It will also be removed from the mobile application.')) { document.getElementById('delete-product-{{ $product->id }}').submit(); }">Delete</button>
+                    </div>
                 </div>
+            </form>
+            <form id="delete-product-{{ $product->id }}" method="POST" action="{{ route('admin.products.destroy', $product) }}" style="display:none;">
+                @csrf
+                @method('DELETE')
             </form>
         @empty
             <div class="empty-products">No products yet. Click "Add Product" above.</div>

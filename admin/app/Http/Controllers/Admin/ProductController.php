@@ -86,6 +86,16 @@ class ProductController extends Controller
             ->with('success', 'Product updated successfully.');
     }
 
+    public function destroy(Product $product): RedirectResponse
+    {
+        $this->deleteImage($product->image);
+        $product->delete();
+
+        return redirect()
+            ->route('admin.products')
+            ->with('success', 'Product deleted successfully.');
+    }
+
     private function saveImage(\Illuminate\Http\UploadedFile $file): string
     {
         $dir = public_path('uploads/products');
