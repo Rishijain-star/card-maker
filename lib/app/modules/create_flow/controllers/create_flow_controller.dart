@@ -1743,7 +1743,22 @@ class CreateFlowController extends GetxController {
       }
     }
 
-    int templateIdx = design.lanyardVariant ?? (int.tryParse(design.templatePairId) ?? selectedTemplate.value);
+    int templateIdx = 0;
+    for (int i = 0; i < activeTemplates.length; i++) {
+      final name = templateTitleAt(i).toLowerCase();
+      if (name == design.templateName.toLowerCase() ||
+          design.title.toLowerCase().contains('template ${i + 1}') ||
+          design.templateName.toLowerCase().contains('template ${i + 1}')) {
+        templateIdx = i;
+        break;
+      }
+    }
+    if (templateIdx == 0 && design.formData != null && design.formData!['selectedTemplate'] is int) {
+      templateIdx = design.formData!['selectedTemplate'] as int;
+    } else if (templateIdx == 0 && design.lanyardVariant != null) {
+      templateIdx = design.lanyardVariant!;
+    }
+
     setSelectedTemplate(templateIdx);
     if (Get.isRegistered<TemplateController>()) {
       final templateCtrl = Get.find<TemplateController>();

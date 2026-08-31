@@ -9,7 +9,6 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_design_system_widgets.dart';
 import '../../../data/models/saved_design.dart';
 import '../../../routes/app_pages.dart';
-import '../../id_templates/controllers/template_controller.dart';
 import '../controllers/create_flow_controller.dart';
 
 class MyDesignsView extends GetView<CreateFlowController> {
@@ -46,61 +45,7 @@ class MyDesignsView extends GetView<CreateFlowController> {
   }
 
   void _openCardViewer(BuildContext context, SavedDesign design) {
-    if (design.service.isNotEmpty) {
-      controller.selectedService.value = design.service;
-    }
-    if (design.fontFamily.isNotEmpty) {
-      final fontIndex = controller.fonts.indexOf(design.fontFamily);
-      if (fontIndex != -1) {
-        controller.selectedFont.value = fontIndex;
-      }
-    }
-
-    controller.fontSizeScale.value = design.fontSizeScale;
-
-    if (design.instituteName.isNotEmpty) {
-      controller.instituteCtrl.text = design.instituteName;
-    }
-    if (design.studentName.isNotEmpty) {
-      controller.fullNameCtrl.text = design.studentName;
-    }
-
-    if (design.logoPath != null && design.logoPath!.isNotEmpty) {
-      controller.photoPath.value = design.logoPath!;
-    }
-
-    if (design.lanyardRepeatCount != null) {
-      controller.lanyardRepeatCount.value = design.lanyardRepeatCount!;
-    }
-    if (design.lanyardTextOffsetX != null) {
-      controller.lanyardTextOffsetX.value = design.lanyardTextOffsetX!;
-    }
-    if (design.lanyardTextOffsetY != null) {
-      controller.lanyardTextOffsetY.value = design.lanyardTextOffsetY!;
-    }
-    if (design.lanyardLogoTextSpacing != null) {
-      controller.lanyardLogoTextSpacing.value = design.lanyardLogoTextSpacing!;
-    }
-    controller.lanyardCustomTextColorHex.value = design.lanyardTextColorHex;
-
-    int templateIdx = design.lanyardVariant ?? (int.tryParse(design.templatePairId) ?? 0);
-    for (int i = 0; i < controller.activeTemplates.length; i++) {
-      final name = controller.templateTitleAt(i).toLowerCase();
-      if (name == design.templateName.toLowerCase() ||
-          design.title.toLowerCase().contains('template ${i + 1}')) {
-        templateIdx = i;
-        break;
-      }
-    }
-
-    controller.setSelectedTemplate(templateIdx);
-
-    if (Get.isRegistered<TemplateController>()) {
-      final templateCtrl = Get.find<TemplateController>();
-      templateCtrl.selectTemplate(templateIdx);
-      templateCtrl.refreshCardData();
-      templateCtrl.openTemplateEditor(templateIdx);
-    }
+    controller.restoreDesignToForm(design);
   }
 
   @override
