@@ -383,7 +383,7 @@ class _CompanyV8BrandColumn extends StatelessWidget {
           AutoSizeText(
             name.replaceAll('\n', ' ').trim().toUpperCase(),
             maxLines: 2,
-            minFontSize: minNameSize,
+            minFontSize: 14,
             textAlign: TextAlign.center,
             style: nameStyle,
           ),

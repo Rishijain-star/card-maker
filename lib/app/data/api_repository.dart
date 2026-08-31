@@ -1,4 +1,4 @@
-﻿import '../services/local_storage_services/local_storage_services.dart';
+import '../services/local_storage_services/local_storage_services.dart';
 import '../services/secure_token_service/secure_token_service.dart';
 import 'api_client.dart';
 
@@ -13,11 +13,34 @@ class ApiRepository {
     final firstName = parts.isNotEmpty ? parts.first : '';
     final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
 
-    await LocalStorageService().setUserId('${user['id'] ?? ''}');
-    await LocalStorageService().setUserName(fullName);
-    await LocalStorageService().setFirstName(firstName);
-    await LocalStorageService().setLastName(lastName);
-    await LocalStorageService().setEmailId('${user['email'] ?? ''}');
+    final storage = LocalStorageService();
+    await storage.setUserId('${user['id'] ?? ''}');
+    await storage.setUserName(fullName);
+    await storage.setFirstName(firstName);
+    await storage.setLastName(lastName);
+    await storage.setEmailId('${user['email'] ?? ''}'.trim().toLowerCase());
+
+    if (user['is_premium'] != null) {
+      await storage.setIsPremium(user['is_premium'] == true);
+    }
+    if (user['premium_plan'] != null) {
+      await storage.setPremiumPlan('${user['premium_plan']}');
+    }
+    if (user['premium_expires_at'] != null) {
+      await storage.setPremiumExpiresAt('${user['premium_expires_at']}');
+    }
+    if (user['save_limit'] != null) {
+      final limit = (user['save_limit'] as num).toInt();
+      await storage.setAccountSaveLimit(limit);
+    }
+    if (user['saved_cards_count'] != null) {
+      final cnt = (user['saved_cards_count'] as num).toInt();
+      await storage.setAccountSavedCardsCount(cnt);
+    }
+    if (user['remaining_capacity'] != null) {
+      final rem = (user['remaining_capacity'] as num).toInt();
+      await storage.setAccountRemainingCapacity(rem);
+    }
   }
   // Auth Apis ********************************************************************************************************************************************************************************
 
@@ -26,9 +49,10 @@ class ApiRepository {
     required String password,
   }) async {
     try {
+      final cleanEmail = email.trim().toLowerCase();
       final response = await ApiClient().postRequest(
         endPoint: "auth/login",
-        body: {"email": email, "password": password},
+        body: {"email": cleanEmail, "password": password},
         includeAuth: false,
       );
 
@@ -49,6 +73,42 @@ class ApiRepository {
     return false;
   }
 
+  static Future<bool> socialLogin({
+    required String email,
+    required String name,
+    required String provider,
+    String? providerId,
+  }) async {
+    try {
+      final cleanEmail = email.trim().toLowerCase();
+      final response = await ApiClient().postRequest(
+        endPoint: "auth/social",
+        body: {
+          "email": cleanEmail,
+          "name": name.trim(),
+          "provider": provider,
+          "device_id": providerId,
+        },
+        includeAuth: false,
+      );
+
+      if (response != null &&
+          response['token'] != null &&
+          response['user'] != null) {
+        final token = '${response['token']}';
+        final user = response['user'] as Map<String, dynamic>;
+        await SecureTokenService().setAuthToken(token);
+        await LocalStorageService().setAuthToken(token);
+        await _persistUser(user);
+        await LocalStorageService().setIsOnboardingCompleted(false);
+        return true;
+      }
+    } catch (e, s) {
+      print("socialLogin error: $e\n$s");
+    }
+    return false;
+  }
+
   /// Returns [ok] and a user-visible [message] (empty when successful).
   static Future<({bool ok, String message})> register({
     required String name,
@@ -56,9 +116,10 @@ class ApiRepository {
     required String password,
   }) async {
     try {
+      final cleanEmail = email.trim().toLowerCase();
       final response = await ApiClient().postRequest(
         endPoint: "auth/register",
-        body: {"name": name, "email": email, "password": password},
+        body: {"name": name.trim(), "email": cleanEmail, "password": password},
         includeAuth: false,
       );
 
@@ -71,6 +132,10 @@ class ApiRepository {
         await LocalStorageService().setAuthToken(token);
         await _persistUser(user);
         return (ok: true, message: '');
+      }
+
+      if (response != null && response['account_exists'] == true) {
+        return (ok: false, message: 'An account with this email already exists. Please log in.');
       }
 
       final err = _registerErrorMessage(response);
@@ -352,18 +417,182 @@ class ApiRepository {
     }
   }
 
-  // static Future<GetTaxModel> buyCoinPrice() async {
-  //   try {
-  //     final response = await ApiClient().getRequest(
-  //         endPoint: "/plans?type=customer&region=canada",
-  //     );
-  //     if (response != null) {
-  //       return GetTaxModel.fromJson(response);
-  //     }
-  //   } catch (e, s) {
-  //     print("âŒ sponsoredCoupons error: $e\n$s");
-  //   }
-  //   return GetTaxModel();
-  // }
-}
+  // ===================== RAZORPAY PAYMENT APIS =====================
 
+  /// Create Razorpay order on Laravel backend.
+  static Future<Map<String, dynamic>?> createPaymentOrder({
+    required String packageId,
+  }) async {
+    try {
+      return await ApiClient().postRequest(
+        endPoint: "payments/create-order",
+        body: {"package_id": packageId},
+      );
+    } catch (e, s) {
+      print("createPaymentOrder error: $e\n$s");
+      return null;
+    }
+  }
+
+  /// Verify payment signature on Laravel backend.
+  static Future<Map<String, dynamic>?> verifyPayment({
+    required String orderId,
+    required String paymentId,
+    required String signature,
+  }) async {
+    try {
+      return await ApiClient().postRequest(
+        endPoint: "payments/verify",
+        body: {
+          "razorpay_order_id": orderId,
+          "razorpay_payment_id": paymentId,
+          "razorpay_signature": signature,
+        },
+      );
+    } catch (e, s) {
+      print("verifyPayment error: $e\n$s");
+      return null;
+    }
+  }
+
+  /// Fetch live premium / subscription status from Laravel backend.
+  static Future<Map<String, dynamic>?> getPaymentStatus() async {
+    try {
+      return await ApiClient().getRequest(endPoint: "payments/status");
+    } catch (e, s) {
+      print("getPaymentStatus error: $e\n$s");
+      return null;
+    }
+  }
+
+  // ===================== PRODUCT CART ORDER APIS =====================
+
+  /// Create Razorpay order for product cart checkout.
+  static Future<Map<String, dynamic>?> createProductOrder({
+    required List<Map<String, dynamic>> items,
+  }) async {
+    try {
+      return await ApiClient().postRequest(
+        endPoint: "orders/create-payment",
+        body: {"items": items},
+      );
+    } catch (e, s) {
+      print("createProductOrder error: $e\n$s");
+      return null;
+    }
+  }
+
+  /// Verify product order payment signature on Laravel backend.
+  static Future<Map<String, dynamic>?> verifyProductOrderPayment({
+    required String orderId,
+    required String paymentId,
+    required String signature,
+  }) async {
+    try {
+      return await ApiClient().postRequest(
+        endPoint: "orders/verify-payment",
+        body: {
+          "razorpay_order_id": orderId,
+          "razorpay_payment_id": paymentId,
+          "razorpay_signature": signature,
+        },
+      );
+    } catch (e, s) {
+      print("verifyProductOrderPayment error: $e\n$s");
+      return null;
+    }
+  }
+
+  /// Sync a saved card design (with base64 images) to Laravel backend
+  static Future<Map<String, dynamic>?> syncSavedCard({
+    required String clientPairId,
+    required String title,
+    required String studentName,
+    required String instituteName,
+    required String service,
+    required String templateName,
+    required String fontFamily,
+    String? frontImageBase64,
+    String? backImageBase64,
+    int? savedAtMs,
+  }) async {
+    try {
+      return await ApiClient().postRequest(
+        endPoint: "cards/sync",
+        body: {
+          "client_pair_id": clientPairId,
+          "title": title,
+          "student_name": studentName,
+          "institute_name": instituteName,
+          "service": service,
+          "template_name": templateName,
+          "font_family": fontFamily,
+          if (frontImageBase64 != null) "front_image_base64": frontImageBase64,
+          if (backImageBase64 != null) "back_image_base64": backImageBase64,
+          if (savedAtMs != null) "saved_at_ms": savedAtMs,
+        },
+      );
+    } catch (e, s) {
+      print("syncSavedCard error: $e\n$s");
+      return null;
+    }
+  }
+
+  /// Fetch user's product order history.
+  static Future<Map<String, dynamic>?> fetchOrderHistory() async {
+    try {
+      return await ApiClient().getRequest(endPoint: "orders/history");
+    } catch (e, s) {
+      print("fetchOrderHistory error: $e\n$s");
+      return null;
+    }
+  }
+
+  /// Fetch all saved cards belonging to the authenticated account from server.
+  static Future<List<Map<String, dynamic>>?> fetchSavedCards() async {
+    try {
+      final res = await ApiClient().getRequest(endPoint: "cards");
+      if (res != null && res['status'] == true && res['data'] is List) {
+        if (res['meta'] != null && res['meta'] is Map) {
+          final meta = res['meta'] as Map;
+          final storage = LocalStorageService();
+          if (meta['save_limit'] != null) {
+            await storage.setAccountSaveLimit((meta['save_limit'] as num).toInt());
+          }
+          if (meta['total_saved'] != null) {
+            await storage.setAccountSavedCardsCount((meta['total_saved'] as num).toInt());
+          }
+          if (meta['remaining_capacity'] != null) {
+            await storage.setAccountRemainingCapacity((meta['remaining_capacity'] as num).toInt());
+          }
+        }
+        return List<Map<String, dynamic>>.from(res['data'] as List);
+      }
+    } catch (e, s) {
+      print("fetchSavedCards error: $e\n$s");
+    }
+    return null;
+  }
+
+  /// Delete a saved card on the backend to free account quota.
+  static Future<bool> deleteSavedCard(String idOrPairId) async {
+    try {
+      final res = await ApiClient().deleteRequest(
+        endPoint: "cards/$idOrPairId",
+        body: {},
+      );
+      return res != null && res['status'] == true;
+    } catch (e, s) {
+      print("deleteSavedCard error: $e\n$s");
+      return false;
+    }
+  }
+
+  /// Invalidate device session on backend and clear local session.
+  static Future<void> logout() async {
+    try {
+      await ApiClient().postRequest(endPoint: "auth/logout", body: {});
+    } catch (_) {}
+    await LocalStorageService().logout();
+  }
+}

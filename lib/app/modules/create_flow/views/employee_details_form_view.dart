@@ -41,7 +41,7 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                     const SizedBox(height: 16),
                     Center(
                       child: StudentPhotoPicker(
-                        photoPath: controller.photoPath.value,
+                        photoPath: controller.empPhotoPath.value,
                         onAddPhoto: () => controller.showPhotoSourcePicker(context),
                       ),
                     ),
@@ -49,37 +49,37 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                     StudentUnderlineField(
                       iconAsset: EmployeeFormAssets.company,
                       hint: 'Write Company name',
-                      controller: controller.instituteCtrl,
+                      controller: controller.empCompanyNameCtrl,
                     ),
                     StudentUnderlineField(
                       iconAsset: EmployeeFormAssets.yourName,
                       hint: 'Write Your Name',
-                      controller: controller.fullNameCtrl,
+                      controller: controller.empFullNameCtrl,
                     ),
                     StudentUnderlineField(
                       iconAsset: EmployeeFormAssets.jobPosition,
                       hint: 'Write Job Position',
-                      controller: controller.courseCtrl,
+                      controller: controller.empPositionCtrl,
                     ),
                     StudentUnderlineField(
                       iconAsset: EmployeeFormAssets.idNumber,
                       hint: 'Write Id number',
-                      controller: controller.idNumberCtrl,
+                      controller: controller.empIdNumberCtrl,
                     ),
-                    EmployeeJoinDateField(controller: controller.expiryDateCtrl),
+                    EmployeeJoinDateField(controller: controller.empExpireDateCtrl),
                     StudentUnderlineField(
                       iconWidget: const Icon(Icons.location_on_rounded, color: Color(0xFF2563EB), size: 26),
                       hint: 'Write your address',
-                      controller: controller.addressCtrl,
+                      controller: controller.empAddressCtrl,
                     ),
                     StudentPhoneField(
                       hint: 'Write Phone Number',
-                      controller: controller.phoneCtrl,
+                      controller: controller.empPhoneCtrl,
                     ),
                     StudentUnderlineField(
                       iconAsset: EmployeeFormAssets.email,
                       hint: 'Write your email',
-                      controller: controller.emailCtrl,
+                      controller: controller.empEmailCtrl,
                     ),
                   ],
                 ),
@@ -92,7 +92,7 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                     StudentUnderlineField(
                       iconAsset: EmployeeFormAssets.blood,
                       hint: 'Write Blood Group',
-                      controller: controller.bloodGroupCtrl,
+                      controller: controller.empBloodGroupCtrl,
                     ),
                   ],
                 ),
@@ -108,17 +108,17 @@ class EmployeeDetailsFormView extends GetView<CreateFlowController> {
                     const SizedBox(height: 8),
                     StudentTermField(
                       hint: 'Write Term 1',
-                      controller: controller.term1Ctrl,
+                      controller: controller.empNote1Ctrl,
                       tint: const Color(0xFF8B5CF6),
                     ),
                     StudentTermField(
                       hint: 'Write Term 2',
-                      controller: controller.term2Ctrl,
+                      controller: controller.empNote2Ctrl,
                       tint: const Color(0xFF14B8A6),
                     ),
                     StudentTermField(
                       hint: 'Write Term 3',
-                      controller: controller.term3Ctrl,
+                      controller: controller.empNote3Ctrl,
                       tint: const Color(0xFFEC4899),
                     ),
                   ],

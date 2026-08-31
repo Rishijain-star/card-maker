@@ -141,7 +141,7 @@ class LoginController extends GetxController {
 
   /// Clears session and returns to login (home is gated until sign-in again).
   static Future<void> signOut() async {
-    await LocalStorageService().logout();
+    await ApiRepository.logout();
     if (Get.isRegistered<CreateFlowController>()) {
       Get.find<CreateFlowController>().isLoggedIn.value = false;
     }

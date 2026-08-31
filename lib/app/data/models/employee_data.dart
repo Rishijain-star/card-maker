@@ -101,31 +101,27 @@ class EmployeeData {
   }
 
   factory EmployeeData.fromCreateFlow(CreateFlowController flow) {
-    final join = flow.expiryDateCtrl.text.trim().isNotEmpty
-        ? flow.expiryDateCtrl.text.trim()
-        : flow.validFromCtrl.text.trim();
-
     return EmployeeData(
-      companyName: flow.instituteCtrl.text,
+      companyName: flow.empCompanyNameCtrl.text,
       logoAsset: flow.selectedCompanyLogoAsset ?? '',
-      employeeName: flow.fullNameCtrl.text,
-      position: flow.courseCtrl.text,
-      employeeId: flow.idNumberCtrl.text,
-      joinDate: join,
-      expireDate: flow.validToCtrl.text,
-      address: flow.addressCtrl.text,
-      phone: flow.phoneCtrl.text,
-      email: flow.emailCtrl.text,
-      bloodGroup: flow.bloodGroupCtrl.text,
-      photoPath: flow.photoPath.value,
-      signaturePath: flow.signaturePath.value,
-      signatureBytes: flow.signatureImageBytes.value,
+      employeeName: flow.empFullNameCtrl.text,
+      position: flow.empPositionCtrl.text,
+      employeeId: flow.empIdNumberCtrl.text,
+      joinDate: flow.empJoinDateCtrl.text,
+      expireDate: flow.empExpireDateCtrl.text,
+      address: flow.empAddressCtrl.text,
+      phone: flow.empPhoneCtrl.text,
+      email: flow.empEmailCtrl.text,
+      bloodGroup: flow.empBloodGroupCtrl.text,
+      photoPath: flow.empPhotoPath.value,
+      signaturePath: flow.empSignaturePath.value,
+      signatureBytes: flow.empSignatureImageBytes.value,
       signatureHasBorder: flow.signatureHasBorder.value,
       signatureBorderColor: flow.currentSignatureBorderColor,
       signatureBorderWidth: flow.signatureBorderWidth.value,
-      note1: flow.term1Ctrl.text,
-      note2: flow.term2Ctrl.text,
-      note3: flow.term3Ctrl.text,
+      note1: flow.empNote1Ctrl.text,
+      note2: flow.empNote2Ctrl.text,
+      note3: flow.empNote3Ctrl.text,
     );
   }
 }

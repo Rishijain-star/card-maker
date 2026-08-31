@@ -57,3 +57,6 @@ app.*.map.json
 /android/app/release
 
 *.hprof
+detils
+detils*
+.agents/

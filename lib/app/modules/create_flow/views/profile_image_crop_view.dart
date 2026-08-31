@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Full-featured interactive profile photo cropper screen.
-/// Bulletproof & crash-free implementation using RepaintBoundary capture.
+/// Bulletproof & crash-free implementation using RepaintBounYdary capture.
 class ProfileImageCropScreen extends StatefulWidget {
   const ProfileImageCropScreen({
     super.key,

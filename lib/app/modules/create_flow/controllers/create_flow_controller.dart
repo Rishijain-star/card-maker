@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -13,6 +14,7 @@ import 'package:signature/signature.dart';
 import '../../../core/config/razorpay_config.dart';
 import '../../../core/widgets/shimmer_skeleton_loader.dart';
 import '../../../core/widgets/top_slide_notice.dart';
+import '../../../data/api_repository.dart';
 import '../../../data/models/app_product.dart';
 import '../../../data/models/saved_design.dart';
 import '../../../data/models/student_data.dart';
@@ -32,20 +34,31 @@ class CreateFlowController extends GetxController {
   final RxString selectedService = 'ID Card'.obs;
   final RxString selectedLayout = 'Portrait'.obs;
   final RxInt selectedTemplate = 0.obs;
+  final RxInt employeeSelectedTemplate = 0.obs;
+  
   final RxInt selectedFont = 0.obs;
+  final RxInt employeeSelectedFont = 0.obs;
+  
   final RxDouble fontSizeScale = 1.0.obs;
+  final RxDouble employeeFontSizeScale = 1.0.obs;
+
   final RxMap<String, double> savedTemplateFontScales = <String, double>{}.obs;
 
   /// Permanently saved settings per template key.
   final RxMap<String, TemplateCustomSettings> savedTemplateSettingsMap =
       <String, TemplateCustomSettings>{}.obs;
+  final RxMap<String, TemplateCustomSettings> employeeSavedTemplateSettingsMap =
+      <String, TemplateCustomSettings>{}.obs;
 
   /// Temporary draft settings for the template currently being edited.
   final Rxn<TemplateCustomSettings> draftTemplateSettings =
       Rxn<TemplateCustomSettings>();
+  final Rxn<TemplateCustomSettings> employeeDraftTemplateSettings =
+      Rxn<TemplateCustomSettings>();
 
   /// Index of template currently open in editing mode (-1 if none).
   final RxInt editingTemplateIndex = (-1).obs;
+  final RxInt employeeEditingTemplateIndex = (-1).obs;
 
   String get currentTemplateKey =>
       '${selectedService.value}_${selectedLayout.value}_${selectedTemplate.value}';
@@ -55,6 +68,34 @@ class CreateFlowController extends GetxController {
 
   /// Open a template for editing
   void startEditingTemplate(int templateIndex) {
+    if (isEmployeeService) {
+      employeeSelectedTemplate.value = templateIndex;
+      employeeEditingTemplateIndex.value = templateIndex;
+      final key = getTemplateKey(templateIndex);
+      if (employeeSavedTemplateSettingsMap.containsKey(key)) {
+        employeeDraftTemplateSettings.value = employeeSavedTemplateSettingsMap[key]!;
+      } else {
+        employeeDraftTemplateSettings.value = const TemplateCustomSettings();
+      }
+      final s = employeeDraftTemplateSettings.value!;
+      employeeSelectedFont.value = s.fontIndex;
+      employeeFontSizeScale.value = s.fontSizeScale;
+      empCustomTextColorHex.value = s.customTextColorHex;
+      empCustomHeaderColorHex.value = s.customHeaderColorHex;
+      
+      if (Get.isRegistered<TemplateController>()) {
+        Get.find<TemplateController>().refreshCardData();
+      }
+      update(<Object>[
+        'template_screen',
+        'student_preview',
+        'employee_preview',
+        'lanyard_preview',
+        'live_preview',
+        'template_editor'
+      ]);
+      return;
+    }
     selectedTemplate.value = templateIndex;
     editingTemplateIndex.value = templateIndex;
 
@@ -103,6 +144,50 @@ class CreateFlowController extends GetxController {
     bool resetCustomTextColor = false,
     bool resetCustomHeaderColor = false,
   }) {
+    if (isEmployeeService) {
+      final current = employeeDraftTemplateSettings.value ??
+          getSettingsForTemplate(employeeSelectedTemplate.value);
+      final updated = current.copyWith(
+        fontIndex: fontIndex,
+        fontSizeScale: fontSizeScale,
+        colorIndex: colorIndex,
+        customTextColorHex: customTextColorHex,
+        customHeaderColorHex: customHeaderColorHex,
+        companyLogoIndex: companyLogoIndex,
+        signatureHasBorder: signatureHasBorder,
+        signatureBorderColorIndex: signatureBorderColorIndex,
+        signatureBorderWidth: signatureBorderWidth,
+        resetCustomTextColor: resetCustomTextColor,
+        resetCustomHeaderColor: resetCustomHeaderColor,
+      );
+      employeeDraftTemplateSettings.value = updated;
+
+      if (fontIndex != null) employeeSelectedFont.value = fontIndex;
+      if (fontSizeScale != null) employeeFontSizeScale.value = fontSizeScale;
+      if (resetCustomTextColor) {
+        empCustomTextColorHex.value = null;
+      } else if (customTextColorHex != null) {
+        empCustomTextColorHex.value = customTextColorHex;
+      }
+      if (resetCustomHeaderColor) {
+        empCustomHeaderColorHex.value = null;
+      } else if (customHeaderColorHex != null) {
+        empCustomHeaderColorHex.value = customHeaderColorHex;
+      }
+
+      if (Get.isRegistered<TemplateController>()) {
+        Get.find<TemplateController>().refreshCardData();
+      }
+      update(<Object>[
+        'template_screen',
+        'student_preview',
+        'employee_preview',
+        'lanyard_preview',
+        'live_preview',
+        'template_editor'
+      ]);
+      return;
+    }
     final current = draftTemplateSettings.value ??
         getSettingsForTemplate(selectedTemplate.value);
     final updated = current.copyWith(
@@ -153,6 +238,29 @@ class CreateFlowController extends GetxController {
 
   /// Discard unsaved changes when user presses Back without saving
   void discardUnsavedEdits() {
+    if (isEmployeeService) {
+      employeeDraftTemplateSettings.value = null;
+      employeeEditingTemplateIndex.value = -1;
+      empCustomTextColorHex.value = null;
+      empCustomHeaderColorHex.value = null;
+
+      final s = getSettingsForTemplate(employeeSelectedTemplate.value);
+      employeeSelectedFont.value = s.fontIndex;
+      employeeFontSizeScale.value = s.fontSizeScale;
+
+      if (Get.isRegistered<TemplateController>()) {
+        Get.find<TemplateController>().refreshCardData();
+      }
+      update(<Object>[
+        'template_screen',
+        'student_preview',
+        'employee_preview',
+        'lanyard_preview',
+        'live_preview',
+        'template_editor'
+      ]);
+      return;
+    }
     draftTemplateSettings.value = null;
     editingTemplateIndex.value = -1;
     idCardCustomTextColorHex.value = null;
@@ -182,6 +290,14 @@ class CreateFlowController extends GetxController {
 
   /// Permanently save draft edits for current template
   void saveCurrentTemplateEdits() {
+    if (isEmployeeService) {
+      if (employeeDraftTemplateSettings.value != null) {
+        final key = getTemplateKey(employeeSelectedTemplate.value);
+        employeeSavedTemplateSettingsMap[key] = employeeDraftTemplateSettings.value!;
+      }
+      employeeEditingTemplateIndex.value = -1;
+      return;
+    }
     if (draftTemplateSettings.value != null) {
       savedTemplateSettingsMap[currentTemplateKey] = draftTemplateSettings.value!;
     }
@@ -189,6 +305,17 @@ class CreateFlowController extends GetxController {
   }
 
   TemplateCustomSettings getSettingsForTemplate(int templateIndex) {
+    if (isEmployeeService) {
+      if (employeeEditingTemplateIndex.value == templateIndex &&
+          employeeDraftTemplateSettings.value != null) {
+        return employeeDraftTemplateSettings.value!;
+      }
+      final key = getTemplateKey(templateIndex);
+      if (employeeSavedTemplateSettingsMap.containsKey(key)) {
+        return employeeSavedTemplateSettingsMap[key]!;
+      }
+      return const TemplateCustomSettings();
+    }
     if (editingTemplateIndex.value == templateIndex &&
         draftTemplateSettings.value != null) {
       return draftTemplateSettings.value!;
@@ -227,6 +354,11 @@ class CreateFlowController extends GetxController {
   }
 
   void loadFontSizeScaleForCurrentTemplate() {
+    if (isEmployeeService) {
+      final settings = getSettingsForTemplate(employeeSelectedTemplate.value);
+      employeeFontSizeScale.value = settings.fontSizeScale;
+      return;
+    }
     final settings = getSettingsForTemplate(selectedTemplate.value);
     fontSizeScale.value = settings.fontSizeScale;
   }
@@ -254,6 +386,8 @@ class CreateFlowController extends GetxController {
   final RxList<SavedDesign> savedDesigns = <SavedDesign>[].obs;
   final RxInt lifetimeSaveCount = 0.obs;
   final RxBool isPremium = false.obs;
+  final RxString premiumPlan = ''.obs;
+  final RxString premiumExpiresAt = ''.obs;
   final RxBool isSavingCard = false.obs;
   final RxBool isExportingPdf = false.obs;
   final RxBool isTemplatesLoading = false.obs;
@@ -315,25 +449,44 @@ class CreateFlowController extends GetxController {
   static const String kDefaultEmployeeNote2 = '5 Years Experience';
   static const String kDefaultEmployeeNote3 = 'Full Time';
 
-  final instituteCtrl = TextEditingController(text: kDefaultInstitute);
-  final fullNameCtrl = TextEditingController(text: kDefaultStudentName);
-  final fatherNameCtrl = TextEditingController(text: kDefaultFatherName);
-  final courseCtrl = TextEditingController(text: kDefaultCourse);
-  final sectionCtrl = TextEditingController(text: kDefaultSection);
-  final term1Ctrl = TextEditingController(text: kDefaultTerm1);
-  final term2Ctrl = TextEditingController(text: kDefaultTerm2);
-  final term3Ctrl = TextEditingController(text: kDefaultTerm3);
-  final bloodGroupCtrl = TextEditingController(text: kDefaultBloodGroup);
-  final phoneCtrl = TextEditingController(text: kDefaultPhone);
-  final emailCtrl = TextEditingController(text: '');
-  final addressCtrl = TextEditingController(text: kDefaultAddress);
+  final instituteCtrl = TextEditingController();
+  final fullNameCtrl = TextEditingController();
+  final fatherNameCtrl = TextEditingController();
+  final courseCtrl = TextEditingController();
+  final sectionCtrl = TextEditingController();
+  final term1Ctrl = TextEditingController();
+  final term2Ctrl = TextEditingController();
+  final term3Ctrl = TextEditingController();
+  final bloodGroupCtrl = TextEditingController();
+  final phoneCtrl = TextEditingController();
+  final emailCtrl = TextEditingController();
+  final addressCtrl = TextEditingController();
   final expiryDateCtrl = TextEditingController();
-  final validFromCtrl = TextEditingController(text: kDefaultValidFrom);
-  final validToCtrl = TextEditingController(text: kDefaultValidTo);
-  final idNumberCtrl = TextEditingController(text: kDefaultRollNo);
+  final validFromCtrl = TextEditingController();
+  final validToCtrl = TextEditingController();
+  final idNumberCtrl = TextEditingController();
   final departmentCtrl = TextEditingController();
-  final logoCtrl = TextEditingController(text: 'ID-Shaydi');
-  final signatureCtrl = TextEditingController(text: 'Upload pending');
+  final logoCtrl = TextEditingController();
+  final signatureCtrl = TextEditingController();
+
+  // Employee-specific form controllers
+  final empCompanyNameCtrl = TextEditingController();
+  final empFullNameCtrl = TextEditingController();
+  final empPositionCtrl = TextEditingController();
+  final empIdNumberCtrl = TextEditingController();
+  final empJoinDateCtrl = TextEditingController();
+  final empExpireDateCtrl = TextEditingController();
+  final empPhoneCtrl = TextEditingController();
+  final empEmailCtrl = TextEditingController();
+  final empAddressCtrl = TextEditingController();
+  final empBloodGroupCtrl = TextEditingController();
+  final empNote1Ctrl = TextEditingController();
+  final empNote2Ctrl = TextEditingController();
+  final empNote3Ctrl = TextEditingController();
+  
+  final RxString empPhotoPath = ''.obs;
+  final RxString empSignaturePath = ''.obs;
+  final Rx<Uint8List?> empSignatureImageBytes = Rx<Uint8List?>(null);
 
   final List<Color> palette = <Color>[
     const Color(0xFF2563EB),
@@ -744,6 +897,7 @@ class CreateFlowController extends GetxController {
   /// Null means "use the shared default". Applied per-role in
   /// `IdCardTextStyles`, so one setting recolours every non-header field.
   final idCardCustomTextColorHex = RxnInt();
+  final empCustomTextColorHex = RxnInt();
 
   void setIdCardTextColorHex(int? colorHex) {
     if (colorHex == null) {
@@ -756,6 +910,7 @@ class CreateFlowController extends GetxController {
   /// ID card **header** colour override — the school / company name only,
   /// kept separate so the title can be styled independently of body text.
   final idCardCustomHeaderColorHex = RxnInt();
+  final empCustomHeaderColorHex = RxnInt();
 
   void setIdCardHeaderColorHex(int? colorHex) {
     if (colorHex == null) {
@@ -1064,36 +1219,36 @@ class CreateFlowController extends GetxController {
     return list[index]['title'] as String? ?? 'Template';
   }
 
-  /// Pre-fills employee demo when opening Employee ID flow.
+  /// Resets employee fields to blank when opening Employee ID flow.
   void applyEmployeeDemoFields() {
-    instituteCtrl.text = kDefaultCompany;
-    fullNameCtrl.text = kDefaultEmployeeName;
-    courseCtrl.text = kDefaultPosition;
-    idNumberCtrl.text = kDefaultEmployeeId;
-    expiryDateCtrl.text = kDefaultEmployeeJoin;
-    validToCtrl.text = kDefaultEmployeeExpire;
-    departmentCtrl.text = '';
-    phoneCtrl.text = '9876543210';
-    emailCtrl.text = 'rishi.jain@example.com';
-    bloodGroupCtrl.text = 'A+';
-    fatherNameCtrl.text = '';
-    sectionCtrl.text = '';
-    addressCtrl.text = 'New Delhi, India';
-    validFromCtrl.text = '';
-    term1Ctrl.text = kDefaultEmployeeNote1;
-    term2Ctrl.text = kDefaultEmployeeNote2;
-    term3Ctrl.text = kDefaultEmployeeNote3;
+    empCompanyNameCtrl.text = '';
+    empFullNameCtrl.text = '';
+    empPositionCtrl.text = '';
+    empIdNumberCtrl.text = '';
+    empJoinDateCtrl.text = '';
+    empExpireDateCtrl.text = '';
+    empPhoneCtrl.text = '';
+    empEmailCtrl.text = '';
+    empBloodGroupCtrl.text = '';
+    empAddressCtrl.text = '';
+    empNote1Ctrl.text = '';
+    empNote2Ctrl.text = '';
+    empNote3Ctrl.text = '';
+    empPhotoPath.value = '';
+    empSignaturePath.value = '';
+    empSignatureImageBytes.value = null;
+    
     selectedCompanyLogo.value = 0;
-    selectedTemplate.value = 0;
+    employeeSelectedTemplate.value = 0;
     isTemplatesLoading.value = false;
     update(<Object>['template_screen', 'employee_preview', 'live_preview']);
   }
 
-  /// Pre-fills lanyard demo when opening Lanyard flow.
+  /// Resets lanyard fields to blank when opening Lanyard flow.
   void applyLanyardDemoFields() {
-    instituteCtrl.text = 'सिटी पब्लिक स्कूल';
-    fullNameCtrl.text = kDefaultStudentName;
-    courseCtrl.text = 'STUDENT';
+    instituteCtrl.text = '';
+    fullNameCtrl.text = '';
+    courseCtrl.text = '';
     fatherNameCtrl.text = '';
     sectionCtrl.text = '';
     idNumberCtrl.text = '';
@@ -1109,6 +1264,8 @@ class CreateFlowController extends GetxController {
     term2Ctrl.text = '';
     term3Ctrl.text = '';
     photoPath.value = '';
+    signaturePath.value = '';
+    signatureImageBytes.value = null;
     selectedTemplate.value = 0;
     selectedColor.value = 2;
     isTemplatesLoading.value = false;
@@ -1122,22 +1279,92 @@ class CreateFlowController extends GetxController {
 
   bool get isPremiumActive => isPremium.value;
 
-  int get saveLimit =>
-      isPremiumActive ? RazorpayConfig.premiumSaveLimit : freeSaveLimit;
-
-  bool get canSaveMoreDesigns => lifetimeSaveCount.value < saveLimit;
-
-  bool get showPremiumOption =>
-      !isPremiumActive && lifetimeSaveCount.value >= freeSaveLimit;
-
-  void _loadPremiumStatus() {
-    isPremium.value = LocalStorageService().getIsPremium();
+  int get saveLimit {
+    if (!isPremiumActive) return freeSaveLimit;
+    switch (premiumPlan.value) {
+      case RazorpayConfig.planYearly:
+        return RazorpayConfig.yearlySaveLimit;
+      case RazorpayConfig.planBasic:
+        return RazorpayConfig.basicSaveLimit;
+      case RazorpayConfig.planStartup:
+        return RazorpayConfig.startupSaveLimit;
+      default:
+        return RazorpayConfig.startupSaveLimit;
+    }
   }
 
-  Future<void> activatePremium() async {
+  bool get canSaveMoreDesigns => savedDesigns.length < saveLimit;
+
+  bool get showPremiumOption =>
+      !isPremiumActive && savedDesigns.length >= freeSaveLimit;
+
+  void _loadPremiumStatus() {
+    final storage = LocalStorageService();
+    final savedExpiry = storage.getPremiumExpiresAt();
+    final plan = storage.getPremiumPlan();
+
+    premiumPlan.value = plan;
+    premiumExpiresAt.value = savedExpiry;
+
+    var active = storage.getIsPremium();
+    if (savedExpiry.isNotEmpty) {
+      try {
+        final expiryDate = DateTime.parse(savedExpiry);
+        if (expiryDate.isBefore(DateTime.now())) {
+          active = false;
+          storage.setIsPremium(false);
+        }
+      } catch (_) {}
+    }
+
+    isPremium.value = active;
+
+    // Asynchronously synchronize live status from server
+    syncPremiumStatusFromServer();
+  }
+
+  /// Synchronize live subscription status from Laravel backend.
+  Future<void> syncPremiumStatusFromServer() async {
+    final storage = LocalStorageService();
+    if (!storage.isLoggedIn()) return;
+
+    try {
+      final res = await ApiRepository.getPaymentStatus();
+      if (res != null && res['status'] == true && res['data'] is Map<String, dynamic>) {
+        final data = res['data'] as Map<String, dynamic>;
+        final active = data['is_premium'] == true;
+        final plan = '${data['premium_plan'] ?? ''}';
+        final expiry = '${data['premium_expires_at'] ?? ''}';
+
+        isPremium.value = active;
+        premiumPlan.value = plan;
+        premiumExpiresAt.value = expiry;
+
+        await storage.setIsPremium(active);
+        await storage.setPremiumPlan(plan);
+        await storage.setPremiumExpiresAt(expiry);
+        update();
+      }
+    } catch (_) {}
+  }
+
+  Future<void> activatePremium({
+    String plan = RazorpayConfig.planBasic,
+    String? expiresAt,
+  }) async {
     isPremium.value = true;
-    await LocalStorageService().setIsPremium(true);
+    premiumPlan.value = plan;
+    premiumExpiresAt.value = expiresAt ?? '';
+
+    final storage = LocalStorageService();
+    await storage.setIsPremium(true);
+    await storage.setPremiumPlan(plan);
+    if (expiresAt != null && expiresAt.isNotEmpty) {
+      await storage.setPremiumExpiresAt(expiresAt);
+    }
+
     await _addPremiumWelcomeDesign();
+    update();
   }
 
   Future<void> _addPremiumWelcomeDesign() async {
@@ -1326,12 +1553,73 @@ class CreateFlowController extends GetxController {
     );
   }
 
+  /// Synchronize user's account saved cards from the server across all devices.
+  Future<void> syncSavedCardsFromServer() async {
+    final storage = LocalStorageService();
+    if (!storage.isLoggedIn()) return;
+
+    try {
+      final serverCards = await ApiRepository.fetchSavedCards();
+      if (serverCards == null) return;
+
+      final existingMap = {for (final d in savedDesigns) d.templatePairId: d};
+      bool changed = false;
+
+      for (final card in serverCards) {
+        final pairId = '${card['client_pair_id'] ?? card['id']}';
+        final frontUrl = '${card['front_url'] ?? card['front_path'] ?? ''}';
+        final backUrl = '${card['back_url'] ?? card['back_path'] ?? ''}';
+
+        if (existingMap.containsKey(pairId)) {
+          final local = existingMap[pairId]!;
+          if (local.frontImagePath.isEmpty && frontUrl.isNotEmpty) {
+            final updated = local.copyWith(
+              frontImagePath: frontUrl,
+              backImagePath: backUrl.isNotEmpty ? backUrl : local.backImagePath,
+            );
+            final idx = savedDesigns.indexWhere((d) => d.templatePairId == pairId);
+            if (idx != -1) {
+              savedDesigns[idx] = updated;
+              changed = true;
+            }
+          }
+        } else {
+          // Card exists on account from another device — add to local library
+          final newDesign = SavedDesign(
+            templatePairId: pairId,
+            title: '${card['title'] ?? 'ID Card'}',
+            frontImagePath: frontUrl,
+            backImagePath: backUrl,
+            service: '${card['service'] ?? 'Student ID Card'}',
+            templateName: '${card['template_name'] ?? 'Template 1'}',
+            fontFamily: '${card['font_family'] ?? selectedFontFamily}',
+            savedAtMs: card['saved_at_ms'] is num
+                ? (card['saved_at_ms'] as num).toInt()
+                : DateTime.now().millisecondsSinceEpoch,
+            instituteName: '${card['institute_name'] ?? ''}',
+            studentName: '${card['student_name'] ?? ''}',
+          );
+          savedDesigns.add(newDesign);
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        savedDesigns.sort((a, b) => b.savedAtMs.compareTo(a.savedAtMs));
+        await _persistSavedDesigns();
+      }
+    } catch (e, s) {
+      print('syncSavedCardsFromServer error: $e\n$s');
+    }
+  }
+
   @override
   void onInit() {
     super.onInit();
     _loadSavedDesigns();
     _loadLifetimeSaveCount();
     _loadPremiumStatus();
+    syncSavedCardsFromServer();
     if (isLanyardService) {
       applyLanyardDemoFields();
     } else if (isEmployeeService) {
@@ -1341,25 +1629,28 @@ class CreateFlowController extends GetxController {
     }
   }
 
-  /// Pre-fills student demo fields (editable).
+  /// Resets student fields to blank when opening Student ID flow.
   void applyStudentDemoFields() {
-    instituteCtrl.text = kDefaultInstitute;
-    fullNameCtrl.text = kDefaultStudentName;
-    fatherNameCtrl.text = kDefaultFatherName;
-    courseCtrl.text = kDefaultCourse;
-    sectionCtrl.text = kDefaultSection;
-    idNumberCtrl.text = kDefaultRollNo;
-    phoneCtrl.text = kDefaultPhone;
-    emailCtrl.text = kDefaultEmail;
-    bloodGroupCtrl.text = kDefaultBloodGroup;
-    addressCtrl.text = kDefaultAddress;
-    validFromCtrl.text = kDefaultValidFrom;
-    validToCtrl.text = kDefaultValidTo;
+    instituteCtrl.text = '';
+    fullNameCtrl.text = '';
+    fatherNameCtrl.text = '';
+    courseCtrl.text = '';
+    sectionCtrl.text = '';
+    idNumberCtrl.text = '';
+    phoneCtrl.text = '';
+    emailCtrl.text = '';
+    bloodGroupCtrl.text = '';
+    addressCtrl.text = '';
+    validFromCtrl.text = '';
+    validToCtrl.text = '';
     expiryDateCtrl.text = '';
     departmentCtrl.text = '';
-    term1Ctrl.text = kDefaultTerm1;
-    term2Ctrl.text = kDefaultTerm2;
-    term3Ctrl.text = kDefaultTerm3;
+    term1Ctrl.text = '';
+    term2Ctrl.text = '';
+    term3Ctrl.text = '';
+    photoPath.value = '';
+    signaturePath.value = '';
+    signatureImageBytes.value = null;
     selectedTemplate.value = 0;
     isTemplatesLoading.value = false;
     loadFontSizeScaleForCurrentTemplate();
@@ -1590,6 +1881,8 @@ class CreateFlowController extends GetxController {
 
   void markLoginSuccess() {
     isLoggedIn.value = true;
+    syncPremiumStatusFromServer();
+    syncSavedCardsFromServer();
   }
 
   void setSelectedTemplate(int index) {
@@ -1602,8 +1895,8 @@ class CreateFlowController extends GetxController {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Save limit reached'),
         content: Text(
-          'You can save up to $freeSaveLimit designs for free. '
-          'Subscribe to Premium (₹199) to save up to ${RazorpayConfig.premiumSaveLimit} templates.',
+          'You can save up to $freeSaveLimit designs on the free plan. '
+          'Upgrade to Premium to save up to 35,000 templates with flexible plans.',
         ),
         actions: [
           TextButton(
@@ -1633,10 +1926,17 @@ class CreateFlowController extends GetxController {
     await Future<void>.delayed(const Duration(milliseconds: 120));
 
     final pairId = DateTime.now().millisecondsSinceEpoch.toString();
-    final instituteName = instituteCtrl.text.trim();
-    final studentName = fullNameCtrl.text.trim().isEmpty
-        ? 'Untitled Design'
-        : fullNameCtrl.text.trim();
+    
+    final String instituteName;
+    final String studentName;
+    if (isEmployeeService) {
+      instituteName = empCompanyNameCtrl.text.trim();
+      studentName = empFullNameCtrl.text.trim().isEmpty ? 'Untitled Design' : empFullNameCtrl.text.trim();
+    } else {
+      instituteName = instituteCtrl.text.trim();
+      studentName = fullNameCtrl.text.trim().isEmpty ? 'Untitled Design' : fullNameCtrl.text.trim();
+    }
+    
     final title = studentName;
     final hasBack = _currentDesignHasBack();
 
@@ -1700,7 +2000,7 @@ class CreateFlowController extends GetxController {
     }
 
     // Save current font size scale to permanent memory for this template only when user saves
-    savedTemplateFontScales[currentTemplateKey] = fontSizeScale.value;
+    savedTemplateFontScales[currentTemplateKey] = isEmployeeService ? employeeFontSizeScale.value : fontSizeScale.value;
 
     final design = SavedDesign(
       templatePairId: pairId,
@@ -1708,9 +2008,9 @@ class CreateFlowController extends GetxController {
       frontImagePath: frontPath,
       backImagePath: backPath,
       service: selectedService.value,
-      templateName: templateTitleAt(selectedTemplate.value),
-      fontFamily: selectedFontFamily,
-      fontSizeScale: fontSizeScale.value,
+      templateName: templateTitleAt(isEmployeeService ? employeeSelectedTemplate.value : selectedTemplate.value),
+      fontFamily: isEmployeeService ? fonts[employeeSelectedFont.value.clamp(0, fonts.length - 1)] : selectedFontFamily,
+      fontSizeScale: isEmployeeService ? employeeFontSizeScale.value : fontSizeScale.value,
       savedAtMs: int.parse(pairId),
       instituteName: instituteName,
       studentName: studentName,
@@ -1720,11 +2020,27 @@ class CreateFlowController extends GetxController {
       lanyardTextOffsetY: lanyardTextOffsetY.value,
       lanyardLogoTextSpacing: lanyardLogoTextSpacing.value,
       lanyardTextColorHex: lanyardCustomTextColorHex.value,
-      logoPath: photoPath.value,
+      logoPath: isEmployeeService ? empPhotoPath.value : photoPath.value,
     );
     savedDesigns.insert(0, design);
     await _persistSavedDesigns();
     await _incrementLifetimeSaveCount();
+
+    // Asynchronously sync the exact front & back card captures to the Laravel server
+    try {
+      ApiRepository.syncSavedCard(
+        clientPairId: pairId,
+        title: title,
+        studentName: studentName,
+        instituteName: instituteName,
+        service: selectedService.value,
+        templateName: templateTitleAt(isEmployeeService ? employeeSelectedTemplate.value : selectedTemplate.value),
+        fontFamily: isEmployeeService ? fonts[employeeSelectedFont.value.clamp(0, fonts.length - 1)] : selectedFontFamily,
+        frontImageBase64: base64Encode(frontBytes),
+        backImageBase64: backBytes != null ? base64Encode(backBytes) : null,
+        savedAtMs: int.tryParse(pairId),
+      );
+    } catch (_) {}
 
     final noticeTitle = 'Design saved';
     final noticeMessage = galleryOk
@@ -1755,8 +2071,9 @@ class CreateFlowController extends GetxController {
     if (_quickCreateAnother) {
       if (Get.isRegistered<TemplateController>()) {
         final templateCtrl = Get.find<TemplateController>();
-        templateCtrl.selectTemplate(selectedTemplate.value);
-        templateCtrl.openTemplateEditor(selectedTemplate.value);
+        final idx = isEmployeeService ? employeeSelectedTemplate.value : selectedTemplate.value;
+        templateCtrl.selectTemplate(idx);
+        templateCtrl.openTemplateEditor(idx);
         return;
       }
     }
@@ -1919,6 +2236,11 @@ class CreateFlowController extends GetxController {
 
     savedDesigns.removeAt(index);
     await _persistSavedDesigns();
+
+    // Asynchronously delete card from backend to free account quota
+    try {
+      ApiRepository.deleteSavedCard(design.templatePairId);
+    } catch (_) {}
   }
 
   @override

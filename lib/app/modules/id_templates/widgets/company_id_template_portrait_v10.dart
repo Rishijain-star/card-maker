@@ -239,8 +239,8 @@ class _CompanyV10BackBrand extends StatelessWidget {
         if (name.isNotEmpty)
           AutoSizeText(
             IdCardTypography.formatInstituteName(name.toUpperCase()),
-            maxLines: 3,
-            minFontSize: IdCardPortraitTypography.headerMinFontSize,
+            maxLines: 2,
+            minFontSize: 14,
             textAlign: TextAlign.center,
             style: nameStyle,
           ),

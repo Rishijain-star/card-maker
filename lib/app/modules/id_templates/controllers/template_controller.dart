@@ -64,6 +64,20 @@ class TemplateController extends GetxController {
       _flow.term1Ctrl,
       _flow.term2Ctrl,
       _flow.term3Ctrl,
+      // Employee specific controllers
+      _flow.empCompanyNameCtrl,
+      _flow.empFullNameCtrl,
+      _flow.empPositionCtrl,
+      _flow.empIdNumberCtrl,
+      _flow.empJoinDateCtrl,
+      _flow.empExpireDateCtrl,
+      _flow.empPhoneCtrl,
+      _flow.empEmailCtrl,
+      _flow.empAddressCtrl,
+      _flow.empBloodGroupCtrl,
+      _flow.empNote1Ctrl,
+      _flow.empNote2Ctrl,
+      _flow.empNote3Ctrl,
     ];
     for (final c in controllers) {
       c.addListener(refreshCardData);
@@ -72,6 +86,9 @@ class TemplateController extends GetxController {
     ever(_flow.photoPath, (_) => refreshCardData());
     ever(_flow.signaturePath, (_) => refreshCardData());
     ever(_flow.signatureImageBytes, (_) => refreshCardData());
+    ever(_flow.empPhotoPath, (_) => refreshCardData());
+    ever(_flow.empSignaturePath, (_) => refreshCardData());
+    ever(_flow.empSignatureImageBytes, (_) => refreshCardData());
     ever(_flow.selectedService, (_) => refreshCardData());
     ever(_flow.selectedCompanyLogo, (_) => refreshCardData());
     ever(_flow.selectedColor, (_) => refreshCardData());

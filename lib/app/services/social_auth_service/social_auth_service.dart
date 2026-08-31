@@ -5,11 +5,12 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../../data/api_repository.dart';
+import '../../modules/create_flow/controllers/create_flow_controller.dart';
 import '../../config/auth_config.dart';
 import '../../core/navigation/user_home_navigation.dart';
-import '../local_storage_services/local_storage_services.dart';
 
-/// Google Sign-In (v7 API) + Sign in with Apple; persists demo session via [LocalStorageService].
+/// Google Sign-In (v7 API) + Sign in with Apple; authenticates with backend.
 class SocialAuthService extends GetxService {
   Future<SocialAuthService> init() async {
     try {
@@ -35,14 +36,25 @@ class SocialAuthService extends GetxService {
       }
       final GoogleSignInAccount account = await GoogleSignIn.instance
           .authenticate(scopeHint: const <String>['email', 'profile']);
-      final idToken = account.authentication.idToken ?? '';
-      final token = idToken.isNotEmpty ? idToken : 'google:${account.id}';
-      await _persistUser(
-        token: token,
-        email: account.email,
-        name: account.displayName ?? '',
+
+      final email = account.email.trim().toLowerCase();
+      final name = account.displayName ?? '';
+
+      final ok = await ApiRepository.socialLogin(
+        email: email,
+        name: name,
+        provider: 'google',
+        providerId: account.id,
       );
-      UserHomeNavigation.offAllToUserHome();
+
+      if (ok) {
+        if (Get.isRegistered<CreateFlowController>()) {
+          Get.find<CreateFlowController>().markLoginSuccess();
+        }
+        UserHomeNavigation.offAllToUserHome();
+      } else {
+        Get.snackbar('Login failed', 'Could not authenticate with server.');
+      }
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
         return;
@@ -70,14 +82,30 @@ class SocialAuthService extends GetxService {
         ],
       );
       final uid = credential.userIdentifier ?? 'apple_unknown';
-      final email = credential.email ?? '';
+      final email = (credential.email ?? '').trim().toLowerCase();
       final nameParts =
           credential.givenName != null || credential.familyName != null
           ? '${credential.givenName ?? ''} ${credential.familyName ?? ''}'
                 .trim()
           : '';
-      await _persistUser(token: 'apple:$uid', email: email, name: nameParts);
-      UserHomeNavigation.offAllToUserHome();
+
+      final effectiveEmail = email.isNotEmpty ? email : 'apple_$uid@idshaydi.com';
+
+      final ok = await ApiRepository.socialLogin(
+        email: effectiveEmail,
+        name: nameParts,
+        provider: 'apple',
+        providerId: uid,
+      );
+
+      if (ok) {
+        if (Get.isRegistered<CreateFlowController>()) {
+          Get.find<CreateFlowController>().markLoginSuccess();
+        }
+        UserHomeNavigation.offAllToUserHome();
+      } else {
+        Get.snackbar('Login failed', 'Could not authenticate with server.');
+      }
     } catch (e) {
       Get.snackbar('common.error'.tr, e.toString());
     }
@@ -91,17 +119,5 @@ class SocialAuthService extends GetxService {
       return SignInWithApple.isAvailable();
     }
     return false;
-  }
-
-  Future<void> _persistUser({
-    required String token,
-    required String email,
-    required String name,
-  }) async {
-    final storage = LocalStorageService();
-    await storage.setAuthToken(token);
-    if (email.isNotEmpty) await storage.setEmailId(email);
-    if (name.isNotEmpty) await storage.setUserName(name);
-    await storage.setLegalGateAccepted(true);
   }
 }

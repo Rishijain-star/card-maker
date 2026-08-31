@@ -139,7 +139,8 @@ class TemplatePickerView extends GetView<CreateFlowController> {
                         itemCount: flow.activeTemplates.length,
                         separatorBuilder: (context, index) => const SizedBox(height: 14),
                         itemBuilder: (context, index) {
-                          final selected = flow.selectedTemplate.value == index;
+                          final isEmp = flow.isEmployeeService;
+                          final selected = isEmp ? flow.employeeSelectedTemplate.value == index : flow.selectedTemplate.value == index;
                           if (flow.isLanyardService) {
                             return SizedBox(
                               height: 220,
@@ -172,7 +173,7 @@ class TemplatePickerView extends GetView<CreateFlowController> {
                 onPressed: () {
                   _openTemplate(
                     templateCtrl,
-                    controller.selectedTemplate.value,
+                    controller.isEmployeeService ? controller.employeeSelectedTemplate.value : controller.selectedTemplate.value,
                   );
                 },
               ),

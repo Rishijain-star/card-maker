@@ -47,10 +47,11 @@ class ApiClient {
       ),
     ]);
 
-    // âœ… Fixed Interceptor - Token automatically add kar raha hai
+    // Token and Dynamic BaseUrl Interceptor
     _dio!.interceptors.add(
       QueuedInterceptorsWrapper(
         onRequest: (options, handler) async {
+          options.baseUrl = ApiConfig.baseUrl;
           final secureToken = await SecureTokenService().getAuthToken();
           final authToken = secureToken.isNotEmpty
               ? secureToken

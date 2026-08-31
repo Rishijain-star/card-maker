@@ -139,7 +139,7 @@ class StudentIdTemplateImageOnly extends StatelessWidget {
             }
 
             Color instituteNameColor = Colors.white;
-            final blackInstituteIndices = const [9, 12, 13, 19, 20, 34]; // 1-indexed: 10, 13, 14, 20, 21, 35
+            final blackInstituteIndices = const [9, 12, 13, 19, 20]; // 1-indexed: 10, 13, 14, 20, 21
             final greenInstituteIndices = const [24]; // 1-indexed: 25
             
             if (customHeaderColor != null) {
@@ -150,11 +150,12 @@ class StudentIdTemplateImageOnly extends StatelessWidget {
               instituteNameColor = Colors.green;
             }
             
-            // Student details color: Black default, White only for Template 32 (index 31)
             Color detailsTextColor = Colors.black;
+            final whiteDetailsIndices = const [19, 29, 30]; // 1-indexed: 20, 30, 31
+            
             if (customTextColor != null) {
               detailsTextColor = customTextColor!;
-            } else if (templateIndex == 31) {
+            } else if (whiteDetailsIndices.contains(templateIndex)) {
               detailsTextColor = Colors.white;
             }
 

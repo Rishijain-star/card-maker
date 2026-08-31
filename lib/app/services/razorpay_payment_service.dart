@@ -25,21 +25,48 @@ class RazorpayPaymentService {
       ..on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
-  void openPremiumCheckout() {
+  void openCheckout({
+    required String keyId,
+    required String orderId,
+    required int amount,
+    required String planId,
+    String? planTitle,
+    String? userEmail,
+    String? userPhone,
+  }) {
     final razorpay = _razorpay;
     if (razorpay == null) return;
 
-    razorpay.open(<String, dynamic>{
-      'key': RazorpayConfig.keyId,
-      'amount': RazorpayConfig.premiumAmountPaise,
+    final prefill = <String, String>{};
+    if (userEmail != null && userEmail.isNotEmpty) {
+      prefill['email'] = userEmail;
+    }
+    if (userPhone != null && userPhone.isNotEmpty) {
+      prefill['contact'] = userPhone;
+    }
+
+    final options = <String, dynamic>{
+      'key': keyId.isNotEmpty ? keyId : RazorpayConfig.defaultKeyId,
+      'order_id': orderId,
+      'amount': amount,
       'name': RazorpayConfig.merchantName,
-      'description': RazorpayConfig.premiumDescription,
+      'description': planTitle != null && planTitle.isNotEmpty
+          ? '$planTitle Plan — Premium Access'
+          : 'Premium Subscription',
       'theme': <String, String>{'color': '#2563EB'},
-      'notes': <String, String>{
-        'plan': 'premium',
-        'mode': 'test',
+      'modal': <String, dynamic>{
+        'confirm_close': true,
       },
-    });
+      'notes': <String, String>{
+        'package_id': planId,
+      },
+    };
+
+    if (prefill.isNotEmpty) {
+      options['prefill'] = prefill;
+    }
+
+    razorpay.open(options);
   }
 
   void _handleSuccess(PaymentSuccessResponse response) {

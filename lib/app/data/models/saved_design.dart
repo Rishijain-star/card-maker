@@ -58,6 +58,48 @@ class SavedDesign {
     return title;
   }
 
+  SavedDesign copyWith({
+    String? templatePairId,
+    String? title,
+    String? frontImagePath,
+    String? backImagePath,
+    String? service,
+    String? templateName,
+    String? fontFamily,
+    double? fontSizeScale,
+    int? savedAtMs,
+    String? instituteName,
+    String? studentName,
+    int? lanyardVariant,
+    int? lanyardRepeatCount,
+    double? lanyardTextOffsetX,
+    double? lanyardTextOffsetY,
+    double? lanyardLogoTextSpacing,
+    int? lanyardTextColorHex,
+    String? logoPath,
+  }) {
+    return SavedDesign(
+      templatePairId: templatePairId ?? this.templatePairId,
+      title: title ?? this.title,
+      frontImagePath: frontImagePath ?? this.frontImagePath,
+      backImagePath: backImagePath ?? this.backImagePath,
+      service: service ?? this.service,
+      templateName: templateName ?? this.templateName,
+      fontFamily: fontFamily ?? this.fontFamily,
+      fontSizeScale: fontSizeScale ?? this.fontSizeScale,
+      savedAtMs: savedAtMs ?? this.savedAtMs,
+      instituteName: instituteName ?? this.instituteName,
+      studentName: studentName ?? this.studentName,
+      lanyardVariant: lanyardVariant ?? this.lanyardVariant,
+      lanyardRepeatCount: lanyardRepeatCount ?? this.lanyardRepeatCount,
+      lanyardTextOffsetX: lanyardTextOffsetX ?? this.lanyardTextOffsetX,
+      lanyardTextOffsetY: lanyardTextOffsetY ?? this.lanyardTextOffsetY,
+      lanyardLogoTextSpacing: lanyardLogoTextSpacing ?? this.lanyardLogoTextSpacing,
+      lanyardTextColorHex: lanyardTextColorHex ?? this.lanyardTextColorHex,
+      logoPath: logoPath ?? this.logoPath,
+    );
+  }
+
   Map<String, dynamic> toJson() => <String, dynamic>{
         'templatePairId': templatePairId,
         'id': templatePairId,

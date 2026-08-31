@@ -223,10 +223,10 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
             ],
             if (panel == TemplateEditorPanel.colors)
               _ColorSwatchPanel(
-                label: flow.isLanyardService ? 'Text Color' : 'Body Text Color',
+                label: flow.isLanyardService ? 'Text Color' : 'Text Color',
                 selectedHex: flow.isLanyardService
                     ? flow.lanyardCustomTextColorHex.value
-                    : flow.idCardCustomTextColorHex.value,
+                    : (flow.isEmployeeService ? flow.empCustomTextColorHex.value : flow.idCardCustomTextColorHex.value),
                 onPick: (hex) => flow.isLanyardService
                     ? flow.setLanyardTextColorHex(hex)
                     : flow.setIdCardTextColorHex(hex),
@@ -236,7 +236,7 @@ class TemplateEditorToolbar extends GetView<TemplateController> {
                 label: flow.isLanyardService ? 'Ribbon Color' : 'Header Color',
                 selectedHex: flow.isLanyardService
                     ? flow.lanyardCustomRibbonColorHex.value
-                    : flow.idCardCustomHeaderColorHex.value,
+                    : (flow.isEmployeeService ? flow.empCustomHeaderColorHex.value : flow.idCardCustomHeaderColorHex.value),
                 onPick: (hex) => flow.isLanyardService
                     ? flow.setCustomRibbonColorHex(hex ?? 0xFF1E3A8A)
                     : flow.setIdCardHeaderColorHex(hex),

@@ -38,18 +38,36 @@ abstract final class IdCardTextStyles {
     Color? templateDefault,
     Color? mutedDefault,
   }) {
-    final editingIdx = _flow?.editingTemplateIndex.value ?? -1;
-    final activeIdx = _flow?.selectedTemplate.value ?? -1;
-
     int? custom;
-    if (editingIdx != -1) {
-      custom = isHeader
-          ? _flow?.idCardCustomHeaderColorHex.value
-          : _flow?.idCardCustomTextColorHex.value;
-    } else if (activeIdx != -1) {
-      custom = isHeader
-          ? _flow?.getCustomHeaderColorForTemplate(activeIdx)
-          : _flow?.getCustomTextColorForTemplate(activeIdx);
+    final isEmployee = _flow?.isEmployeeService ?? false;
+
+    if (isEmployee) {
+      final empEditingIdx = _flow?.employeeEditingTemplateIndex.value ?? -1;
+      final empActiveIdx = _flow?.employeeSelectedTemplate.value ?? -1;
+      if (empEditingIdx != -1) {
+        custom = isHeader
+            ? _flow?.empCustomHeaderColorHex.value
+            : _flow?.empCustomTextColorHex.value;
+      } else if (empActiveIdx != -1) {
+        // Fallback to flow if we wanted to get from saved settings
+        // But getCustomHeaderColorForTemplate handles isEmployeeService branching internally now!
+        custom = isHeader
+            ? _flow?.getCustomHeaderColorForTemplate(empActiveIdx)
+            : _flow?.getCustomTextColorForTemplate(empActiveIdx);
+      }
+    } else {
+      final editingIdx = _flow?.editingTemplateIndex.value ?? -1;
+      final activeIdx = _flow?.selectedTemplate.value ?? -1;
+
+      if (editingIdx != -1) {
+        custom = isHeader
+            ? _flow?.idCardCustomHeaderColorHex.value
+            : _flow?.idCardCustomTextColorHex.value;
+      } else if (activeIdx != -1) {
+        custom = isHeader
+            ? _flow?.getCustomHeaderColorForTemplate(activeIdx)
+            : _flow?.getCustomTextColorForTemplate(activeIdx);
+      }
     }
 
     if (custom != null) return Color(custom);

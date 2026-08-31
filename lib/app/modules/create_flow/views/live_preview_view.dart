@@ -17,7 +17,9 @@ class LivePreviewView extends GetView<CreateFlowController> {
   @override
   Widget build(BuildContext context) {
     final templateCtrl = Get.find<TemplateController>();
-    final globalIndex = controller.selectedTemplate.value;
+    final globalIndex = controller.isEmployeeService 
+        ? controller.employeeSelectedTemplate.value 
+        : controller.selectedTemplate.value;
 
     return AppScaffold(
       child: SafeArea(

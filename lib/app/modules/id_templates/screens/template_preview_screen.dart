@@ -115,16 +115,27 @@ class TemplatePreviewScreen extends GetView<TemplateController> {
                     )
                   : Obx(
                       () {
-                        flow.selectedFont.value;
-                        flow.idCardCustomTextColorHex.value;
-                        flow.idCardCustomHeaderColorHex.value;
+                        if (flow.isEmployeeService) {
+                          flow.employeeSelectedFont.value;
+                          flow.empCustomTextColorHex.value;
+                          flow.empCustomHeaderColorHex.value;
+                        } else {
+                          flow.selectedFont.value;
+                          flow.idCardCustomTextColorHex.value;
+                          flow.idCardCustomHeaderColorHex.value;
+                        }
+                        
+                        final fontStr = flow.isEmployeeService ? flow.employeeSelectedFont.value : flow.selectedFont.value;
+                        final textHex = flow.isEmployeeService ? flow.empCustomTextColorHex.value : flow.idCardCustomTextColorHex.value;
+                        final headHex = flow.isEmployeeService ? flow.empCustomHeaderColorHex.value : flow.idCardCustomHeaderColorHex.value;
+                        
                         return LiveIdCardCarousel(
                           key: ValueKey<String>(
                             '${flow.isEmployeeService}-'
                             '$globalIndex-'
-                            '${flow.selectedFont.value}-'
-                            '${flow.idCardCustomTextColorHex.value}-'
-                            '${flow.idCardCustomHeaderColorHex.value}-'
+                            '$fontStr-'
+                            '$textHex-'
+                            '$headHex-'
                             '${controller.studentData.value.photoPath}-'
                             '${controller.employeeData.value.photoPath}',
                           ),

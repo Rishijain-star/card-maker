@@ -115,7 +115,7 @@ class MyDesignsView extends GetView<CreateFlowController> {
             const SizedBox(height: AppSpacing.xs),
             Obx(
               () => Text(
-                '${controller.lifetimeSaveCount.value} / ${controller.saveLimit} lifetime saves used · '
+                '${controller.savedDesigns.length} / ${controller.saveLimit} saved cards · '
                 '${controller.savedDesigns.length} in library',
                 style: AppTextStyles.body(context, size: 13).copyWith(
                   color: const Color(0xFF64748B),

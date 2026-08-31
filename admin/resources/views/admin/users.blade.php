@@ -23,7 +23,7 @@
 <div class="panel">
     <div class="panel-head">
         <h3>All Platform Users</h3>
-        <span>Paid · Unpaid · New — everyone who registered</span>
+        <span>Paid · Unpaid · New — everyone registered from the mobile app</span>
     </div>
     <table class="data-table">
         <thead>
@@ -31,34 +31,57 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Phone</th>
                 <th>Orders</th>
+                <th>Saved Cards</th>
                 <th>Payment</th>
                 <th>Joined</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($users as $user)
+            @forelse ($users as $user)
                 <tr>
-                    <td>#{{ $user['id'] }}</td>
-                    <td><strong>{{ $user['name'] }}</strong></td>
-                    <td>{{ $user['email'] }}</td>
-                    <td>{{ $user['phone'] }}</td>
-                    <td>{{ $user['orders_count'] }}</td>
+                    <td>#{{ $user->id }}</td>
+                    <td>
+                        <a href="{{ route('admin.users.show', $user->id) }}" style="color:var(--blue); font-weight:700;">
+                            {{ $user->name ?: 'User #' . $user->id }}
+                        </a>
+                    </td>
+                    <td>{{ $user->email }}</td>
+                    <td><strong>{{ $user->product_orders_count }}</strong></td>
+                    <td>
+                        <strong>{{ $user->saved_cards_count }}</strong> / {{ number_format($user->getSaveLimit()) }}
+                        <div style="font-size:11px; color:var(--muted)">({{ number_format($user->getRemainingCardCapacity()) }} left)</div>
+                    </td>
                     <td>
                         @php
-                            $badge = match ($user['payment_status']) {
+                            $status = $user->getPaymentStatus();
+                            $badge = match ($status) {
                                 'Paid' => 'badge-green',
                                 'Unpaid' => 'badge-orange',
                                 'New' => 'badge-blue',
                                 default => 'badge-gray',
                             };
                         @endphp
-                        <span class="badge {{ $badge }}">{{ $user['payment_status'] }}</span>
+                        <span class="badge {{ $badge }}">{{ $status }}</span>
+                        @if ($user->isPremiumActive())
+                            <div style="font-size:10px; font-weight:600; color:var(--green); margin-top:2px;">{{ strtoupper($user->premium_plan) }}</div>
+                        @endif
                     </td>
-                    <td>{{ $user['joined'] }}</td>
+                    <td>{{ $user->created_at ? $user->created_at->format('d M Y') : '—' }}</td>
+                    <td>
+                        <a href="{{ route('admin.users.show', $user->id) }}" style="font-weight:600; color:var(--blue); font-size:12px;">
+                            View &rarr;
+                        </a>
+                    </td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="8" style="text-align:center; padding: 24px; color:var(--muted)">
+                        No registered users found yet.
+                    </td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 </div>

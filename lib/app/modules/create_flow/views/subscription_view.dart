@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,8 +6,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../data/models/app_product.dart';
+import '../../../data/api_repository.dart';
 import '../../../routes/app_pages.dart';
 import '../../../services/local_storage_services/local_storage_services.dart';
+import '../../../services/razorpay_payment_service.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import '../controllers/create_flow_controller.dart';
 import '../controllers/products_controller.dart';
 
@@ -25,7 +29,8 @@ class SubscriptionView extends StatefulWidget {
   State<SubscriptionView> createState() => _SubscriptionViewState();
 }
 
-class _SubscriptionViewState extends State<SubscriptionView> {
+class _SubscriptionViewState extends State<SubscriptionView>
+    with WidgetsBindingObserver {
   final ProductsController _productsController = Get.find<ProductsController>();
 
   int _selectedTab = 2;
@@ -53,19 +58,146 @@ class _SubscriptionViewState extends State<SubscriptionView> {
     ),
   ];
 
+  final List<_OrderHistoryItem> _liveHistory = [];
+  final RazorpayPaymentService _paymentService = RazorpayPaymentService();
+  bool _isProcessingPayment = false;
+
   final List<_CartDesignEntry> _cartEntries = [];
   final Set<String> _removedDesignIds = {};
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _productsController.fetchProducts(force: true);
+    _paymentService.init(
+      onSuccess: _onProductPaymentSuccess,
+      onFailure: _onProductPaymentFailure,
+    );
+    _loadOrderHistory();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _searchCtrl.dispose();
+    _paymentService.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _isProcessingPayment) {
+      setState(() => _isProcessingPayment = false);
+    }
+  }
+
+  Future<void> _loadOrderHistory() async {
+    final res = await ApiRepository.fetchOrderHistory();
+    if (res != null && res['status'] == true && res['data'] is List) {
+      final items = (res['data'] as List).map((raw) {
+        final item = raw as Map<String, dynamic>;
+        return _OrderHistoryItem(
+          orderId: item['order_id']?.toString() ?? 'ORD-0000',
+          title: item['title']?.toString() ?? 'ORDER',
+          qty: (item['qty'] as num?)?.toInt() ?? 1,
+          amount: (item['amount'] as num?)?.toInt() ?? 0,
+          status: item['status']?.toString() ?? 'Paid',
+          dateLabel: item['date']?.toString() ?? '',
+        );
+      }).toList();
+      if (mounted) {
+        setState(() {
+          _liveHistory.clear();
+          _liveHistory.addAll(items);
+        });
+      }
+    }
+  }
+
+  Future<void> _onProductPaymentSuccess(PaymentSuccessResponse response) async {
+    if (!mounted) return;
+
+    final orderId = response.orderId ?? '';
+    final paymentId = response.paymentId ?? '';
+    final signature = response.signature ?? '';
+
+    if (orderId.isEmpty || paymentId.isEmpty || signature.isEmpty) {
+      setState(() => _isProcessingPayment = false);
+      Get.snackbar(
+        'Verification Incomplete',
+        'Could not verify payment details with server.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: const Color(0xFFDC2626),
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    final verifyRes = await ApiRepository.verifyProductOrderPayment(
+      orderId: orderId,
+      paymentId: paymentId,
+      signature: signature,
+    );
+
+    if (!mounted) return;
+    setState(() => _isProcessingPayment = false);
+
+    if (verifyRes != null && verifyRes['status'] == true) {
+      final data = verifyRes['data'] as Map<String, dynamic>?;
+      final orderNumber = data?['order_number']?.toString() ?? 'Order';
+
+      // Clear cart ONLY after successful backend verification
+      _clearCart();
+      await _loadOrderHistory();
+
+      if (!mounted) return;
+
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+
+      setState(() {
+        _focusedProduct = null;
+        _selectedTab = 1; // Switch to Orders tab
+      });
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Payment verified! $orderNumber placed successfully.',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          ),
+          backgroundColor: const Color(0xFF16A34A),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    } else {
+      final msg = verifyRes?['message']?.toString() ??
+          'Payment verification failed. Please contact support.';
+      Get.snackbar(
+        'Order Verification Failed',
+        msg,
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: const Color(0xFFDC2626),
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  void _onProductPaymentFailure(PaymentFailureResponse response) {
+    if (!mounted) return;
+    setState(() => _isProcessingPayment = false);
+    final msg = response.message ?? 'Payment was cancelled or failed.';
+    Get.snackbar(
+      'Payment Failed',
+      msg,
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: const Color(0xFFDC2626),
+      colorText: Colors.white,
+    );
   }
 
   int get _cartCount => _cartEntries.length;
@@ -175,26 +307,107 @@ class _SubscriptionViewState extends State<SubscriptionView> {
               }
             }
 
+            Future<void> handlePay() async {
+              if (_isProcessingPayment || _cartEntries.isEmpty) return;
+
+              setModalState(() => _isProcessingPayment = true);
+              setState(() => _isProcessingPayment = true);
+
+              final items = <Map<String, dynamic>>[];
+              for (final e in _cartEntries) {
+                String? frontBase64;
+                String? backBase64;
+
+                if (e.design.frontImagePath.isNotEmpty) {
+                  final f = File(e.design.frontImagePath);
+                  if (f.existsSync()) {
+                    try {
+                      final bytes = await f.readAsBytes();
+                      frontBase64 = base64Encode(bytes);
+                    } catch (_) {}
+                  }
+                }
+
+                if (e.design.backImagePath.isNotEmpty) {
+                  final b = File(e.design.backImagePath);
+                  if (b.existsSync()) {
+                    try {
+                      final bytes = await b.readAsBytes();
+                      backBase64 = base64Encode(bytes);
+                    } catch (_) {}
+                  }
+                }
+
+                items.add(<String, dynamic>{
+                  'product_id': e.product.id,
+                  'quantity': 1,
+                  'size': e.selectedSize ?? 'Standard',
+                  'design_title': e.design.title,
+                  'student_name': e.design.studentName,
+                  'institute_name': e.design.instituteName,
+                  'front_image': frontBase64 ?? e.design.frontImagePath,
+                  'back_image': backBase64 ?? e.design.backImagePath,
+                });
+              }
+
+              final orderRes = await ApiRepository.createProductOrder(items: items);
+
+              if (!mounted) return;
+
+              if (orderRes == null ||
+                  orderRes['status'] != true ||
+                  orderRes['data'] == null) {
+                setModalState(() => _isProcessingPayment = false);
+                setState(() => _isProcessingPayment = false);
+                final errorMsg = orderRes?['message']?.toString() ??
+                    'Could not connect to payment server. Please check your connection.';
+                Get.snackbar(
+                  'Order Creation Failed',
+                  errorMsg,
+                  snackPosition: SnackPosition.TOP,
+                  backgroundColor: const Color(0xFFDC2626),
+                  colorText: Colors.white,
+                );
+                return;
+              }
+
+              final data = orderRes['data'] as Map<String, dynamic>;
+              final orderId = '${data['order_id'] ?? ''}';
+              final amount = (data['amount'] as num?)?.toInt() ?? 0;
+              final keyId = '${data['key_id'] ?? ''}';
+              final orderNumber = '${data['order_number'] ?? ''}';
+
+              final storage = LocalStorageService();
+              final email = storage.getEmailId();
+              final phone = storage.getUserPhone();
+
+              // Close the bottom sheet BEFORE opening native Razorpay checkout
+              // to prevent Android modal overlay freeze on back navigation from UPI apps
+              if (sheetContext.mounted && Navigator.canPop(sheetContext)) {
+                Navigator.pop(sheetContext);
+              }
+              setModalState(() => _isProcessingPayment = false);
+              setState(() => _isProcessingPayment = false);
+
+              // Open Razorpay Checkout with server-returned order_id & key_id
+              _paymentService.openCheckout(
+                keyId: keyId,
+                orderId: orderId,
+                amount: amount,
+                planId: 'product_order',
+                planTitle: 'Order $orderNumber',
+                userEmail: email,
+                userPhone: phone,
+              );
+            }
+
             return _PaymentSheet(
               entries: _cartEntries,
               total: _cartGrandTotal,
+              isPaying: _isProcessingPayment,
               onRemove: removeItem,
               onClose: () => Navigator.pop(sheetContext),
-              onPay: () {
-                Navigator.pop(sheetContext);
-                _clearCart();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Payment successful!',
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                    ),
-                    backgroundColor: const Color(0xFF16A34A),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                );
-              },
+              onPay: handlePay,
             );
           },
         );
@@ -521,7 +734,9 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                             child: Obx(
                               () => _OrdersTab(
                                 liveItems: _productsController.products,
-                                history: _history,
+                                history: _liveHistory.isNotEmpty
+                                    ? _liveHistory
+                                    : _history,
                                 savedCountFor: _savedCountFor,
                               ),
                             ),
@@ -587,6 +802,48 @@ class _SubscriptionViewState extends State<SubscriptionView> {
               ),
             ),
           ),
+          if (_isProcessingPayment)
+            Container(
+              color: Colors.black.withValues(alpha: 0.35),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.12),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: _kPrimaryBlue,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Text(
+                        'Processing Payment...',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: _kText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -1590,6 +1847,7 @@ class _PaymentSheet extends StatefulWidget {
     required this.onRemove,
     required this.onClose,
     required this.onPay,
+    this.isPaying = false,
   });
 
   final List<_CartDesignEntry> entries;
@@ -1597,6 +1855,7 @@ class _PaymentSheet extends StatefulWidget {
   final ValueChanged<String> onRemove;
   final VoidCallback onClose;
   final VoidCallback onPay;
+  final bool isPaying;
 
   @override
   State<_PaymentSheet> createState() => _PaymentSheetState();
@@ -1760,7 +2019,7 @@ class _PaymentSheetState extends State<_PaymentSheet> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: widget.entries.isEmpty ? null : widget.onPay,
+                    onPressed: widget.entries.isEmpty || widget.isPaying ? null : widget.onPay,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _kPrimaryBlue,
                       foregroundColor: Colors.white,
@@ -1769,10 +2028,19 @@ class _PaymentSheetState extends State<_PaymentSheet> {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    child: Text(
-                      'Pay Now',
-                      style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w700),
-                    ),
+                    child: widget.isPaying
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            'Pay Now',
+                            style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w700),
+                          ),
                   ),
                 ),
               ],

@@ -1,4 +1,4 @@
-﻿import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../secure_token_service/secure_token_service.dart';
 
 class LocalStorageService {
@@ -201,6 +201,36 @@ class LocalStorageService {
       sharedPreferences!.setBool('isPremium', value);
 
   bool getIsPremium() => sharedPreferences!.getBool('isPremium') ?? false;
+
+  Future<void> setPremiumPlan(String plan) =>
+      sharedPreferences!.setString('premiumPlan', plan);
+
+  String getPremiumPlan() =>
+      sharedPreferences!.getString('premiumPlan') ?? '';
+
+  Future<void> setPremiumExpiresAt(String isoDate) =>
+      sharedPreferences!.setString('premiumExpiresAt', isoDate);
+
+  String getPremiumExpiresAt() =>
+      sharedPreferences!.getString('premiumExpiresAt') ?? '';
+
+  Future<void> setAccountSaveLimit(int limit) =>
+      sharedPreferences!.setInt('accountSaveLimit', limit);
+
+  int getAccountSaveLimit() =>
+      sharedPreferences!.getInt('accountSaveLimit') ?? 5;
+
+  Future<void> setAccountSavedCardsCount(int count) =>
+      sharedPreferences!.setInt('accountSavedCardsCount', count);
+
+  int getAccountSavedCardsCount() =>
+      sharedPreferences!.getInt('accountSavedCardsCount') ?? 0;
+
+  Future<void> setAccountRemainingCapacity(int remaining) =>
+      sharedPreferences!.setInt('accountRemainingCapacity', remaining);
+
+  int getAccountRemainingCapacity() =>
+      sharedPreferences!.getInt('accountRemainingCapacity') ?? 5;
 
   // ===================== DRIVER PROFILE (demo-persisted) =====================
   Future<void> setUserPhone(String v) =>

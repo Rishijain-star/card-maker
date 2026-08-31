@@ -244,8 +244,8 @@ class _CompanyV1BrandRow extends StatelessWidget {
           Flexible(
             child: AutoSizeText(
               IdCardTypography.formatInstituteName(name.toUpperCase()),
-              maxLines: 3,
-              minFontSize: IdCardPortraitTypography.headerMinFontSize,
+              maxLines: 2,
+              minFontSize: 14,
               textAlign: TextAlign.center,
               style: nameStyle,
             ),
