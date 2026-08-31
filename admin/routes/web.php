@@ -8,20 +8,43 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/admin/login');
 
-// Safe web trigger for running migrations and clearing cache without server terminal
+// Safe web trigger for running migrations without server terminal or DOMDocument dependency
 Route::get('/admin/run-system-migrations-securely-2026', function () {
-    try {
-        Artisan::call('migrate', ['--force' => true]);
-        $migrateOutput = Artisan::output();
+    $results = [];
 
-        Artisan::call('optimize:clear');
-        $clearOutput = Artisan::output();
+    try {
+        // 1. Create user_device_tokens table if not exists
+        if (!Illuminate\Support\Facades\Schema::hasTable('user_device_tokens')) {
+            Illuminate\Support\Facades\Schema::create('user_device_tokens', function ($table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+                $table->string('token_hash', 64)->unique();
+                $table->string('plain_token_preview', 16)->nullable();
+                $table->string('device_name', 120)->nullable();
+                $table->timestamp('last_used_at')->nullable();
+                $table->timestamps();
+            });
+            $results['user_device_tokens'] = 'Created';
+        } else {
+            $results['user_device_tokens'] = 'Already Exists';
+        }
+
+        // 2. Add form_data column to saved_cards if not exists
+        if (Illuminate\Support\Facades\Schema::hasTable('saved_cards')) {
+            if (!Illuminate\Support\Facades\Schema::hasColumn('saved_cards', 'form_data')) {
+                Illuminate\Support\Facades\Schema::table('saved_cards', function ($table) {
+                    $table->longText('form_data')->nullable()->after('back_path');
+                });
+                $results['saved_cards_form_data'] = 'Added';
+            } else {
+                $results['saved_cards_form_data'] = 'Already Exists';
+            }
+        }
 
         return response()->json([
             'status' => true,
-            'message' => 'Migrations and cache clearing executed successfully!',
-            'migrate_output' => $migrateOutput,
-            'cache_output' => $clearOutput,
+            'message' => 'Live database tables and columns updated successfully!',
+            'details' => $results,
         ]);
     } catch (\Throwable $e) {
         return response()->json([
