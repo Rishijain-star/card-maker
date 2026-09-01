@@ -90,9 +90,9 @@ class _ProfileImageCropScreenState extends State<ProfileImageCropScreen> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           onPressed: () => Get.back(result: widget.imagePath),
         ),
-        title: const Text(
-          'Crop Profile Photo',
-          style: TextStyle(
+        title: Text(
+          widget.isSignature ? 'Crop Signature' : 'Crop Profile Photo',
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -115,15 +115,17 @@ class _ProfileImageCropScreenState extends State<ProfileImageCropScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final cropWidth = constraints.maxWidth * 0.85;
-          final cropHeight = widget.isSignature ? cropWidth * 0.45 : cropWidth;
-          final cropRadius = widget.isSignature ? cropHeight / 2 : 16.0;
+          final cropHeight = cropWidth;
+          const cropRadius = 16.0;
 
           return Column(
             children: [
               const SizedBox(height: 12),
-              const Text(
-                'Drag, zoom, and adjust photo inside the box',
-                style: TextStyle(
+              Text(
+                widget.isSignature
+                    ? 'Drag, zoom, and adjust signature inside the box'
+                    : 'Drag, zoom, and adjust photo inside the box',
+                style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,

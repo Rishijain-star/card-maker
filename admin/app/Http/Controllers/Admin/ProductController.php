@@ -30,7 +30,19 @@ class ProductController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'description' => ['nullable', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:1'],
-            'image' => ['nullable', 'image', 'max:2048'],
+            'image' => [
+                'nullable',
+                'file',
+                'max:4096',
+                function ($attribute, $value, $fail) {
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $ext = strtolower($value->getClientOriginalExtension());
+                        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+                            $fail('The ' . $attribute . ' must be an image (jpg, jpeg, png, webp, gif).');
+                        }
+                    }
+                },
+            ],
         ]);
 
         $imageName = null;
@@ -59,7 +71,19 @@ class ProductController extends Controller
             'name' => ['sometimes', 'required', 'string', 'max:120'],
             'description' => ['nullable', 'string', 'max:255'],
             'price' => ['sometimes', 'required', 'integer', 'min:1'],
-            'image' => ['nullable', 'image', 'max:2048'],
+            'image' => [
+                'nullable',
+                'file',
+                'max:4096',
+                function ($attribute, $value, $fail) {
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $ext = strtolower($value->getClientOriginalExtension());
+                        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+                            $fail('The ' . $attribute . ' must be an image (jpg, jpeg, png, webp, gif).');
+                        }
+                    }
+                },
+            ],
         ]);
 
         if ($request->hasFile('image')) {

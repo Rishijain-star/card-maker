@@ -16,12 +16,7 @@ abstract final class ApiConfig {
       return fromEnv.endsWith('/') ? fromEnv : '$fromEnv/';
     }
 
-    // Release build me automatically Live URL use hogi
-    // Debug / Local test me Local Dev URL use hogi
-    if (kReleaseMode) {
-      return liveBaseUrl;
-    }
-
-    return localDevBaseUrl;
+    // Primary default: Live Production Server
+    return liveBaseUrl;
   }
 }

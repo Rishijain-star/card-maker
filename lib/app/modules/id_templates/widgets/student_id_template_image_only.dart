@@ -126,8 +126,8 @@ class StudentIdTemplateImageOnly extends StatelessWidget {
             Widget? photoWidget;
             if (showPhoto) {
               // 0-indexed mapping
-              final squareIndices = const [9, 11, 12, 17, 19, 34];
-              final hexagonIndices = const [3, 6, 28, 31, 39];
+              final squareIndices = const [9, 11, 12, 17, 19, 34, 38, 39];
+              final hexagonIndices = const [3, 6, 28, 31];
 
               if (squareIndices.contains(templateIndex)) {
                 photoWidget = StudentSquarePhoto(photoPath: photoPath, cardWidth: cardW);
@@ -139,8 +139,8 @@ class StudentIdTemplateImageOnly extends StatelessWidget {
             }
 
             Color instituteNameColor = Colors.white;
-            final blackInstituteIndices = const [9, 12, 13, 19, 20]; // 1-indexed: 10, 13, 14, 20, 21
-            final greenInstituteIndices = const [24]; // 1-indexed: 25
+            final blackInstituteIndices = const [9, 12, 13, 19, 20, 38]; // 1-indexed: 10, 13, 14, 20, 21, 39
+            final greenInstituteIndices = const [23]; // 1-indexed: 24
             
             if (customHeaderColor != null) {
               instituteNameColor = customHeaderColor!;

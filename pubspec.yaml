@@ -98,6 +98,8 @@ flutter:
 
   assets:
     - assets/
+    - assets/chhota-bheem.png
+    - assets/finalo40.png
     - assets/template number 32.png
     - assets/template_32_front.png
     - assets/template number 40.png

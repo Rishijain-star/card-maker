@@ -25,9 +25,12 @@ abstract final class StudentIdTemplateAssets {
   static const String backBackgroundV10 = 'assets/10th back.png';
   static const String frontBackgroundV11 = 'assets/11th front.png';
   static const String backBackgroundV11 = 'assets/11th back.png';
+  static const String frontBackgroundV12 = 'assets/finalo40.png';
+  static const String backBackgroundV12 = 'assets/finalo40.png';
   static const String frontBackgroundV13 = 'assets/template 13.png';
   static const String frontBackgroundV14 = 'assets/original mango.png';
   static const String frontBackgroundV15 = 'assets/rihgt one .png';
+  static const String backBackgroundV15 = 'assets/rihgt one .png';
   static const String frontBackgroundV16 = 'assets/template 16.png';
 
   static const String frontBackgroundV26 = 'assets/26 th front.png';
@@ -58,8 +61,8 @@ abstract final class StudentIdTemplateAssets {
   static const String backBackgroundV38 = 'assets/templatenumber 38 back.png';
   static const String frontBackgroundV39 = 'assets/tempalt number 39.png';
   static const String backBackgroundV39 = 'assets/39 back.png';
-  static const String frontBackgroundV40 = 'assets/template_40_front.png';
-  static const String backBackgroundV40 = 'assets/template_40_front.png';
+  static const String frontBackgroundV40 = 'assets/chhota-bheem.png';
+  static const String backBackgroundV40 = 'assets/chhota-bheem.png';
 
   /// All 40 Front Background Assets (Index 0 to 39 -> Template 1 to 40)
   static const List<String> frontBackgrounds = <String>[
@@ -74,7 +77,7 @@ abstract final class StudentIdTemplateAssets {
     'assets/9th front.png',                               // 9
     'assets/10 front.png',                                // 10
     'assets/11th front.png',                              // 11
-    'assets/template 13.png',                             // 12
+    'assets/finalo40.png',                                // 12
     'assets/template 13.png',                             // 13
     'assets/original mango.png',                          // 14
     'assets/rihgt one .png',                              // 15
@@ -101,7 +104,8 @@ abstract final class StudentIdTemplateAssets {
     'assets/temaopternumber 37.png',                      // 37
     'assets/tempalte number 389 forne.png',               // 38
     'assets/tempalt number 39.png',                       // 39
-    'assets/template_40_front.png',                       // 40
+    'assets/chhota-bheem.png',                            // Template 39
+    'assets/template_40_front.png',                       // Template 40
   ];
 
   /// All 40 Back Background Assets (Index 0 to 39 -> Template 1 to 40)
@@ -117,10 +121,10 @@ abstract final class StudentIdTemplateAssets {
     'assets/9thback.png',                                 // 9
     'assets/10th back.png',                               // 10
     'assets/11th back.png',                               // 11
-    'assets/template 13.png',                             // 12
+    'assets/finalo40.png',                                // 12
     'assets/template 13.png',                             // 13
     'assets/original mango.png',                          // 14
-    'assets/company 1st back.png',                        // 15
+    'assets/rihgt one .png',                              // 15
     'assets/3rd company back.png',                        // 17
     'assets/4th back comanpy.png',                        // 18
     'assets/back company 5.png',                          // 19
@@ -144,7 +148,8 @@ abstract final class StudentIdTemplateAssets {
     'assets/37 back.png',                                 // 37
     'assets/templatenumber 38 back.png',                  // 38
     'assets/39 back.png',                                 // 39
-    'assets/template_40_front.png',                       // 40
+    'assets/chhota-bheem.png',                            // Template 39
+    'assets/template_40_front.png',                       // Template 40
   ];
 
   static String getFrontAsset(int index) {
