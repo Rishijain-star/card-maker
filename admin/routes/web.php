@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/admin/login');
 
+// Public Privacy Policy page for Google Play Store compliance
+Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');
+
 // Safe web trigger for running migrations without server terminal or DOMDocument dependency
 Route::get('/admin/run-system-migrations-securely-2026', function () {
     $results = [];
