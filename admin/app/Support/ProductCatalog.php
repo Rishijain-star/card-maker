@@ -41,10 +41,34 @@ final class ProductCatalog
         return self::sizesForName($name) !== [];
     }
 
+    public static function categoryFromName(string $name): string
+    {
+        $key = Str::upper(trim($name));
+        if (self::nameMatches($key, ['ID CARD', 'IDCARD', 'ID-CARD', 'CARD'])) {
+            return 'ID Card';
+        }
+        if (self::nameMatches($key, ['LANYARD', 'LANYARDS', 'DORI', 'RIBBON'])) {
+            return 'Lanyard';
+        }
+        if (self::nameMatches($key, ['BADGE', 'BADGES'])) {
+            return 'Badge';
+        }
+        if (self::nameMatches($key, ['BELT', 'BELTS'])) {
+            return 'Belt';
+        }
+        if (self::nameMatches($key, ['HOLDER', 'CASE'])) {
+            return 'Card Holder';
+        }
+        return 'General';
+    }
+
     public static function applyCatalogMeta(Product $product): void
     {
         $product->slug = self::slugFromName($product->name);
         $product->sizes = self::sizesForName($product->name);
+        if (empty($product->category)) {
+            $product->category = self::categoryFromName($product->name);
+        }
     }
 
     /** @param list<string> $needles */

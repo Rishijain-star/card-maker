@@ -20,6 +20,19 @@
                     @error('name')<span class="field-error">{{ $message }}</span>@enderror
                 </div>
                 <div class="field">
+                    <label>Category</label>
+                    <input list="category-options" type="text" name="category" value="{{ old('category', 'ID Card') }}" placeholder="Select or type category">
+                    <datalist id="category-options">
+                        <option value="ID Card">
+                        <option value="Lanyard">
+                        <option value="Badge">
+                        <option value="Belt">
+                        <option value="Card Holder">
+                        <option value="Accessories">
+                    </datalist>
+                    @error('category')<span class="field-error">{{ $message }}</span>@enderror
+                </div>
+                <div class="field">
                     <label>Price (₹)</label>
                     <input type="number" name="price" value="{{ old('price') }}" min="1" placeholder="25" required>
                     @error('price')<span class="field-error">{{ $message }}</span>@enderror
@@ -64,6 +77,10 @@
                     <div class="field">
                         <label>Name</label>
                         <input type="text" name="name" value="{{ $product->name }}" required>
+                    </div>
+                    <div class="field">
+                        <label>Category</label>
+                        <input list="category-options" type="text" name="category" value="{{ $product->category ?? \App\Support\ProductCatalog::categoryFromName($product->name) }}" placeholder="e.g. ID Card, Lanyard">
                     </div>
                     <div class="field">
                         <label>Description</label>

@@ -22,10 +22,15 @@ class ProductController extends Controller
                     'id' => $product->id,
                     'name' => $product->name,
                     'slug' => $product->slug,
+                    'category' => !empty($product->category)
+                        ? $product->category
+                        : \App\Support\ProductCatalog::categoryFromName($product->name),
                     'description' => $product->description ?? '',
                     'price' => (int) $product->price,
                     'image_url' => $product->image
-                        ? $baseUrl.'/uploads/products/'.$product->image
+                        ? ($product->imageUrl() && str_contains($product->imageUrl(), '/public/')
+                            ? $product->imageUrl()
+                            : $baseUrl.'/public/uploads/products/'.$product->image)
                         : null,
                     'status' => $product->status,
                     'sizes' => $product->sizes ?? [],

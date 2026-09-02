@@ -7,14 +7,18 @@ use App\Models\Product;
 use App\Support\ProductCatalog;
 use App\Support\StaticAdminData;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
     public function index(): View
     {
+        $this->ensureCategoryColumn();
+
         return view('admin.products', [
             'pageTitle' => 'Products',
             'appName' => StaticAdminData::APP_NAME,
@@ -26,8 +30,11 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $this->ensureCategoryColumn();
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
+            'category' => ['nullable', 'string', 'max:100'],
             'description' => ['nullable', 'string', 'max:255'],
             'price' => ['required', 'integer', 'min:1'],
             'image' => [
@@ -50,8 +57,13 @@ class ProductController extends Controller
             $imageName = $this->saveImage($request->file('image'));
         }
 
+        $category = !empty($data['category'])
+            ? trim($data['category'])
+            : ProductCatalog::categoryFromName($data['name']);
+
         Product::query()->create([
             'name' => $data['name'],
+            'category' => $category,
             'description' => $data['description'] ?? '',
             'price' => $data['price'],
             'image' => $imageName,
@@ -67,8 +79,11 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product): RedirectResponse
     {
+        $this->ensureCategoryColumn();
+
         $data = $request->validate([
             'name' => ['sometimes', 'required', 'string', 'max:120'],
+            'category' => ['nullable', 'string', 'max:100'],
             'description' => ['nullable', 'string', 'max:255'],
             'price' => ['sometimes', 'required', 'integer', 'min:1'],
             'image' => [
@@ -96,6 +111,11 @@ class ProductController extends Controller
             $product->slug = ProductCatalog::slugFromName($data['name']);
             $product->sizes = ProductCatalog::sizesForName($data['name']);
         }
+        if (array_key_exists('category', $data)) {
+            $product->category = !empty($data['category'])
+                ? trim($data['category'])
+                : ProductCatalog::categoryFromName($product->name);
+        }
         if (array_key_exists('description', $data)) {
             $product->description = $data['description'] ?? '';
         }
@@ -108,6 +128,19 @@ class ProductController extends Controller
         return redirect()
             ->route('admin.products')
             ->with('success', 'Product updated successfully.');
+    }
+
+    private function ensureCategoryColumn(): void
+    {
+        try {
+            if (! Schema::hasColumn('products', 'category')) {
+                Schema::table('products', function (Blueprint $table) {
+                    $table->string('category', 100)->nullable()->default('General')->after('slug');
+                });
+            }
+        } catch (\Throwable $e) {
+            // Ignore if column already exists or table issue
+        }
     }
 
     public function destroy(Product $product): RedirectResponse

@@ -11,6 +11,7 @@ import '../../../routes/app_pages.dart';
 import '../../../services/local_storage_services/local_storage_services.dart';
 import '../../../services/razorpay_payment_service.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import '../controllers/create_flow_controller.dart';
 import '../controllers/products_controller.dart';
 
@@ -36,8 +37,20 @@ class _SubscriptionViewState extends State<SubscriptionView>
   int _selectedTab = 2;
   AppProduct? _focusedProduct;
   final TextEditingController _searchCtrl = TextEditingController();
+  String _selectedCategory = 'All';
   DateTime _selectedDate = DateTime.now();
   final Map<String, String> _selectedSizes = <String, String>{};
+
+  List<String> get _categories {
+    final list = <String>['All'];
+    for (final p in _productsController.products) {
+      final cat = p.category.trim();
+      if (cat.isNotEmpty && !list.contains(cat)) {
+        list.add(cat);
+      }
+    }
+    return list;
+  }
 
   final List<_OrderHistoryItem> _history = const [
     _OrderHistoryItem(
@@ -70,6 +83,7 @@ class _SubscriptionViewState extends State<SubscriptionView>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _productsController.fetchProducts(force: true);
+    Get.find<CreateFlowController>().syncSavedCardsFromServer();
     _paymentService.init(
       onSuccess: _onProductPaymentSuccess,
       onFailure: _onProductPaymentFailure,
@@ -246,7 +260,25 @@ class _SubscriptionViewState extends State<SubscriptionView>
   }
 
   void _openProductDesigns(AppProduct item) {
-    final designs = _savedDesignsFor(item);
+    final flow = Get.find<CreateFlowController>();
+    var designs = _savedDesignsFor(item);
+
+    if (designs.isEmpty) {
+      final allProductDesigns = flow.savedDesigns
+          .where((d) => item.matchesSavedDesignService(d.service))
+          .toList();
+
+      if (allProductDesigns.isNotEmpty) {
+        final mostRecent = allProductDesigns.first;
+        final designDate =
+            DateTime.fromMillisecondsSinceEpoch(mostRecent.savedAtMs);
+        setState(() {
+          _selectedDate = designDate;
+        });
+        designs = _savedDesignsFor(item);
+      }
+    }
+
     if (designs.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -285,6 +317,589 @@ class _SubscriptionViewState extends State<SubscriptionView>
       _focusedProduct = null;
       _selectedTab = 2;
     });
+  }
+
+  final Map<int, int> _productQuantities = {};
+
+  int _getQuantity(int productId) => _productQuantities[productId] ?? 1;
+
+  void _setQuantity(int productId, int qty) {
+    setState(() {
+      _productQuantities[productId] = qty.clamp(1, 9999);
+    });
+  }
+
+  void _openDirectProductOrderSheet(AppProduct product, int initialQty) {
+    final storage = LocalStorageService();
+    if (!storage.isLoggedIn()) {
+      Get.snackbar(
+        'Login Required',
+        'Please login to place an order.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: const Color(0xFF2563EB),
+        colorText: Colors.white,
+      );
+      Get.toNamed(Routes.LOGIN);
+      return;
+    }
+
+    int currentQty = initialQty.clamp(1, 9999);
+    String? selectedSize = product.supportsSizes && product.sizes.isNotEmpty
+        ? product.sizes.first
+        : null;
+    final notesController = TextEditingController();
+    bool isProcessing = false;
+    File? selectedLogoFile;
+    String? selectedLogoBase64;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final lineTotal = product.price * currentQty;
+
+            Future<void> pickLogo(ImageSource source) async {
+              try {
+                final picker = ImagePicker();
+                final picked =
+                    await picker.pickImage(source: source, imageQuality: 85);
+                if (picked != null) {
+                  final file = File(picked.path);
+                  final bytes = await file.readAsBytes();
+                  final b64 = 'data:image/png;base64,${base64Encode(bytes)}';
+                  setModalState(() {
+                    selectedLogoFile = file;
+                    selectedLogoBase64 = b64;
+                  });
+                }
+              } catch (e) {
+                Get.snackbar('Image Picker Notice', 'Could not pick image: $e');
+              }
+            }
+
+            Future<void> handlePayNow() async {
+              if (isProcessing) return;
+
+              setModalState(() => isProcessing = true);
+              setState(() => _isProcessingPayment = true);
+
+              final orderNote = notesController.text.trim();
+              final items = <Map<String, dynamic>>[
+                {
+                  'product_id': product.id,
+                  'quantity': currentQty,
+                  'size': selectedSize ?? 'Standard',
+                  'design_title':
+                      orderNote.isNotEmpty ? orderNote : product.name,
+                  if (selectedLogoBase64 != null)
+                    'front_image': selectedLogoBase64,
+                }
+              ];
+
+              final orderRes =
+                  await ApiRepository.createProductOrder(items: items);
+
+              if (orderRes == null || orderRes['status'] != true) {
+                setModalState(() => isProcessing = false);
+                setState(() => _isProcessingPayment = false);
+                final errorMsg = orderRes?['message']?.toString() ??
+                    'Could not connect to payment server. Please check your connection.';
+                Get.snackbar(
+                  'Order Creation Failed',
+                  errorMsg,
+                  snackPosition: SnackPosition.TOP,
+                  backgroundColor: const Color(0xFFDC2626),
+                  colorText: Colors.white,
+                );
+                return;
+              }
+
+              final data = orderRes['data'] as Map<String, dynamic>;
+              final orderId = '${data['order_id'] ?? ''}';
+              final amount = (data['amount'] as num?)?.toInt() ?? 0;
+              final keyId = '${data['key_id'] ?? ''}';
+              final orderNumber = '${data['order_number'] ?? ''}';
+
+              final email = storage.getEmailId();
+              final phone = storage.getUserPhone();
+
+              if (sheetContext.mounted && Navigator.canPop(sheetContext)) {
+                Navigator.pop(sheetContext);
+              }
+              setModalState(() => isProcessing = false);
+              setState(() => _isProcessingPayment = false);
+
+              _paymentService.openCheckout(
+                keyId: keyId,
+                orderId: orderId,
+                amount: amount,
+                planId: 'product_direct_order',
+                planTitle: 'Order $orderNumber (${product.name})',
+                userEmail: email,
+                userPhone: phone,
+              );
+            }
+
+            final bottomInset = MediaQuery.of(sheetContext).viewInsets.bottom;
+
+            return Container(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + bottomInset),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFCBD5E1),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: product.accent.withValues(alpha: 0.12),
+                            border: Border.all(
+                              color: product.accent.withValues(alpha: 0.35),
+                              width: 1.5,
+                            ),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: product.imageUrl != null &&
+                                  product.imageUrl!.isNotEmpty
+                              ? Image.network(
+                                  product.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Icon(
+                                    product.icon,
+                                    color: product.accent,
+                                    size: 26,
+                                  ),
+                                )
+                              : Icon(
+                                  product.icon,
+                                  color: product.accent,
+                                  size: 26,
+                                ),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.name,
+                                style: GoogleFonts.poppins(
+                                  color: _kText,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(
+                                '₹${product.price} / piece',
+                                style: GoogleFonts.poppins(
+                                  color: _kPrimaryBlue,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_rounded, color: _kSubText),
+                          onPressed: () => Navigator.pop(sheetContext),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(height: 1, color: _kBorder),
+                    const SizedBox(height: 16),
+
+                    if (product.supportsSizes && product.sizes.isNotEmpty) ...[
+                      Text(
+                        'Select Size:',
+                        style: GoogleFonts.poppins(
+                          color: _kText,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: product.sizes.map((size) {
+                          final isSelected = selectedSize == size;
+                          return ChoiceChip(
+                            label: Text(size),
+                            selected: isSelected,
+                            onSelected: (selected) {
+                              if (selected) {
+                                setModalState(() => selectedSize = size);
+                              }
+                            },
+                            selectedColor: _kPrimaryBlue,
+                            backgroundColor: const Color(0xFFF1F5F9),
+                            labelStyle: GoogleFonts.poppins(
+                              color: isSelected ? Colors.white : _kText,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Quantity:',
+                          style: GoogleFonts.poppins(
+                            color: _kText,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF1F5F9),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: const Color(0xFFCBD5E1)),
+                          ),
+                          child: Row(
+                            children: [
+                              _QtyButton(
+                                icon: Icons.remove_rounded,
+                                onTap: currentQty > 1
+                                    ? () {
+                                        setModalState(() {
+                                          currentQty--;
+                                          _setQuantity(product.id, currentQty);
+                                        });
+                                      }
+                                    : null,
+                              ),
+                              Container(
+                                constraints: const BoxConstraints(minWidth: 44),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  '$currentQty',
+                                  style: GoogleFonts.poppins(
+                                    color: _kText,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              _QtyButton(
+                                icon: Icons.add_rounded,
+                                onTap: () {
+                                  setModalState(() {
+                                    currentQty++;
+                                    _setQuantity(product.id, currentQty);
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    Text(
+                      'Order Details / Instructions (Optional):',
+                      style: GoogleFonts.poppins(
+                        color: _kText,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextField(
+                      controller: notesController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        hintText:
+                            'Enter your details, instructions or notes here and upload your logo or image',
+                        hintStyle: GoogleFonts.poppins(
+                          color: const Color(0xFF94A3B8),
+                          fontSize: 12,
+                        ),
+                        contentPadding: const EdgeInsets.all(12),
+                        filled: true,
+                        fillColor: const Color(0xFFF8FAFC),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: _kBorder),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                              color: _kPrimaryBlue, width: 1.5),
+                        ),
+                      ),
+                      style: GoogleFonts.poppins(
+                        color: _kText,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // Logo / Reference Image Upload Section
+                    Text(
+                      'Upload Logo / Image (Optional):',
+                      style: GoogleFonts.poppins(
+                        color: _kText,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    if (selectedLogoFile == null)
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(color: _kBorder),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                              ),
+                              onPressed: () =>
+                                  pickLogo(ImageSource.gallery),
+                              icon: const Icon(Icons.photo_library_outlined,
+                                  size: 18, color: _kPrimaryBlue),
+                              label: Text(
+                                'Gallery',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: _kText,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(color: _kBorder),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                              ),
+                              onPressed: () =>
+                                  pickLogo(ImageSource.camera),
+                              icon: const Icon(Icons.camera_alt_outlined,
+                                  size: 18, color: _kPrimaryBlue),
+                              label: Text(
+                                'Camera',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: _kText,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFCBD5E1)),
+                        ),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.file(
+                                selectedLogoFile!,
+                                width: 44,
+                                height: 44,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.check_circle,
+                                          size: 15, color: Color(0xFF16A34A)),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Logo Attached',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color(0xFF16A34A),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    selectedLogoFile!.path.split('/').last,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 11,
+                                      color: _kSubText,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline_rounded,
+                                  color: Color(0xFFEF4444)),
+                              onPressed: () {
+                                setModalState(() {
+                                  selectedLogoFile = null;
+                                  selectedLogoBase64 = null;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(height: 20),
+
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: _kBorder),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Price (₹${product.price} × $currentQty):',
+                                style: GoogleFonts.poppins(
+                                  color: _kSubText,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                '₹$lineTotal',
+                                style: GoogleFonts.poppins(
+                                  color: _kText,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          const Divider(height: 1, color: _kBorder),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Total to Pay:',
+                                style: GoogleFonts.poppins(
+                                  color: _kText,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(
+                                '₹$lineTotal',
+                                style: GoogleFonts.poppins(
+                                  color: _kPrimaryBlue,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _kPrimaryBlue,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        onPressed: isProcessing ? null : handlePayNow,
+                        child: isProcessing
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.payment_rounded, size: 20),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Pay Now · ₹$lineTotal',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   void _showPaymentSheet() {
@@ -417,12 +1032,19 @@ class _SubscriptionViewState extends State<SubscriptionView>
 
   List<AppProduct> get _visibleProducts {
     final query = _searchCtrl.text.trim().toLowerCase();
-    final all = _productsController.products;
+    List<AppProduct> all = _productsController.products.toList();
+    if (_selectedCategory != 'All') {
+      all = all
+          .where((p) =>
+              p.category.toLowerCase() == _selectedCategory.toLowerCase())
+          .toList();
+    }
     if (query.isEmpty) return all;
     return all
         .where((p) =>
             p.name.toLowerCase().contains(query) ||
-            p.description.toLowerCase().contains(query))
+            p.description.toLowerCase().contains(query) ||
+            p.category.toLowerCase().contains(query))
         .toList();
   }
 
@@ -617,9 +1239,41 @@ class _SubscriptionViewState extends State<SubscriptionView>
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
                           child: _SearchBar(controller: _searchCtrl, onChanged: (_) => setState(() {})),
                         ),
+                        // Horizontal Categories Filter
+                        Obx(() {
+                          final cats = _categories;
+                          if (cats.length <= 1) return const SizedBox.shrink();
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: SizedBox(
+                              height: 38,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                physics: const BouncingScrollPhysics(),
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                itemCount: cats.length,
+                                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                                itemBuilder: (context, idx) {
+                                  final cat = cats[idx];
+                                  final isSelected =
+                                      _selectedCategory.toLowerCase() == cat.toLowerCase();
+                                  return _CategoryFilterChip(
+                                    label: cat,
+                                    isSelected: isSelected,
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedCategory = cat;
+                                      });
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        }),
                         Expanded(
                           child: Obx(
                             () {
@@ -671,24 +1325,35 @@ class _SubscriptionViewState extends State<SubscriptionView>
 
                               return RefreshIndicator(
                                 color: _kPrimaryBlue,
-                                onRefresh: () =>
+                                onRefresh: () async {
+                                  await Future.wait([
                                     _productsController.fetchProducts(force: true),
-                                child: GridView.builder(
+                                    Get.find<CreateFlowController>().syncSavedCardsFromServer(),
+                                  ]);
+                                },
+                                child: ListView.separated(
                                   physics: const AlwaysScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 12,
-                                    mainAxisSpacing: 12,
-                                    childAspectRatio: width >= 520 ? 2.15 : 1.95,
-                                  ),
+                                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                                   itemCount: items.length,
+                                  separatorBuilder: (_, __) =>
+                                      const SizedBox(height: 12),
                                   itemBuilder: (context, index) {
                                     final item = items[index];
-                                    return _ProductCard(
+                                    final qty = _getQuantity(item.id);
+                                    final savedCount = _savedCountFor(item);
+                                    return _ProductRowCard(
                                       item: item,
-                                      onTap: () => _openProductDesigns(item),
+                                      quantity: qty,
+                                      savedCount: savedCount,
+                                      onQuantityChanged: (newQty) {
+                                        _setQuantity(item.id, newQty);
+                                      },
+                                      onOrderNow: () {
+                                        _openDirectProductOrderSheet(item, qty);
+                                      },
+                                      onTapCard: () {
+                                        _openProductDesigns(item);
+                                      },
                                     );
                                   },
                                 ),
@@ -1081,95 +1746,527 @@ class _DateFilterBar extends StatelessWidget {
   }
 }
 
-class _ProductCard extends StatelessWidget {
-  const _ProductCard({
-    required this.item,
-    required this.onTap,
-  });
-
-  final AppProduct item;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+void _showFullProductImageDialog(BuildContext context, AppProduct item) {
+  showDialog<void>(
+    context: context,
+    barrierColor: Colors.black.withValues(alpha: 0.75),
+    builder: (dialogContext) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 440),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: _kBorder),
-            boxShadow: [
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: const [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                color: Colors.black45,
+                blurRadius: 24,
+                offset: Offset(0, 10),
               ),
             ],
           ),
-          child: Row(
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
+              // Header with Title & Close
               Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: item.accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: item.imageUrl != null && item.imageUrl!.isNotEmpty
-                    ? Image.network(
-                        item.imageUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            Icon(item.icon, color: item.accent, size: 24),
-                      )
-                    : Icon(item.icon, color: item.accent, size: 24),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                padding: const EdgeInsets.fromLTRB(20, 14, 12, 14),
+                color: const Color(0xFFF8FAFC),
+                child: Row(
                   children: [
-                    Text(
-                      item.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.poppins(
-                        color: _kText,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.2,
+                    Expanded(
+                      child: Text(
+                        item.name,
+                        style: GoogleFonts.poppins(
+                          color: _kText,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Text(
-                      item.description,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.poppins(
-                        color: _kSubText,
-                        fontSize: 10,
-                        height: 1.2,
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded, color: _kSubText),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () => Navigator.pop(dialogContext),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1, color: _kBorder),
+
+              // Full Image View with Zoom / Pinch
+              Container(
+                width: double.infinity,
+                constraints:
+                    const BoxConstraints(maxHeight: 380, minHeight: 220),
+                color: const Color(0xFFFAFAFA),
+                padding: const EdgeInsets.all(16),
+                child: item.imageUrl != null && item.imageUrl!.isNotEmpty
+                    ? InteractiveViewer(
+                        minScale: 0.8,
+                        maxScale: 4.0,
+                        child: Center(
+                          child: Image.network(
+                            item.imageUrl!,
+                            fit: BoxFit.contain,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                    color: _kPrimaryBlue),
+                              );
+                            },
+                            errorBuilder: (_, __, ___) => Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(item.icon, size: 54, color: item.accent),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Image not available',
+                                  style: GoogleFonts.poppins(
+                                      color: _kSubText, fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    : Center(
+                        child: Icon(item.icon, size: 64, color: item.accent),
+                      ),
+              ),
+              const Divider(height: 1, color: _kBorder),
+
+              // Bottom Bar with Price & Close Button
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                color: Colors.white,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '₹${item.price}',
+                          style: GoogleFonts.poppins(
+                            color: _kPrimaryBlue,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        Text(
+                          'per piece',
+                          style: GoogleFonts.poppins(
+                            color: _kSubText,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF1F5F9),
+                        foregroundColor: _kText,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: Text(
+                        'Close',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              Container(
-                width: 26,
-                height: 26,
-                decoration: BoxDecoration(
-                  color: _kPrimaryBlue.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+class _ProductRowCard extends StatelessWidget {
+  const _ProductRowCard({
+    required this.item,
+    required this.quantity,
+    required this.savedCount,
+    required this.onQuantityChanged,
+    required this.onOrderNow,
+    this.onTapCard,
+  });
+
+  final AppProduct item;
+  final int quantity;
+  final int savedCount;
+  final ValueChanged<int> onQuantityChanged;
+  final VoidCallback onOrderNow;
+  final VoidCallback? onTapCard;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: _kBorder),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left side: Circle Product Image (62x62) - uncropped, full image, tap to open modal
+          GestureDetector(
+            onTap: () => _showFullProductImageDialog(context, item),
+            child: Container(
+              width: 62,
+              height: 62,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                border: Border.all(
+                  color: item.accent.withValues(alpha: 0.35),
+                  width: 2.0,
                 ),
-                child: const Icon(Icons.chevron_right_rounded, color: _kPrimaryBlue, size: 18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(4),
+              clipBehavior: Clip.antiAlias,
+              child: ClipOval(
+                child: item.imageUrl != null && item.imageUrl!.isNotEmpty
+                    ? Image.network(
+                        item.imageUrl!,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, __, ___) => Icon(
+                          item.icon,
+                          color: item.accent,
+                          size: 26,
+                        ),
+                      )
+                    : Icon(
+                        item.icon,
+                        color: item.accent,
+                        size: 26,
+                      ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+
+          // Center: Title + Full Description + Saved Count Badge + Quantity Selector
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: onTapCard,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              item.name,
+                              style: GoogleFonts.poppins(
+                                color: _kText,
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.1,
+                              ),
+                            ),
+                          ),
+                          if (item.matchesSavedDesignService('Student ID Card') ||
+                              item.matchesSavedDesignService('Lanyard'))
+                            const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 11,
+                              color: Color(0xFF94A3B8),
+                            ),
+                        ],
+                      ),
+                      if (item.description.isNotEmpty) ...[
+                        const SizedBox(height: 3),
+                        Text(
+                          item.description,
+                          style: GoogleFonts.poppins(
+                            color: _kSubText,
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w400,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+
+                // Saved Cards indicator badge for this date
+                if (savedCount > 0) ...[
+                  const SizedBox(height: 6),
+                  InkWell(
+                    onTap: onTapCard,
+                    borderRadius: BorderRadius.circular(6),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: _kPrimaryBlue.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                            color: _kPrimaryBlue.withValues(alpha: 0.25)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.badge_outlined,
+                              size: 13, color: _kPrimaryBlue),
+                          const SizedBox(width: 4),
+                          Text(
+                            '$savedCount saved for this date',
+                            style: GoogleFonts.poppins(
+                              color: _kPrimaryBlue,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ] else if (item.matchesSavedDesignService('Student ID Card') ||
+                    item.matchesSavedDesignService('Lanyard')) ...[
+                  const SizedBox(height: 4),
+                  InkWell(
+                    onTap: onTapCard,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.folder_open_rounded,
+                              size: 13, color: _kPrimaryBlue),
+                          const SizedBox(width: 4),
+                          Text(
+                            'View saved designs',
+                            style: GoogleFonts.poppins(
+                              color: _kPrimaryBlue,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 10),
+
+                // Quantity Stepper
+                Row(
+                  children: [
+                    Text(
+                      'Qty:',
+                      style: GoogleFonts.poppins(
+                        color: _kSubText,
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF1F5F9),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _QtyButton(
+                            icon: Icons.remove_rounded,
+                            onTap: quantity > 1
+                                ? () => onQuantityChanged(quantity - 1)
+                                : null,
+                          ),
+                          Container(
+                            constraints: const BoxConstraints(minWidth: 32),
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '$quantity',
+                              style: GoogleFonts.poppins(
+                                color: _kText,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          _QtyButton(
+                            icon: Icons.add_rounded,
+                            onTap: () => onQuantityChanged(quantity + 1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          // Right side: Price + Order Now Button
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '₹${item.price}',
+                style: GoogleFonts.poppins(
+                  color: _kPrimaryBlue,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              Text(
+                'per piece',
+                style: GoogleFonts.poppins(
+                  color: _kSubText,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Material(
+                color: _kPrimaryBlue,
+                borderRadius: BorderRadius.circular(10),
+                elevation: 0,
+                child: InkWell(
+                  onTap: onOrderNow,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Order Now',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 11.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        const Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 13,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QtyButton extends StatelessWidget {
+  const _QtyButton({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isEnabled = onTap != null;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Icon(
+          icon,
+          size: 16,
+          color: isEnabled ? _kText : const Color(0xFF94A3B8),
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryFilterChip extends StatelessWidget {
+  const _CategoryFilterChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: isSelected ? _kPrimaryBlue : Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      elevation: isSelected ? 2 : 0,
+      shadowColor: _kPrimaryBlue.withValues(alpha: 0.3),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected ? _kPrimaryBlue : _kBorder,
+              width: 1.2,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: GoogleFonts.poppins(
+              color: isSelected ? Colors.white : _kText,
+              fontSize: 12.5,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            ),
           ),
         ),
       ),

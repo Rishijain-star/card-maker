@@ -5,6 +5,7 @@ class AppProduct {
     required this.id,
     required this.name,
     required this.slug,
+    required this.category,
     required this.description,
     required this.price,
     this.imageUrl,
@@ -16,6 +17,7 @@ class AppProduct {
   final int id;
   final String name;
   final String slug;
+  final String category;
   final String description;
   final int price;
   final String? imageUrl;
@@ -32,13 +34,20 @@ class AppProduct {
 
   bool matchesSavedDesignService(String service) {
     final key = name.toUpperCase();
-    if (key.contains('ID') && key.contains('CARD')) {
-      return service == 'Student ID Card' ||
-          service == 'Employee ID Card' ||
-          service == 'ID Card';
+    final catKey = category.toUpperCase();
+    final s = service.toUpperCase();
+    if (key.contains('ID') ||
+        key.contains('CARD') ||
+        catKey.contains('CARD') ||
+        catKey == 'ID CARD') {
+      return s.contains('CARD') ||
+          s.contains('STUDENT') ||
+          s.contains('EMPLOYEE');
     }
-    if (key.contains('LANYARD')) {
-      return service == 'Lanyard';
+    if (key.contains('LANYARD') ||
+        key.contains('DORI') ||
+        catKey.contains('LANYARD')) {
+      return s.contains('LANYARD');
     }
     return false;
   }
@@ -49,17 +58,48 @@ class AppProduct {
         ? rawSizes.map((dynamic e) => '$e').toList()
         : <String>[];
 
+    String? img = json['image_url'] as String?;
+    if (img != null && img.trim().isNotEmpty) {
+      img = img.trim();
+      if (img.contains('admin.idshaydi.in/uploads/')) {
+        img = img.replaceAll('admin.idshaydi.in/uploads/', 'admin.idshaydi.in/public/uploads/');
+      }
+    } else {
+      img = null;
+    }
+
+    final nameStr = '${json['name'] ?? ''}';
+    final rawCat = json['category']?.toString().trim();
+    final categoryStr = (rawCat != null && rawCat.isNotEmpty)
+        ? rawCat
+        : _inferCategory(nameStr);
+
     return AppProduct(
       id: json['id'] as int? ?? 0,
-      name: '${json['name'] ?? ''}',
+      name: nameStr,
       slug: '${json['slug'] ?? ''}',
+      category: categoryStr,
       description: '${json['description'] ?? ''}',
       price: json['price'] as int? ?? 0,
-      imageUrl: json['image_url'] as String?,
+      imageUrl: img,
       status: '${json['status'] ?? 'Active'}',
       sizes: sizes,
       supportsSizes: json['supports_sizes'] as bool? ?? sizes.isNotEmpty,
     );
+  }
+
+  static String _inferCategory(String name) {
+    final key = name.toUpperCase();
+    if (key.contains('ID') && key.contains('CARD')) return 'ID Card';
+    if (key.contains('LANYARD') ||
+        key.contains('DORI') ||
+        key.contains('RIBBON')) {
+      return 'Lanyard';
+    }
+    if (key.contains('BADGE')) return 'Badge';
+    if (key.contains('BELT')) return 'Belt';
+    if (key.contains('HOLDER') || key.contains('CASE')) return 'Card Holder';
+    return 'General';
   }
 
   static Color _accentForSlug(String slug, String name) {
